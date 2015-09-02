@@ -9,11 +9,6 @@ interface CSSStyleDeclaration {
 	 * @access public
 	 */
   mozTransform: string;
-
-	/**
-	 * @access public
-	 */
-  // webkitTransform: string;
 }
 
 /**
@@ -40,12 +35,6 @@ interface Element {
 	 * @return {boolean}
 	 */
   mozMatchesSelector: (selector: string) => boolean;
-
-	/**
-	 * @param {string} selector
-	 * @return {boolean}
-	 */
-  // webkitMatchesSelector: (selector: string) => boolean;
 }
 
 /**
