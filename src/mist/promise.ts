@@ -1,40 +1,49 @@
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
 module Mist {
 
-	/**
-	 * @class Promise
-   * @description responsive.
-	 * @since 0.1.0
-	 */
+  /**
+  * @class Promise
+  * @description responsor
+  */
   export class Promise {
 
-    private rejector: any;
-    private resolver: any;
+    private rejector;
+    private resolver;
 
-		/**
-		 * @constructor
-		 * @param {} process
-		 */
+    /**
+    * @constructor
+    * @param {} process
+    */
     constructor(process) {
 
-      this.resolver = (r) => {
+      this.resolver = (o) => {
 
         if (this.resolver.statement) {
-          this.resolver.statement(r);
+          this.resolver.statement(o);
         } else {
+
+          // fixed response.
           this.resolver.completor = () => {
-            this.resolver(r);
+            this.resolver(o);
           }
         }
       };
 
       // prev response.
-      this.rejector = process.rejector || ((r) => {
+      this.rejector = process.rejector || ((o) => {
 
         if (this.rejector.statement) {
-          this.rejector.statement(r);
+          this.rejector.statement(o);
         } else {
+
+          // fixed response.
           this.rejector.completor = () => {
-            this.rejector(r);
+            this.rejector(o);
           }
         }
       });
@@ -46,38 +55,131 @@ module Mist {
         );
     }
 
-		/**
-		 * @param {} rejector
-     * @return {Promise}
-		 */
+    /**
+    * @access public
+    * @static
+    */
+    static all(promises: Promise[]): Promise {
+
+      return new Promise(
+
+        function(resolver, rejector) {
+
+          // initialize.
+          var response = [];
+          var m;
+
+          promises.map(
+
+            function(promise, n) {
+
+              m = n;
+              promise.then(
+
+                function(o) {
+
+                  // fast response?
+                  if (!(n in response)) {
+
+                    response[n] = o;
+
+                    // commit response.
+                    if (keys(response).length > m) {
+
+                      resolver(
+                        response);
+
+                      // initialize.
+                      response = [];
+                    }
+                  }
+                }).catch(
+
+                function(e) {
+
+                  // initialize.
+                  response = [];
+
+                  // fail response.
+                  rejector(e);
+                });
+            });
+        });
+    }
+
+    /**
+    * @access public
+    * @static
+    */
+    static race(promises: Promise[]): Promise {
+
+      return new Promise(
+
+        function(resolver, rejector) {
+
+          // initialize.
+          var response = [];
+          var m;
+
+          promises.map(function(promise, n) {
+
+            m = n;
+            promise.then(
+
+              function(o) {
+
+                response[n] = o;
+
+                // commit response.
+                var l = keys(response).length;
+
+                // a response.
+                if (l < 2) resolver(o);
+                if (l > m) response = [];
+
+              }).catch(
+
+              function(e) {
+
+                // initialize.
+                response = [];
+
+                // fail response.
+                rejector(e);
+              });
+          });
+        });
+    }
+
+    /**
+    * @param {} rejector
+    * @return {}
+    */
     catch(rejector: (response) => any): Promise {
 
       // lazy response.
       var process: any = (resolver, rejector) => {
 
-        // next process.
         process.resolver = resolver;
         process.rejector = resolver;
 
-        // invoke response.
+        // fixed response.
+
         if (this.rejector.completor) {
           this.rejector.completor();
         }
       };
 
       // initialize.
-      this.rejector.statement = function(r) {
+      this.rejector.statement = function(o) {
 
         try {
-          var response = rejector(r);
+          var response = rejector(o);
           if (response != null) {
-
-            // next process.
-            process.resolver(response);
+            process.resolver(
+              response);
           }
         } catch (e) {
-
-          // next process.
           process.rejector(e);
         }
       }
@@ -86,21 +188,21 @@ module Mist {
       return new Promise(process);
     }
 
-		/**
-		 * @param {} resolver
-		 * @param {} rejector
-     * @return {Promise}
-		 */
+    /**
+    * @param {} resolver
+    * @param {} rejector
+    * @return {}
+    */
     then(resolver: (response) => any,
       rejector?: (response) => any): Promise {
 
       // lazy response.
       var process: any = (resolver) => {
 
-        // next process.
         process.resolver = resolver;
 
-        // invoke response.
+        // fixed response.
+
         if (this.resolver.completor) {
           this.resolver.completor();
         }
@@ -110,28 +212,22 @@ module Mist {
       process.rejector = this.rejector;
 
       // initialize.
-      this.resolver.statement = function(r) {
+      this.resolver.statement = function(o) {
 
         try {
-          var response = resolver(r);
+          var response = resolver(o);
           if (response != null) {
-
-            // next process.
-            process.resolver(response);
+            process.resolver(
+              response);
           }
         } catch (e) {
-
           if (rejector) {
-
             var response = rejector(e);
             if (response != null) {
-
-              // next process.
-              process.resolver(response);
+              process.resolver(
+                response);
             }
           } else {
-
-            // next process.
             process.rejector(e);
           }
         }
@@ -140,5 +236,14 @@ module Mist {
       // {} response.
       return new Promise(process);
     }
+  }
+
+  /**
+  * @access private
+  */
+  function keys(response) {
+
+    // [] response.
+    return Object.keys(response);
   }
 }

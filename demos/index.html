@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <meta charset='UTF-8'>
+  <meta name='apple-mobile-web-app-capable' content='yes'>
+  <meta name='apple-mobile-web-app-status-bar-style' content='black'>
+  <meta name='description' content=''>
+  <meta name='mobile-web-app-capable' content='yes'>
+  <meta name='MobileOptimized' content='320'>
+  <meta name='viewport' content='maximum-scale=1.0,width=device-width'>
+  <script src='../modules/mist.min.js'></script>
+  <style>
+    /** common statement */
+
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+    }
+
+    .responsive {
+      border: 1px solid rgba(0, 0, 0, .1);
+      border-radius: 3px;
+      left: 50%;
+      height: 200px;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class='responsive'></div>
+  <script>
+    /** scoped main */
+
+    (function(main) {
+
+      var pseudo = {};
+
+      // initialize.
+
+      pseudo.a = main.pseudo('::after');
+      pseudo.b = main.pseudo('::before');
+
+      // event response.
+
+      var panend = mist('*').on('panend');
+      var panstart = main.on('panstart');
+      var moved = main.on('moved');
+
+      panstart.then(
+
+        function() {
+
+          Mist.Promise.all([
+
+            moved, panend
+
+          ]).then(
+
+            function() {
+
+              pseudo.b.style.add({
+
+                opacity: 0
+
+              });
+
+              main.style.add({
+
+                boxShadow: 'none'
+
+              });
+            });
+
+          pseudo.a.style.set({
+
+            borderRadius: '100%',
+            bottom: 0,
+            content: '""',
+            left: '50%',
+            position: 'absolute',
+            right: '50%',
+            opacity: 0,
+            top: 0
+
+          }).then(
+
+            function() {
+
+              pseudo.a.style.add({
+
+                borderRadius: 0,
+                left: 0,
+                right: 0,
+                transition: 'all .6s'
+
+              });
+
+              pseudo.a.style.add({
+
+                backgroundColor: '#000',
+                opacity: .04,
+
+              }, 20).then(
+
+                function() {
+
+                  main.emitter.emit('moved');
+                });
+            });
+
+          pseudo.b.style.set({
+
+            bottom: 0,
+            content: '""',
+            left: 0,
+            position: 'absolute',
+            right: 0,
+            opacity: 0,
+            top: 0,
+            transition: 'all .6s'
+
+          }).then(
+
+            function() {
+
+              pseudo.b.style.add({
+
+                backgroundColor: '#000',
+                opacity: .02
+
+              });
+            });
+
+          //
+
+          main.style.set({
+
+            transition: 'all .6s'
+
+          }).then(
+
+            function() {
+
+              main.style.add({
+
+                boxShadow: '0 2px 8px rgba(0, 0, 0, .4)'
+
+              });
+            });
+        });
+
+    })(mist('.responsive'));
+  </script>
+</body>
+
+</html>

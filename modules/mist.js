@@ -1,95 +1,103 @@
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
 var Mist;
 (function (Mist) {
     /**
-     * @class Component
-   * @description component factory.
-     * @since 0.1.0
-     */
+    * @class Component
+    * @description factory
+    */
     var Component = (function () {
         function Component() {
         }
         /**
-         * @constructor
-         * @return {Function}
-         */
+        * @constructor
+        * @return {}
+        */
         Component.create = function (module) {
-            var options = [];
+            var args = [];
             for (var _i = 1; _i < arguments.length; _i++) {
-                options[_i - 1] = arguments[_i];
+                args[_i - 1] = arguments[_i];
             }
-            var o = this.hash(options);
-            var m = this.hash([
+            var o = this.serialize(args);
+            var m = this.serialize([
                 module
             ]);
             // initialize.
-            if (!this.components[m]) {
-                this.components[m] = {};
+            if (!this.coms[m]) {
+                this.coms[m] = {};
             }
             // inher response.
-            if (!this.components[m][o]) {
-                this.components[m][o] = new (module.bind.apply(module, [module].concat([].slice.apply(options))));
+            if (!this.coms[m][o]) {
+                this.coms[m][o] = new (module.bind.apply(module, [module].concat([].slice.apply(args))));
             }
             // {} response.
-            return this.components[m][o];
+            return this.coms[m][o];
         };
         /**
-         * @access private
-         * @static
-         */
-        Component.hash = function (options) {
-            var _this = this;
-            return JSON.stringify(options.map(function (o) {
-                if (o instanceof Element)
-                    if (o.id)
-                        return o.id;
-                if (o instanceof Object)
-                    return o._ID || (o._ID = _this.identities.push(0));
-                // passthru.
-                return o;
+        * @access private
+        * @static
+        */
+        Component.serialize = function (args) {
+            return JSON.stringify(
+            // [] response.
+            args.map(function (o) {
+                return o instanceof Object ?
+                    o.session || (o.session = Date.now()) :
+                    o;
             }));
         };
         /**
-         * @access private
-         * @static
-         */
-        Component.components = {};
-        Component.identities = [];
+        * @access private
+        * @static
+        */
+        Component.coms = {};
         return Component;
     })();
     Mist.Component = Component;
 })(Mist || (Mist = {}));
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
 var Mist;
 (function (Mist) {
     /**
-     * @class Promise
-   * @description responsive.
-     * @since 0.1.0
-     */
+    * @class Promise
+    * @description responsor
+    */
     var Promise = (function () {
         /**
-         * @constructor
-         * @param {} process
-         */
+        * @constructor
+        * @param {} process
+        */
         function Promise(process) {
             var _this = this;
-            this.resolver = function (r) {
+            this.resolver = function (o) {
                 if (_this.resolver.statement) {
-                    _this.resolver.statement(r);
+                    _this.resolver.statement(o);
                 }
                 else {
+                    // fixed response.
                     _this.resolver.completor = function () {
-                        _this.resolver(r);
+                        _this.resolver(o);
                     };
                 }
             };
             // prev response.
-            this.rejector = process.rejector || (function (r) {
+            this.rejector = process.rejector || (function (o) {
                 if (_this.rejector.statement) {
-                    _this.rejector.statement(r);
+                    _this.rejector.statement(o);
                 }
                 else {
+                    // fixed response.
                     _this.rejector.completor = function () {
-                        _this.rejector(r);
+                        _this.rejector(o);
                     };
                 }
             });
@@ -97,32 +105,89 @@ var Mist;
             process(this.resolver, this.rejector);
         }
         /**
-         * @param {} rejector
-     * @return {Promise}
-         */
+        * @access public
+        * @static
+        */
+        Promise.all = function (promises) {
+            return new Promise(function (resolver, rejector) {
+                // initialize.
+                var response = [];
+                var m;
+                promises.map(function (promise, n) {
+                    m = n;
+                    promise.then(function (o) {
+                        // fast response?
+                        if (!(n in response)) {
+                            response[n] = o;
+                            // commit response.
+                            if (keys(response).length > m) {
+                                resolver(response);
+                                // initialize.
+                                response = [];
+                            }
+                        }
+                    }).catch(function (e) {
+                        // initialize.
+                        response = [];
+                        // fail response.
+                        rejector(e);
+                    });
+                });
+            });
+        };
+        /**
+        * @access public
+        * @static
+        */
+        Promise.race = function (promises) {
+            return new Promise(function (resolver, rejector) {
+                // initialize.
+                var response = [];
+                var m;
+                promises.map(function (promise, n) {
+                    m = n;
+                    promise.then(function (o) {
+                        response[n] = o;
+                        // commit response.
+                        var l = keys(response).length;
+                        // a response.
+                        if (l < 2)
+                            resolver(o);
+                        if (l > m)
+                            response = [];
+                    }).catch(function (e) {
+                        // initialize.
+                        response = [];
+                        // fail response.
+                        rejector(e);
+                    });
+                });
+            });
+        };
+        /**
+        * @param {} rejector
+        * @return {}
+        */
         Promise.prototype.catch = function (rejector) {
             var _this = this;
             // lazy response.
             var process = function (resolver, rejector) {
-                // next process.
                 process.resolver = resolver;
                 process.rejector = resolver;
-                // invoke response.
+                // fixed response.
                 if (_this.rejector.completor) {
                     _this.rejector.completor();
                 }
             };
             // initialize.
-            this.rejector.statement = function (r) {
+            this.rejector.statement = function (o) {
                 try {
-                    var response = rejector(r);
+                    var response = rejector(o);
                     if (response != null) {
-                        // next process.
                         process.resolver(response);
                     }
                 }
                 catch (e) {
-                    // next process.
                     process.rejector(e);
                 }
             };
@@ -130,17 +195,16 @@ var Mist;
             return new Promise(process);
         };
         /**
-         * @param {} resolver
-         * @param {} rejector
-     * @return {Promise}
-         */
+        * @param {} resolver
+        * @param {} rejector
+        * @return {}
+        */
         Promise.prototype.then = function (resolver, rejector) {
             var _this = this;
             // lazy response.
             var process = function (resolver) {
-                // next process.
                 process.resolver = resolver;
-                // invoke response.
+                // fixed response.
                 if (_this.resolver.completor) {
                     _this.resolver.completor();
                 }
@@ -148,11 +212,10 @@ var Mist;
             // prev response.
             process.rejector = this.rejector;
             // initialize.
-            this.resolver.statement = function (r) {
+            this.resolver.statement = function (o) {
                 try {
-                    var response = resolver(r);
+                    var response = resolver(o);
                     if (response != null) {
-                        // next process.
                         process.resolver(response);
                     }
                 }
@@ -160,12 +223,10 @@ var Mist;
                     if (rejector) {
                         var response = rejector(e);
                         if (response != null) {
-                            // next process.
                             process.resolver(response);
                         }
                     }
                     else {
-                        // next process.
                         process.rejector(e);
                     }
                 }
@@ -176,715 +237,784 @@ var Mist;
         return Promise;
     })();
     Mist.Promise = Promise;
+    /**
+    * @access private
+    */
+    function keys(response) {
+        // [] response.
+        return Object.keys(response);
+    }
 })(Mist || (Mist = {}));
-/// <reference path='../promise.ts'/>
+/// <reference path='promise.ts'/>
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
+var Mist;
+(function (Mist) {
+    /**
+    * @class Frame
+    * @description gear
+    */
+    var Frame = (function () {
+        function Frame() {
+        }
+        /**
+        * @access public
+        * @static
+        */
+        Frame.on = function (responsor, delay) {
+            var _this = this;
+            if (delay === void 0) { delay = 0; }
+            return new Mist.Promise(function (resolver, rejector) {
+                // initialize.
+                var response = [];
+                response.push(delay);
+                response.push(function () {
+                    try {
+                        // commit response.
+                        resolver(responsor());
+                    }
+                    catch (e) {
+                        // fail response.
+                        rejector(e);
+                    }
+                });
+                _this.txs.push(response);
+                _this.tx();
+            });
+        };
+        /**
+        * @access private
+        * @static
+        */
+        Frame.tx = function () {
+            var _this = this;
+            // begin response.
+            this.txd || (function () {
+                _this.txd = true;
+                var _;
+                // lazy response.
+                (_ = function () {
+                    var p = [];
+                    var responsor;
+                    while (responsor = _this.txs.pop()) {
+                        responsor[0]-- < 0 ? responsor[1]() : p.push(responsor);
+                    }
+                    // end response.
+                    _this.txs.push.apply(_this.txs, p) ? requestAnimationFrame(_) : (_this.txd = false);
+                })();
+            })();
+        };
+        Frame.txs = [];
+        return Frame;
+    })();
+    Mist.Frame = Frame;
+})(Mist || (Mist = {}));
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+/// <reference path='promise.ts'/>
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
 var Mist;
 (function (Mist) {
     /**
-     * @class Listener
-     * @extends Promise
-     * @since 0.1.0
-     */
-    var Listener = (function (_super) {
-        __extends(Listener, _super);
-        /**
-         * @constructor
-         */
-        function Listener() {
-            var _this = this;
-            _super.call(this, function (resolver, rejector) {
-                _this.compute = function (r) {
-                    if (!_this.paused) {
-                        try {
-                            resolver(r);
-                        }
-                        catch (e) {
-                            rejector(e);
-                        }
-                    }
-                };
-            });
-        }
-        /**
-         */
-        Listener.prototype.pause = function () {
-            // pause listener.
-            this.paused = true;
-        };
-        /**
-         */
-        Listener.prototype.resume = function () {
-            // resume listener.
-            this.paused = false;
-        };
-        return Listener;
-    })(Mist.Promise);
-    Mist.Listener = Listener;
-})(Mist || (Mist = {}));
-/// <reference path='../statement.ts' />
-var Mist;
-(function (Mist) {
-    /**
-     * @class CSSClass
-     * @description classing.
-     * @since 0.1.0
-     */
-    var CSSClass = (function () {
-        /**
-         * @constructor
-         * @param {Statement} statement
-         */
-        function CSSClass(statement) {
-            this.statement = statement;
-        }
-        /**
-         * @param {string[]} names
-         */
-        CSSClass.prototype.add = function () {
-            var names = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                names[_i - 0] = arguments[_i];
-            }
-            this.statement.each(function (element) {
-                element.classList.add.apply(element.classList, names);
-            });
-        };
-        /**
-         * @param {string[]} names
-         */
-        CSSClass.prototype.remove = function () {
-            var names = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                names[_i - 0] = arguments[_i];
-            }
-            this.statement.each(function (element) {
-                element.classList.remove.apply(element.classList, names);
-            });
-        };
-        /**
-         * @param {string[]} names
-         */
-        CSSClass.prototype.toggle = function () {
-            var names = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                names[_i - 0] = arguments[_i];
-            }
-            this.statement.each(function (element) {
-                names.forEach(function (name) {
-                    element.classList.toggle(name);
-                });
-            });
-        };
-        return CSSClass;
-    })();
-    Mist.CSSClass = CSSClass;
-})(Mist || (Mist = {}));
-/// <reference path='../promise.ts'/>
-var Mist;
-(function (Mist) {
-    /**
-     * @class Value
-     * @extends Promise
-     * @since 0.1.0
-     */
+    * @class Value
+    * @extends Promise
+    */
     var Value = (function (_super) {
         __extends(Value, _super);
         /**
-         * @constructor
-         * @param {} composite
-         */
+        * @constructor
+        * @param {} composite
+        */
         function Value(composite) {
             var _this = this;
             this.composite = composite;
+            this.txs = [];
             _super.call(this, function (resolver, rejector) {
-                _this.compute = function () {
-                    if (!_this.computed) {
-                        // begin.
-                        _this.computed = true;
+                // initialize.
+                _this.txr = function () {
+                    // begin response.
+                    _this.txd || (function () {
+                        _this.txd = true;
                         // lazy response.
-                        requestAnimationFrame(function () {
+                        Mist.Frame.on(function () {
+                            var responsor;
                             try {
+                                // commit response.
                                 resolver(_this.composite);
                             }
                             catch (e) {
+                                // fail response.
                                 rejector(e);
                             }
-                            finally {
-                                // commit.
-                                _this.computed = false;
+                            while (responsor = _this.txs.pop()) {
+                                responsor(_this.composite);
                             }
+                            // end response.
+                            _this.txd = false;
                         });
-                    }
+                    })();
                 };
             });
         }
         /**
-         * @param {} composer
-         */
+        * @param {} composer
+        * @return {}
+        */
         Value.prototype.compose = function (composer) {
-            this.composite = composer(this.composite);
-            this.compute();
+            var _this = this;
+            return new Mist.Promise(function (responsor) {
+                // lazy response.
+                Mist.Frame.on(function () {
+                    // a response.
+                    _this.composite = composer(_this.composite);
+                    // patch response.
+                    _this.txs.push(responsor);
+                    _this.txr();
+                });
+            });
         };
         return Value;
     })(Mist.Promise);
     Mist.Value = Value;
 })(Mist || (Mist = {}));
-/// <reference path='../promise/value.ts' />
-/// <reference path='../statement.ts' />
+/// <reference path='frame.ts'/>
+/// <reference path='statement.ts'/>
+/// <reference path='value.ts'/>
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
 var Mist;
 (function (Mist) {
     /**
-     * @class CSSStyle
-     * @description styling.
-     * @since 0.1.0
-     */
-    var CSSStyle = (function () {
+    * @access private
+    * @static
+    */
+    var List;
+    (function (List) {
+        List[List["ADD"] = 0] = "ADD";
+        List[List["REMOVE"] = 1] = "REMOVE";
+        List[List["TOGGLE"] = 2] = "TOGGLE";
+    })(List || (List = {}));
+    ;
+    /**
+    * @class Class
+    * @description accessor
+    */
+    var Class = (function () {
         /**
-         * @constructor
-         * @param {Statement} statement
-         */
-        function CSSStyle(statement) {
+        * @constructor
+        * @param {} statement
+        */
+        function Class(statement) {
+            this.statement = statement;
             this.value = new Mist.Value({});
-            this.value.then(function (style) {
-                statement.each(function (element) {
-                    for (var name in style) {
-                        if (element.style.hasOwnProperty(name)) {
-                            element.style[name] = style[name];
-                        }
-                    }
-                });
-                // initialize.
-                style = {};
-            });
-        }
-        /**
-         * @param {string[]} names
-         */
-        CSSStyle.prototype.remove = function () {
-            var names = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                names[_i - 0] = arguments[_i];
-            }
-            this.value.compose(function (style) {
-                names.forEach(function (name) {
-                    style[name] = '';
-                });
-                // {} response.
-                return style;
-            });
-        };
-        /**
-         * @param {} options
-         */
-        CSSStyle.prototype.set = function (options) {
-            this.value.compose(function (style) {
-                for (var name in options) {
-                    style[name] = options[name];
+            this.value.then(function (o) {
+                var response = [];
+                // format response.
+                for (var name in o) {
+                    response[o[name]] || (response[o[name]] = []);
+                    response[o[name]].push(name);
+                    // initialize.
+                    delete o[name];
                 }
-                // {} response.
-                return style;
+                // () response.
+                if (response[List.ADD]) {
+                    function a(e) {
+                        e.classList.add.apply(e.classList, response[List.ADD]);
+                    }
+                }
+                // () response.
+                if (response[List.REMOVE]) {
+                    function r(e) {
+                        e.classList.remove.apply(e.classList, response[List.REMOVE]);
+                    }
+                }
+                // () response.
+                if (response[List.TOGGLE]) {
+                    function t(e) {
+                        response[List.TOGGLE].forEach(function (name) {
+                            e.classList.toggle(name);
+                        });
+                    }
+                }
+                this.statement.each(function (e) {
+                    a && a(e);
+                    r && r(e);
+                    t && t(e);
+                });
             });
-        };
-        return CSSStyle;
-    })();
-    Mist.CSSStyle = CSSStyle;
-})(Mist || (Mist = {}));
-/// <reference path='promise/listener.ts' />
-var Mist;
-(function (Mist) {
-    /**
-     * @class Stream
-     * @description publisher / subscriber.
-     * @since 0.1.0
-     */
-    var Stream = (function () {
-        function Stream() {
-            this.listeners = [];
         }
         /**
-         * @param {} response
-         */
-        Stream.prototype.add = function (response) {
-            this.listeners.forEach(function (listener) {
-                listener.compute(response);
-            });
-        };
-        /**
-         * @param {Listener} listener
-         */
-        Stream.prototype.cancel = function (listener) {
-            var i = this.listeners.indexOf(listener);
-            i < 0 || this.listeners.splice(i, 1);
-        };
-        /**
-         * @override
-         */
-        Stream.prototype.initialize = function () {
-        };
-        /**
-         * @return {Listener}
-         */
-        Stream.prototype.listen = function () {
-            var listener = new Mist.Listener();
-            // initialize.
-            this.listeners.length || this.initialize();
-            this.listeners.push(listener);
-            // {} response.
-            return listener;
-        };
-        return Stream;
-    })();
-    Mist.Stream = Stream;
-})(Mist || (Mist = {}));
-/// <reference path='../promise.ts'/>
-/// <reference path='../stream.ts'/>
-var Mist;
-(function (Mist) {
-    /**
-     * @class All
-     * @extends Stream
-     * @since 0.1.0
-     */
-    var All = (function (_super) {
-        __extends(All, _super);
-        /**
-         * @constructor
-         * @param {Promise[]} promises
-         */
-        function All(promises) {
+        * @param {} names
+        * @param {} dur
+        * @return {}
+        */
+        Class.prototype.add = function (names, dur) {
             var _this = this;
-            _super.call(this);
-            // initialize.
-            var response = [];
-            this.initialize = function () {
-                var l = promises.length;
-                // lazy response.
-                promises.map(function (promise, i) {
-                    promise.then(function (r) {
-                        response[i] = r;
-                        if (response.length == l)
-                            _this.add(response);
-                        if (response.length == l) {
-                            // initialize.
-                            response = [];
-                        }
+            if (dur === void 0) { dur = 0; }
+            return new Mist.Promise(function (responsor) {
+                var f = dur > 0;
+                var g = _this.value.compose(function (o) {
+                    // composer.
+                    [].forEach.call(names, function (name) {
+                        // tagged response.
+                        o[name] = List.ADD;
                     });
+                    // {} response.
+                    return o;
                 });
-            };
-        }
-        return All;
-    })(Mist.Stream);
-    Mist.All = All;
+                // dur response.
+                f ? Mist.Frame.on(_this.remove.bind(_this, names), dur).then(function (g) {
+                    // gear response.
+                    g.then(responsor);
+                }) : g.then(responsor);
+            });
+        };
+        /**
+        * @param {} names
+        * @param {} dur
+        * @return {}
+        */
+        Class.prototype.remove = function (names, dur) {
+            var _this = this;
+            if (dur === void 0) { dur = 0; }
+            return new Mist.Promise(function (responsor) {
+                var f = dur > 0;
+                var g = _this.value.compose(function (o) {
+                    // composer.
+                    [].forEach.call(names, function (name) {
+                        // tagged response.
+                        o[name] = List.REMOVE;
+                    });
+                    // {} response.
+                    return o;
+                });
+                // dur response.
+                f ? Mist.Frame.on(_this.add.bind(_this, names), dur).then(function (g) {
+                    // gear response.
+                    g.then(responsor);
+                }) : g.then(responsor);
+            });
+        };
+        /**
+        * @param {} names
+        * @return {}
+        */
+        Class.prototype.toggle = function (names) {
+            return this.value.compose(function (o) {
+                // composer.
+                [].forEach.call(names, function (name) {
+                    switch (o[name]) {
+                        case List.ADD:
+                            // tagged response.
+                            o[name] = List.REMOVE;
+                            break;
+                        case List.REMOVE:
+                            // tagged response.
+                            o[name] = List.ADD;
+                            break;
+                        case List.TOGGLE:
+                            // tagged response.
+                            delete o[name];
+                            break;
+                        default:
+                            // tagged response.
+                            o[name] = List.TOGGLE;
+                    }
+                });
+                // {} response.
+                return o;
+            });
+        };
+        return Class;
+    })();
+    Mist.Class = Class;
 })(Mist || (Mist = {}));
+/// <reference path='statement.ts'/>
 /**
- * @class Element
- * @method Element.matches
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
  */
-(function (Element) {
-    Element.matches = Element.matches
-        || Element.mozMatchesSelector
-        || Element.msMatchesSelector
-        || Element.webkitMatchesSelector;
-})(Element.prototype);
-/**
- * @class Element
- * @method Element.closest
- */
-(function (Element) {
-    Element.closest = Element.closest || function (selector) {
-        var element = this;
-        // closest.
-        while (element) {
-            // match response.
-            if (element.matches(selector))
-                break;
-            // no response.
-            element = element.parentElement;
-        }
-        return element;
-    };
-})(Element.prototype);
-/// <reference path='../element.ts'/>
-/// <reference path='../promise.ts'/>
-/// <reference path='../stream.ts'/>
 var Mist;
 (function (Mist) {
     /**
-     * @class Emitter
-     * @extends Stream
-     * @since 0.1.0
-     */
-    var Emitter = (function (_super) {
-        __extends(Emitter, _super);
+    * @class Emitter
+    */
+    var Emitter = (function () {
         /**
-         * @constructor
-         * @param {string} name
-         * @param {string} selector
-         */
-        function Emitter(name, selector) {
-            var _this = this;
-            _super.call(this);
-            // lazy response.
-            document.addEventListener(name, function (e) {
-                var element = e.target;
-                if (element instanceof Element) {
-                    if (element.closest(selector)) {
-                        _this.add(e instanceof CustomEvent ?
-                            e.detail :
-                            e);
-                    }
-                }
-            });
+        * @constructor
+        * @param {} statement
+        */
+        function Emitter(statement) {
+            this.statement = statement;
+            this.emits = {};
+            this.obss = {};
         }
         /**
-         * @access public
-         * @static
-         */
+        * @access public
+        * @static
+        */
         Emitter.customize = function (name, options) {
+            if (options === void 0) { options = {}; }
             var e = document.createEvent('CustomEvent');
             // initialize.
             e.initCustomEvent(name, options.bubbles || true, options.cancelable || true, options.detail);
             // {} response.
             return e;
         };
+        /**
+        * @param {} name
+        * @param {} listener
+        */
+        Emitter.prototype.add = function (name, listener) {
+            this.obss[name] || (this.obss[name] = []);
+            this.obss[name].push(listener);
+            // lasting response.
+            this.ready(name);
+        };
+        /**
+        * @param {} name
+        * @param {} response
+        */
+        Emitter.prototype.emit = function (name, response) {
+            for (var i in this.obss[name]) {
+                this.obss[name][i](response);
+            }
+        };
+        /**
+        * @param {} name
+        * @param {} listener
+        */
+        Emitter.prototype.remove = function (name, listener) {
+            var o = this.obss[name];
+            function _() {
+                // composer.
+                var i = o.indexOf(listener);
+                i < 0 || o.splice(i, 1);
+            }
+            // composer.
+            o && listener ? _() : o = null;
+        };
+        /**
+        * @access private
+        */
+        Emitter.prototype.ready = function (name) {
+            var _this = this;
+            var o = this.emits;
+            // lasting response.
+            o[name] || document.addEventListener(name, o[name] = function (e) {
+                var element = e.target;
+                if (element instanceof Element) {
+                    if (element.closest(_this.statement.selector())) {
+                        _this.emit(name, e instanceof CustomEvent ?
+                            e.detail :
+                            e);
+                    }
+                }
+            });
+        };
         return Emitter;
-    })(Mist.Stream);
+    })();
     Mist.Emitter = Emitter;
 })(Mist || (Mist = {}));
-/// <reference path='../promise.ts'/>
-/// <reference path='../stream.ts'/>
+/// <reference path='emitter.ts'/>
+/// <reference path='promise.ts'/>
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
 var Mist;
 (function (Mist) {
     /**
-     * @class Order
-     * @extends Stream
-     * @since 0.1.0
-     */
-    var Order = (function (_super) {
-        __extends(Order, _super);
+    * @class Emission
+    * @extends Promise
+    */
+    var Emission = (function (_super) {
+        __extends(Emission, _super);
         /**
-         * @constructor
-         * @param {Promise[]} promises
-         */
-        function Order(promises) {
-            var _this = this;
-            _super.call(this);
-            // initialize.
-            var response = [];
-            this.initialize = function () {
-                var l = promises.length;
-                var s = new Mist.Stream();
-                var t = [];
-                for (var i = l; i-- > 0;)
-                    t[i] = s.listen();
-                for (var i = l; i-- > 1;) {
-                    var resolver = function (i, r) {
-                        response.push(r);
-                        t[i - 1].pause();
-                        t[i].resume();
-                        return response;
-                    };
-                    t[i - 1].pause();
-                    t[i - 1].then(resolver.bind(resolver, i));
-                }
-                // end.
-                t[l - 1].pause();
-                t[l - 1].then(function (r) {
-                    response.push(r);
-                    t[l - 1].pause();
-                    t[0].resume();
-                    // [] response.
-                    _this.add(response);
-                    // initialize.
-                    response = [];
+        * @constructor
+        * @param {} emitter
+        * @param {} name
+        */
+        function Emission(emitter, name) {
+            _super.call(this, function (resolver, rejector) {
+                emitter.add(name, function (response) {
+                    try {
+                        // commit response.
+                        resolver(response);
+                    }
+                    catch (e) {
+                        // fail response.
+                        rejector(e);
+                    }
                 });
-                // lazy response.
-                promises.map(function (promise, i) {
-                    promise.then(function (r) {
-                        // a response.
-                        s.add(r);
-                    });
-                });
-                // begin.
-                t[0].resume();
-            };
+            });
+            this.emitter = emitter;
+            this.name = name;
         }
-        return Order;
-    })(Mist.Stream);
-    Mist.Order = Order;
-})(Mist || (Mist = {}));
-/// <reference path='../promise.ts'/>
-/// <reference path='../stream.ts'/>
-var Mist;
-(function (Mist) {
-    /**
-     * @class Race
-     * @extends Stream
-     * @since 0.1.0
-     */
-    var Race = (function (_super) {
-        __extends(Race, _super);
         /**
-         * @constructor
-         * @param {Promise[]} promises
-         */
-        function Race(promises) {
+        * @description for listener.
+        */
+        Emission.prototype.cancel = function () {
+            this.then(null, null);
+        };
+        /**
+        * @param {} resolver
+        * @param {} rejector
+        * @return {}
+        */
+        Emission.prototype.once = function (resolver, rejector) {
             var _this = this;
-            _super.call(this);
-            // initialize.
-            var response = [];
-            this.initialize = function () {
-                var l = promises.length;
-                // lazy response.
-                promises.map(function (promise, i) {
-                    promise.then(function (r) {
-                        response[i] = r;
-                        if (response.length == 1)
-                            _this.add(r);
-                        if (response.length == l) {
-                            // initialize.
-                            response = [];
-                        }
-                    });
-                });
-            };
-        }
-        return Race;
-    })(Mist.Stream);
-    Mist.Race = Race;
+            // {} response.
+            return this.then(function (response) {
+                _this.cancel();
+                // commit response.
+                return resolver(response);
+            }, function (response) {
+                _this.cancel();
+                // fail response.
+                return rejector(response);
+            });
+        };
+        return Emission;
+    })(Mist.Promise);
+    Mist.Emission = Emission;
 })(Mist || (Mist = {}));
-/// <reference path='promise/value.ts'/>
-/// <reference path='element.ts'/>
+/// <reference path='frame.ts' />
+/// <reference path='statement.ts' />
+/// <reference path='value.ts' />
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
 var Mist;
 (function (Mist) {
     /**
-     * @class Matrix
-     * @description matrix composer.
-     * @since 0.1.0
-     */
-    var Matrix = (function () {
+    * @class Style
+    * @description accessor
+    */
+    var Style = (function () {
         /**
-         * @constructor
-         * @param {HTMLElement} element
-         */
-        function Matrix(element) {
-            this.value = new Mist.Value((function () {
-                var c = getComputedStyle(element);
-                // [a,b,c,d,x,y] response.
-                var response = (c.transform ||
-                    c.mozTransform ||
-                    c.webkitTransform).match(/matrix\((.*?)\)/);
-                // [a,b,c,d,x,y] response.
-                return response ? response[1].split(/\s?,\s?/).map(parseFloat) : [1, 0, 0, 1, 0, 0];
-            })());
-            this.value.then(function (matrix) {
-                var c = getComputedStyle(element);
-                // [a,b,c,d,x,y] response.
-                var response = (c.transform ||
-                    c.mozTransform ||
-                    c.webkitTransform);
-                response = [
-                    response.replace(/(matrix\(.*?\)|none)/, ''), [
-                        'matrix(', matrix
-                            .join(), ')'
-                    ].join('')
-                ].join(' ');
-                // a response.
-                element.style.transform = response;
-                element.style.mozTransform = response;
-                element.style.webkitTransform = response;
+        * @constructor
+        * @param {} statement
+        */
+        function Style(statement) {
+            this.statement = statement;
+            var s = document.createElement('style');
+            var t = document.createTextNode('');
+            s.appendChild(t);
+            document.head.appendChild(s);
+            // initialize.
+            this.value = new Mist.Value([{}]);
+            this.value.then(function (o) {
+                var response = o.map(function (p) {
+                    var response = [];
+                    // format response.
+                    for (var name in p) {
+                        response.push(hycase(name) + ':' + p[name]);
+                    }
+                    // a response.
+                    return statement.selector()
+                        + '{'
+                        + response.join(';')
+                        + '}';
+                });
+                // inner response.
+                s.innerHTML = response.join('');
             });
         }
         /**
-         * @description [a,b,c,d,x,y]
-         * @param {number[]} matrix
-         */
-        Matrix.prototype.add = function (matrix) {
-            this.value.compose(function (o) {
-                return [
-                    o[0] + (matrix[0] || 0),
-                    o[1] + (matrix[1] || 0),
-                    o[2] + (matrix[2] || 0),
-                    o[3] + (matrix[3] || 0),
-                    o[4] + (matrix[4] || 0),
-                    o[5] + (matrix[5] || 0)
-                ];
+        * @param {} css
+        * @param {} dur
+        * @return {}
+        */
+        Style.prototype.add = function (css, dur) {
+            var _this = this;
+            if (dur === void 0) { dur = 0; }
+            return new Mist.Promise(function (responsor) {
+                var f = dur > 0;
+                var g = _this.value.compose(function (o) {
+                    // initialize.
+                    var response = f ? {} : o[0];
+                    // composer.
+                    for (var name in css) {
+                        response[name] = css[name];
+                    }
+                    // dur response.
+                    if (f) {
+                        o.push(response);
+                        // lazy response.
+                        Mist.Frame.on(function () {
+                            return _this.value.compose(function (o) {
+                                // composer.
+                                var i = o.indexOf(response);
+                                i < 0 || o.splice(i, 1);
+                                // [] response.
+                                return o;
+                            });
+                        }, dur).then(function (g) {
+                            // gear response.
+                            g.then(responsor);
+                        });
+                    }
+                    // {} response.
+                    return o;
+                });
+                // dur response.
+                f || g.then(responsor);
             });
         };
         /**
-         * @description [a,b,c,d,x,y]
-         * @return {number[]}
-         */
-        Matrix.prototype.get = function () {
+        * @description scoped style
+        * @return {}
+        */
+        Style.prototype.get = function () {
+            // [] response.
             return this.value.composite;
         };
         /**
-         * @description [a,b,c,d,x,y]
-         * @param {number[]} matrix
-         */
-        Matrix.prototype.set = function (matrix) {
-            this.value.compose(function (o) {
-                return [
-                    Matrix.assert(matrix[0], o[0]),
-                    Matrix.assert(matrix[1], o[1]),
-                    Matrix.assert(matrix[2], o[2]),
-                    Matrix.assert(matrix[3], o[3]),
-                    Matrix.assert(matrix[4], o[4]),
-                    Matrix.assert(matrix[5], o[5])
-                ];
+        * @param {} css
+        * @return {}
+        */
+        Style.prototype.set = function (css) {
+            return this.value.compose(function (o) {
+                o.splice(1);
+                // composer.
+                o[0] = css || {};
+                // [] response.
+                return o;
             });
         };
-        /**
-         * @access private
-         * @static
-         */
-        Matrix.assert = function (master, slave) {
-            return null != master ? master : slave;
-        };
-        return Matrix;
+        return Style;
     })();
-    Mist.Matrix = Matrix;
+    Mist.Style = Style;
+    /**
+    * @access private
+    */
+    function hycase(name) {
+        // hy response.
+        return name.replace(/[A-Z]/g, function (m) {
+            return '-' + m.toLowerCase();
+        });
+    }
 })(Mist || (Mist = {}));
-/// <reference path='promise/listener.ts' />
-/// <reference path='statement/cssclass.ts' />
-/// <reference path='statement/cssstyle.ts' />
-/// <reference path='stream/all.ts' />
-/// <reference path='stream/emitter.ts' />
-/// <reference path='stream/order.ts' />
-/// <reference path='stream/race.ts' />
-/// <reference path='component.ts' />
-/// <reference path='matrix.ts' />
+/// <reference path='../emission.ts'/>
+/// <reference path='../emitter.ts'/>
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
+var Mist;
+(function (Mist) {
+    var Recognizer;
+    (function (Recognizer) {
+        /**
+        * @class Pan
+        * @description recognizer
+        */
+        var Pan = (function () {
+            /**
+            * @constructor
+            * @param {} emitter
+            */
+            function Pan(emitter) {
+                this.emitter = emitter;
+                // initialize.
+                var txd = false;
+                Mist.Promise.race([
+                    new Mist.Emission(emitter, 'mousedown'),
+                    new Mist.Emission(emitter, 'touchstart')
+                ]).then(function (e) {
+                    emitter.emit('panstart', e);
+                    // begin response.
+                    txd = true;
+                });
+                Mist.Promise.race([
+                    new Mist.Emission(emitter, 'mousemove'),
+                    new Mist.Emission(emitter, 'touchmove')
+                ]).then(function (e) {
+                    if (txd) {
+                        emitter.emit('panmove', e);
+                        // dir response.
+                        if (e.movementX < 0)
+                            emitter.emit('panleft', e);
+                        if (e.movementX > 0)
+                            emitter.emit('panright', e);
+                        if (e.movementY < 0)
+                            emitter.emit('panup', e);
+                        if (e.movementY > 0)
+                            emitter.emit('pandown', e);
+                    }
+                });
+                Mist.Promise.race([
+                    new Mist.Emission(emitter, 'mouseup'),
+                    new Mist.Emission(emitter, 'touchcancel'),
+                    new Mist.Emission(emitter, 'touchend')
+                ]).then(function (e) {
+                    emitter.emit('panend', e);
+                    // end reponse.
+                    txd = false;
+                });
+            }
+            return Pan;
+        })();
+        Recognizer.Pan = Pan;
+    })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
+})(Mist || (Mist = {}));
+/// <reference path='../emission.ts'/>
+/// <reference path='../emitter.ts'/>
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
+var Mist;
+(function (Mist) {
+    var Recognizer;
+    (function (Recognizer) {
+        /**
+        * @class Tap
+        * @description recognizer
+        */
+        var Tap = (function () {
+            /**
+            * @constructor
+            * @param {} emitter
+            */
+            function Tap(emitter) {
+                this.emitter = emitter;
+                Mist.Promise.race([
+                    new Mist.Emission(emitter, 'mouseup'),
+                    new Mist.Emission(emitter, 'touchend')
+                ]).then(function (e) {
+                    emitter.emit('tap', e);
+                });
+            }
+            return Tap;
+        })();
+        Recognizer.Tap = Tap;
+    })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
+})(Mist || (Mist = {}));
+/// <reference path='class.ts' />
+/// <reference path='emission.ts' />
+/// <reference path='emitter.ts' />
+/// <reference path='style.ts' />
+/// <reference path='recognizer/pan.ts' />
+/// <reference path='recognizer/tap.ts' />
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
 var Mist;
 (function (Mist) {
     /**
-     * @class Statement
-     * @description mist statement.
-     * @since 0.1.0
-     */
+    * @class Statement
+    */
     var Statement = (function () {
         /**
-         * @constructor
-         * @param {string} selector
-         */
-        function Statement(selector) {
-            this.selector = selector;
-            this.cssc = new Mist.CSSClass(this);
-            this.csss = new Mist.CSSStyle(this);
+        * @constructor
+        * @param {} statement
+        */
+        function Statement(statement) {
+            this.statement = statement;
+            this.class = new Mist.Class(this);
+            this.emitter = new Mist.Emitter(this);
+            this.style = new Mist.Style(this);
+            // recognizer.
+            new Mist.Recognizer.Pan(this.emitter);
+            new Mist.Recognizer.Tap(this.emitter);
         }
         /**
-         * @param {string[]} names
-         * @return {Listener}
-         */
-        Statement.prototype.all = function () {
-            var names = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                names[_i - 0] = arguments[_i];
-            }
-            return new Mist.All(this.listen(names)).listen();
-        };
-        /**
-         * @param {} listener
-         */
-        Statement.prototype.each = function (listener) {
-            [].forEach.call(this.query(), listener);
-        };
-        /**
-         * @param {string} name
-         * @param {} detail
-         */
-        Statement.prototype.emit = function (name, detail) {
-            var e = Mist.Emitter.customize(name, { detail: detail || {} });
-            this.each(function (element) {
-                element.dispatchEvent(e);
-            });
-        };
-        /**
-         * @param {string} name
-         * @return {Listener}
-         */
-        Statement.prototype.on = function (name) {
-            return Mist.Component.create(Mist.Emitter, name, this.selector).listen();
-        };
-        /**
-         * @param {string[]} names
-         * @return {Listener}
-         */
-        Statement.prototype.order = function () {
-            var names = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                names[_i - 0] = arguments[_i];
-            }
-            return new Mist.Order(this.listen(names)).listen();
-        };
-        /**
-         * @param {string[]} names
-         * @return {Listener}
-         */
-        Statement.prototype.race = function () {
-            var names = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                names[_i - 0] = arguments[_i];
-            }
-            return new Mist.Race(this.listen(names)).listen();
-        };
-        /**
-        * @param {number} deg
+        * @description each elements
+        * @param {} listener
         */
-        Statement.prototype.rotate = function (deg) {
-            var m = [
-                Math.cos(deg),
-                Math.sin(deg),
-                Math.sin(deg) / -1,
-                Math.cos(deg),
-                null,
-                null
-            ];
-            this.each(function (element) {
-                Mist.Component.create(Mist.Matrix, element).add(m);
+        Statement.prototype.each = function (listener) {
+            this.elements().forEach(listener);
+        };
+        /**
+        * @description mapped elements
+        * @return {}
+        */
+        Statement.prototype.elements = function () {
+            var s = this.statement;
+            // mapped.
+            var response;
+            if (s instanceof Statement) {
+                // [] response.
+                response = s.elements();
+            }
+            else {
+                // [] response.
+                response = [].map.call(document.querySelectorAll(s), function (element) { return element; });
+            }
+            // mapped response.
+            return response;
+        };
+        /**
+        * @param {} name
+        * @return {}
+        */
+        Statement.prototype.on = function (name) {
+            // {} response.
+            return new Mist.Emission(this.emitter, name);
+        };
+        /**
+        * @param {} name
+        * @return {}
+        */
+        Statement.prototype.pseudo = function (name) {
+            var s = this.selector();
+            // [] response.
+            var response = s.split(',').map(function (p) {
+                return p.trim() + name;
             });
+            // lasting response.
+            return Mist.Component.create(Statement, response.join());
         };
         /**
-         * @param {} comparer
-         * @return {boolean}
-         */
-        Statement.prototype.some = function (comparer) {
-            return [].some.call(this.query(), comparer);
-        };
-        /**
-         * @param {number} x
-         * @param {number} y
-         */
-        Statement.prototype.translate = function (x, y) {
-            var m = [
-                null,
-                null,
-                null,
-                null,
-                x,
-                y
-            ];
-            this.each(function (element) {
-                Mist.Component.create(Mist.Matrix, element).add(m);
-            });
-        };
-        /**
-         * @access private
-         */
-        Statement.prototype.listen = function (names) {
-            var _this = this;
-            return names.map(function (name) { return _this.on(name); });
-        };
-        /**
-         * @access private
-         */
-        Statement.prototype.query = function () {
-            return document.querySelectorAll(this.selector);
+        * @description mapped selector
+        * @return {}
+        */
+        Statement.prototype.selector = function () {
+            var s = this.statement;
+            // mapped.
+            var response;
+            if (s instanceof Statement) {
+                // a response.
+                response = s.selector();
+            }
+            else {
+                // a response.
+                response = s;
+            }
+            // mapped response.
+            return response;
         };
         return Statement;
     })();
@@ -894,15 +1024,42 @@ var Mist;
 /// <reference path='mist/statement.ts' />
 /*!
  * @copyright 2015 AI428
- * @description for multi gestures
+ * @description multi event, style accessor
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.1.0
+ * @version 0.2.0
  */
 /**
- * @param {string} selector
- * @return {Statement}
+ * @param {} statement
+ * @return {Mist.Statement}
  */
-function mist(selector) {
-    return Mist.Component.create(Mist.Statement, selector);
+function mist(statement) {
+    return Mist.Component.create(Mist.Statement, statement);
 }
+/**
+* @class Element
+* @method Element.matches
+*/
+(function (Element) {
+    Element.matches = Element.matches
+        || Element.mozMatchesSelector
+        || Element.msMatchesSelector
+        || Element.webkitMatchesSelector;
+})(Element.prototype);
+/**
+* @class Element
+* @method Element.closest
+*/
+(function (Element) {
+    Element.closest = Element.closest || function (selector) {
+        var element = this;
+        // closest.
+        while (element) {
+            if (element.matches(selector))
+                break;
+            element = element.parentElement;
+        }
+        // {} response.
+        return element;
+    };
+})(Element.prototype);

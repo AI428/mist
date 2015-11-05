@@ -1,64 +1,74 @@
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
 module Mist {
 
-	/**
-	 * @class Component
-   * @description component factory.
-	 * @since 0.1.0
-	 */
+  /**
+  * @class Component
+  * @description factory
+  */
   export class Component {
 
-		/**
-		 * @access private
-		 * @static
-		 */
-    private static components: any = {};
-    private static identities: number[] = [];
+    /**
+    * @access private
+    * @static
+    */
+    private static coms = {};
 
-		/**
-		 * @constructor
-		 * @return {Function}
-		 */
-    static create<T>(module: Function, ...options): T {
+    /**
+    * @constructor
+    * @return {}
+    */
+    static create<T>(module: Function,
 
-      var o = this.hash(options);
-      var m = this.hash([
-        module
-      ]);
+      ...args): T {
+
+      var o = this.serialize(args);
+      var m = this.serialize(
+        [
+          module
+        ]
+        );
 
       // initialize.
-      if (!this.components[m]) {
-        this.components[m] = {};
+      if (!this.coms[m]) {
+        this.coms[m] = {};
       }
 
       // inher response.
-      if (!this.components[m][o]) {
-        this.components[m][o] = new (
+      if (!this.coms[m][o]) {
+        this.coms[m][o] = new (
           module.bind.apply(
             module, [module].concat(
-              [].slice.apply(options))
+              [].slice.apply(args))
             )
           );
       }
 
       // {} response.
-      return this.components[m][o];
+      return this.coms[m][o];
     }
 
-		/**
-		 * @access private
-		 * @static
-		 */
-    private static hash(options) {
+    /**
+    * @access private
+    * @static
+    */
+    private static serialize(args) {
 
       return JSON.stringify(
 
-        options.map((o) => {
-          if (o instanceof Element) if (o.id) return o.id;
-          if (o instanceof Object) return o._ID || (o._ID = this.identities.push(0));
+        // [] response.
+        args.map(
 
-          // passthru.
-          return o;
-        }));
+          function(o) {
+            return o instanceof Object ?
+              o.session || (o.session = Date.now()) :
+              o;
+          })
+        );
     }
   }
 }

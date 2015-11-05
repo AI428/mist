@@ -1,160 +1,136 @@
-/// <reference path='promise/listener.ts' />
-/// <reference path='statement/cssclass.ts' />
-/// <reference path='statement/cssstyle.ts' />
-/// <reference path='stream/all.ts' />
-/// <reference path='stream/emitter.ts' />
-/// <reference path='stream/order.ts' />
-/// <reference path='stream/race.ts' />
-/// <reference path='component.ts' />
-/// <reference path='matrix.ts' />
+/// <reference path='class.ts' />
+/// <reference path='emission.ts' />
+/// <reference path='emitter.ts' />
+/// <reference path='style.ts' />
 
+/// <reference path='recognizer/pan.ts' />
+/// <reference path='recognizer/tap.ts' />
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
 module Mist {
 
   /**
-   * @class Statement
-   * @description mist statement.
-   * @since 0.1.0
-   */
+  * @class Statement
+  */
   export class Statement {
 
     /**
-     * @access public
-     */
-    cssc: CSSClass;
-    csss: CSSStyle;
+    * @access public
+    */
+    class: Class;
 
     /**
-     * @constructor
-     * @param {string} selector
-     */
-    constructor(private selector: string) {
+    * @access public
+    */
+    emitter: Emitter;
 
-      this.cssc = new CSSClass(this);
-      this.csss = new CSSStyle(this);
+    /**
+    * @access public
+    */
+    style: Style;
+
+    /**
+    * @constructor
+    * @param {} statement
+    */
+    constructor(private statement) {
+
+      this.class = new Class(this);
+      this.emitter = new Emitter(this);
+      this.style = new Style(this);
+
+      // recognizer.
+      new Recognizer.Pan(this.emitter);
+      new Recognizer.Tap(this.emitter);
     }
 
     /**
-     * @param {string[]} names
-     * @return {Listener}
-     */
-    all(...names: string[]): Listener {
-
-      return new All(this.listen(names)).listen();
-    }
-
-    /**
-     * @param {} listener
-     */
+    * @description each elements
+    * @param {} listener
+    */
     each(listener: (element: HTMLElement) => void) {
 
-      [].forEach.call(this.query(), listener);
+      this.elements().forEach(listener);
     }
 
     /**
-     * @param {string} name
-     * @param {} detail
-     */
-    emit(name: string, detail?: any) {
-
-      var e = Emitter.customize(name, { detail: detail || {} });
-
-      this.each(
-        function(element) {
-          element.dispatchEvent(e);
-        });
-    }
-
-    /**
-     * @param {string} name
-     * @return {Listener}
-     */
-    on(name: string): Listener {
-
-      return Component.create<Emitter>(Emitter, name, this.selector).listen();
-    }
-
-    /**
-     * @param {string[]} names
-     * @return {Listener}
-     */
-    order(...names: string[]): Listener {
-
-      return new Order(this.listen(names)).listen();
-    }
-
-    /**
-     * @param {string[]} names
-     * @return {Listener}
-     */
-    race(...names: string[]): Listener {
-
-      return new Race(this.listen(names)).listen();
-    }
-
-    /**
-    * @param {number} deg
+    * @description mapped elements
+    * @return {}
     */
-    rotate(deg: number) {
+    elements(): HTMLElement[] {
 
-      var m = [
-        Math.cos(deg),
-        Math.sin(deg),
-        Math.sin(deg) / -1,
-        Math.cos(deg),
-        null,
-        null
-      ];
+      var s = this.statement;
 
-      this.each(
-        function(element) {
-          Component.create<Matrix>(Matrix, element).add(m);
+      // mapped.
+      var response;
+
+      if (s instanceof Statement) {
+        // [] response.
+        response = s.elements();
+      } else {
+        // [] response.
+        response = [].map.call(document.querySelectorAll(s), (element) => element);
+      }
+
+      // mapped response.
+      return response;
+    }
+
+    /**
+    * @param {} name
+    * @return {}
+    */
+    on(name: string): Emission {
+
+      // {} response.
+      return new Emission(this.emitter, name);
+    }
+
+    /**
+    * @param {} name
+    * @return {}
+    */
+    pseudo(name: string): Statement {
+
+      var s = this.selector();
+
+      // [] response.
+      var response = s.split(',').map(
+
+        function(p) {
+          return p.trim() + name;
         });
+
+      // lasting response.
+      return Component.create<Statement>(
+        Statement, response.join());
     }
 
     /**
-     * @param {} comparer
-     * @return {boolean}
-     */
-    some(comparer: (element: HTMLElement) => boolean): boolean {
+    * @description mapped selector
+    * @return {}
+    */
+    selector(): string {
 
-      return [].some.call(this.query(), comparer);
-    }
+      var s = this.statement;
 
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
-    translate(x: number, y: number) {
+      // mapped.
+      var response;
 
-      var m = [
-        null,
-        null,
-        null,
-        null,
-        x,
-        y
-      ];
+      if (s instanceof Statement) {
+        // a response.
+        response = s.selector();
+      } else {
+        // a response.
+        response = s;
+      }
 
-      this.each(
-        function(element) {
-          Component.create<Matrix>(Matrix, element).add(m);
-        });
-    }
-
-    /**
-     * @access private
-     */
-    private listen(names: string[]): Listener[] {
-
-      return names.map((name) => this.on(name));
-    }
-
-    /**
-     * @access private
-     */
-    private query(): NodeList {
-
-      return document.querySelectorAll(this.selector);
+      // mapped response.
+      return response;
     }
   }
 }
