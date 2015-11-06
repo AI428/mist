@@ -16,59 +16,60 @@ module Mist {
     * @access private
     * @static
     */
-    private static coms = {};
+    private static responses = {};
 
     /**
     * @constructor
     * @return {}
     */
-    static create<T>(module: Function,
+    static create<T>(
 
-      ...args): T {
+      modular: Function, ...o): T {
 
-      var o = this.serialize(args);
-      var m = this.serialize(
-        [
-          module
-        ]
-        );
+      var m = ser([modular]);
+
+      var n = ser(o);
 
       // initialize.
-      if (!this.coms[m]) {
-        this.coms[m] = {};
-      }
+      this.responses[m] || (this.responses[m] = {});
 
       // inher response.
-      if (!this.coms[m][o]) {
-        this.coms[m][o] = new (
-          module.bind.apply(
-            module, [module].concat(
-              [].slice.apply(args))
+      if (!this.responses[m][n]) {
+        this.responses[m][n] = new (
+          modular.bind.apply(
+            modular, [modular].concat(
+              [].slice.apply(o))
             )
           );
       }
 
-      // {} response.
-      return this.coms[m][o];
+      // lasting response.
+      return this.responses[m][n];
     }
+  }
 
-    /**
-    * @access private
-    * @static
-    */
-    private static serialize(args) {
+  /**
+  * @access private
+  * @static
+  */
+  var sessions = 0;
 
-      return JSON.stringify(
+  /**
+  * @access private
+  * @static
+  */
+  function ser(response) {
 
-        // [] response.
-        args.map(
+    return JSON.stringify(
 
-          function(o) {
-            return o instanceof Object ?
-              o.session || (o.session = Date.now()) :
-              o;
-          })
-        );
-    }
+      // [] response.
+      response.map(
+
+        function(v) {
+          return v instanceof Object ?
+            v.sessions || (v.sessions = sessions++) :
+            v;
+        })
+      );
   }
 }

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <meta charset='UTF-8'>
+  <meta name='apple-mobile-web-app-capable' content='yes'>
+  <meta name='apple-mobile-web-app-status-bar-style' content='black'>
+  <meta name='description' content=''>
+  <meta name='mobile-web-app-capable' content='yes'>
+  <meta name='MobileOptimized' content='320'>
+  <meta name='viewport' content='maximum-scale=1.0,width=device-width'>
+  <script src='../modules/mist.min.js'></script>
+  <style>
+    /** common statement */
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      width: 100%;
+    }
+
+    .ripple {
+      border: 1px solid rgba(0, 0, 0, .1);
+      border-radius: 3px;
+      left: 50%;
+      height: 200px;
+      overflow: hidden;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class='ripple'></div>
+  <script>
+    /** scoped statement */
+
+    (function(main) {
+
+      // statement response.
+
+      var pseudoElementA = main.concat('::after');
+
+      // ev response.
+
+      var panstart = main.on('panstart');
+
+      // initialize.
+
+      var css = {
+
+        borderRadius: '50%',
+        content: '""',
+        height: 0,
+        opacity: 0,
+        position: 'absolute',
+        width: 0
+
+      };
+
+      var r = 50;
+
+      panstart.then(
+
+        function(e) {
+
+          pseudoElementA.style.set(css).then(
+
+            function() {
+
+              pseudoElementA.style.add({
+
+                left: e.offsetX + 'px',
+                top: e.offsetY + 'px'
+
+              }).then(
+
+                function() {
+
+                  pseudoElementA.style.add({
+
+                    backgroundColor: '#FAA',
+                    marginLeft: -r + 'px',
+                    marginTop: -r + 'px',
+                    padding: r + 'px',
+                    transition: 'all .6s'
+
+                  }).then(
+
+                    function() {
+
+                      pseudoElementA.style.add({
+
+                        opacity: .4
+
+                      }, 10);
+                    });
+                });
+            });
+        });
+
+    })(mist('.ripple'));
+  </script>
+</body>
+
+</html>

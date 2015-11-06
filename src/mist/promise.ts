@@ -8,12 +8,45 @@ module Mist {
 
   /**
   * @class Promise
-  * @description responsor
+  * @description thenable
   */
   export class Promise {
 
-    private rejector;
-    private resolver;
+    /**
+    * @access private
+    * @param {} response
+    */
+    private rejector: any = (response) => {
+
+      var o = this.rejector;
+
+      // fail response.
+      if (o.statement) {
+        o.statement(response);
+      } else {
+
+        // fixed response.
+        o.completor = o.bind(o, response);
+      }
+    };
+
+    /**
+    * @access private
+    * @param {} response
+    */
+    private resolver: any = (response) => {
+
+      var o = this.resolver;
+
+      // commit response.
+      if (o.statement) {
+        o.statement(response);
+      } else {
+
+        // fixed response.
+        o.completor = o.bind(o, response);
+      }
+    };
 
     /**
     * @constructor
@@ -21,32 +54,10 @@ module Mist {
     */
     constructor(process) {
 
-      this.resolver = (o) => {
-
-        if (this.resolver.statement) {
-          this.resolver.statement(o);
-        } else {
-
-          // fixed response.
-          this.resolver.completor = () => {
-            this.resolver(o);
-          }
-        }
-      };
-
       // prev response.
-      this.rejector = process.rejector || ((o) => {
-
-        if (this.rejector.statement) {
-          this.rejector.statement(o);
-        } else {
-
-          // fixed response.
-          this.rejector.completor = () => {
-            this.rejector(o);
-          }
-        }
-      });
+      if (process.rejector) {
+        this.rejector = process.rejector;
+      }
 
       // lazy response.
       process(
@@ -63,47 +74,45 @@ module Mist {
 
       return new Promise(
 
-        function(resolver, rejector) {
+        function(
+
+          resolver,
+          rejector
+          ) {
 
           // initialize.
           var response = [];
           var m;
 
-          promises.map(
+          promises.map(function(promise, n) {
 
-            function(promise, n) {
+            m = n;
+            promise.then(function(o) {
 
-              m = n;
-              promise.then(
+              // fast response?
+              if (!(n in response)) {
 
-                function(o) {
+                response[n] = o;
 
-                  // fast response?
-                  if (!(n in response)) {
+                // commit response.
+                if (keys(response).length > m) {
 
-                    response[n] = o;
-
-                    // commit response.
-                    if (keys(response).length > m) {
-
-                      resolver(
-                        response);
-
-                      // initialize.
-                      response = [];
-                    }
-                  }
-                }).catch(
-
-                function(e) {
+                  resolver(
+                    response);
 
                   // initialize.
                   response = [];
+                }
+              }
+            }).catch(function(e) {
 
-                  // fail response.
-                  rejector(e);
-                });
+              // initialize.
+              response = [];
+
+              // fail response.
+              rejector(e);
             });
+          });
         });
     }
 
@@ -115,7 +124,11 @@ module Mist {
 
       return new Promise(
 
-        function(resolver, rejector) {
+        function(
+
+          resolver,
+          rejector
+          ) {
 
           // initialize.
           var response = [];
@@ -124,29 +137,25 @@ module Mist {
           promises.map(function(promise, n) {
 
             m = n;
-            promise.then(
+            promise.then(function(o) {
 
-              function(o) {
+              response[n] = o;
 
-                response[n] = o;
+              // commit response.
+              var l = keys(response).length;
 
-                // commit response.
-                var l = keys(response).length;
+              // a response.
+              if (l < 2) resolver(o);
+              if (l > m) response = [];
 
-                // a response.
-                if (l < 2) resolver(o);
-                if (l > m) response = [];
+            }).catch(function(e) {
 
-              }).catch(
+              // initialize.
+              response = [];
 
-              function(e) {
-
-                // initialize.
-                response = [];
-
-                // fail response.
-                rejector(e);
-              });
+              // fail response.
+              rejector(e);
+            });
           });
         });
     }
@@ -157,29 +166,31 @@ module Mist {
     */
     catch(rejector: (response) => any): Promise {
 
+      var o = this.rejector;
+
       // lazy response.
-      var process: any = (resolver, rejector) => {
+      var process: any = function(resolver) {
 
         process.resolver = resolver;
         process.rejector = resolver;
 
         // fixed response.
-
-        if (this.rejector.completor) {
-          this.rejector.completor();
-        }
+        if (o.completor) o.completor();
       };
 
       // initialize.
-      this.rejector.statement = function(o) {
+      o.statement = function(response) {
 
         try {
-          var response = rejector(o);
+          var response = rejector(response);
           if (response != null) {
-            process.resolver(
-              response);
+
+            // commit response.
+            process.resolver(response);
           }
         } catch (e) {
+
+          // fail response.
           process.rejector(e);
         }
       }
@@ -193,41 +204,45 @@ module Mist {
     * @param {} rejector
     * @return {}
     */
-    then(resolver: (response) => any,
-      rejector?: (response) => any): Promise {
+    then(resolver: (response) => any, rejector?: (response) => any): Promise {
+
+      var o = this.resolver;
+      var e = this.rejector;
 
       // lazy response.
-      var process: any = (resolver) => {
+      var process: any = function(resolver) {
 
         process.resolver = resolver;
+        process.rejector = e;
 
         // fixed response.
-
-        if (this.resolver.completor) {
-          this.resolver.completor();
-        }
+        if (o.completor) o.completor();
       };
 
-      // prev response.
-      process.rejector = this.rejector;
-
       // initialize.
-      this.resolver.statement = function(o) {
+      o.statement = function(response) {
 
         try {
-          var response = resolver(o);
+          var response = resolver(response);
           if (response != null) {
-            process.resolver(
-              response);
+
+            // commit response.
+            process.resolver(response);
           }
         } catch (e) {
+
+          // catch response.
           if (rejector) {
+
             var response = rejector(e);
             if (response != null) {
-              process.resolver(
-                response);
+
+              // commit response.
+              process.resolver(response);
             }
           } else {
+
+            // fail response.
             process.rejector(e);
           }
         }
@@ -240,6 +255,7 @@ module Mist {
 
   /**
   * @access private
+  * @static
   */
   function keys(response) {
 

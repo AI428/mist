@@ -73,7 +73,7 @@ module Mist {
 
       var o = this.obss[name];
 
-      function _() {
+      function composer() {
 
         // composer.
         var i = o.indexOf(listener);
@@ -81,7 +81,7 @@ module Mist {
       }
 
       // composer.
-      o && listener ? _() : o = null;
+      o && listener ? composer() : o = null;
     }
 
     /**

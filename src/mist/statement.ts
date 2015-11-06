@@ -49,6 +49,26 @@ module Mist {
     }
 
     /**
+    * @param {} selector
+    * @return {}
+    */
+    concat(selector: string): Statement {
+
+      var s = this.selector();
+
+      // [] response.
+      var response = s.split(',').map(
+
+        function(p) {
+          return p.trim() + selector;
+        });
+
+      // lasting response.
+      return Component.create<Statement>(
+        Statement, response.join());
+    }
+
+    /**
     * @description each elements
     * @param {} listener
     */
@@ -68,7 +88,10 @@ module Mist {
       // mapped.
       var response;
 
-      if (s instanceof Statement) {
+      if (s instanceof HTMLElement) {
+        // [] response.
+        response = [s];
+      } else if (s instanceof Statement) {
         // [] response.
         response = s.elements();
       } else {
@@ -91,26 +114,6 @@ module Mist {
     }
 
     /**
-    * @param {} name
-    * @return {}
-    */
-    pseudo(name: string): Statement {
-
-      var s = this.selector();
-
-      // [] response.
-      var response = s.split(',').map(
-
-        function(p) {
-          return p.trim() + name;
-        });
-
-      // lasting response.
-      return Component.create<Statement>(
-        Statement, response.join());
-    }
-
-    /**
     * @description mapped selector
     * @return {}
     */
@@ -121,7 +124,10 @@ module Mist {
       // mapped.
       var response;
 
-      if (s instanceof Statement) {
+      if (s instanceof HTMLElement) {
+        // [] response.
+        response = ser(s);
+      } else if (s instanceof Statement) {
         // a response.
         response = s.selector();
       } else {
@@ -132,5 +138,48 @@ module Mist {
       // mapped response.
       return response;
     }
+  }
+
+  /**
+  * @access private
+  * @static
+  */
+  var sessions = 0;
+
+  /**
+  * @access private
+  * @static
+  */
+  function ser(element) {
+
+    return element.id ? '#' + element.id : (
+
+      (function() {
+
+        var response;
+
+        if (element.hasAttribute('mid')) {
+
+          // a response.
+          response = '[mid='
+          + element.getAttribute('mid')
+          + ']';
+        }
+
+        // selector response.
+        return response;
+      })() ||
+
+      (function() {
+
+        var response = sessions++;
+
+        element.setAttribute('mid', response);
+
+        // selector response.
+        return '[mid='
+          + response
+          + ']';
+      })());
   }
 }

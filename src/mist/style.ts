@@ -135,21 +135,24 @@ module Mist {
     */
     set(css): Promise {
 
-      return this.value.compose(function(o) {
+      return this.value.compose(function() {
 
-        o.splice(1);
+        var response = {};
 
         // composer.
-        o[0] = css || {};
+        for (var name in css) {
+          response[name] = css[name];
+        }
 
         // [] response.
-        return o;
+        return [response];
       });
     }
   }
 
   /**
   * @access private
+  * @static
   */
   function hycase(name) {
 

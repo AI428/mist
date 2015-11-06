@@ -24,6 +24,23 @@ module Mist {
     * @access public
     * @static
     */
+    static at(responsor: () => any, delay: number = 0) {
+
+      // initialize.
+      var response = [];
+
+      response.push(delay);
+      response.push(responsor);
+
+      // patch response.
+      this.txs.push(response);
+      this.tx();
+    }
+
+    /**
+    * @access public
+    * @static
+    */
     static on(responsor: () => any, delay: number = 0): Promise {
 
       return new Promise((
@@ -49,6 +66,7 @@ module Mist {
           }
         });
 
+        // patch response.
         this.txs.push(response);
         this.tx();
       });

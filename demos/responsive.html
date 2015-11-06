@@ -17,6 +17,7 @@
     html,
     body {
       height: 100%;
+      margin: 0;
       width: 100%;
     }
 
@@ -25,6 +26,7 @@
       border-radius: 3px;
       left: 50%;
       height: 200px;
+      overflow: hidden;
       position: absolute;
       top: 50%;
       transform: translate(-50%, -50%);
@@ -36,18 +38,16 @@
 <body>
   <div class='responsive'></div>
   <script>
-    /** scoped main */
+    /** scoped statement */
 
     (function(main) {
 
-      var pseudo = {};
+      // statement response.
 
-      // initialize.
+      var pseudoElementA = main.concat('::after');
+      var pseudoElementB = main.concat('::before');
 
-      pseudo.a = main.pseudo('::after');
-      pseudo.b = main.pseudo('::before');
-
-      // event response.
+      // ev response.
 
       var panend = mist('*').on('panend');
       var panstart = main.on('panstart');
@@ -65,7 +65,7 @@
 
             function() {
 
-              pseudo.b.style.add({
+              pseudoElementB.style.add({
 
                 opacity: 0
 
@@ -78,7 +78,7 @@
               });
             });
 
-          pseudo.a.style.set({
+          pseudoElementA.style.set({
 
             borderRadius: '100%',
             bottom: 0,
@@ -93,7 +93,7 @@
 
             function() {
 
-              pseudo.a.style.add({
+              pseudoElementA.style.add({
 
                 borderRadius: 0,
                 left: 0,
@@ -102,7 +102,7 @@
 
               });
 
-              pseudo.a.style.add({
+              pseudoElementA.style.add({
 
                 backgroundColor: '#000',
                 opacity: .04,
@@ -115,7 +115,7 @@
                 });
             });
 
-          pseudo.b.style.set({
+          pseudoElementB.style.set({
 
             bottom: 0,
             content: '""',
@@ -130,15 +130,13 @@
 
             function() {
 
-              pseudo.b.style.add({
+              pseudoElementB.style.add({
 
                 backgroundColor: '#000',
                 opacity: .02
 
               });
             });
-
-          //
 
           main.style.set({
 
