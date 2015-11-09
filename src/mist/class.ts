@@ -1,4 +1,5 @@
 /// <reference path='frame.ts'/>
+/// <reference path='promise.ts'/>
 /// <reference path='statement.ts'/>
 /// <reference path='value.ts'/>
 /**
@@ -36,11 +37,13 @@ module Mist {
 
           var response = [];
 
-          // format response.
           for (var name in o) {
 
-            response[o[name]] || (response[o[name]] = []);
-            response[o[name]].push(name);
+            // format response.
+            var k = o[name];
+
+            response[k] || (response[k] = []);
+            response[k].push(name);
 
             // initialize.
             delete o[name];

@@ -73,6 +73,7 @@ module Mist {
 
           // commit response.
           return resolver(response);
+
         },
 
         (response) => {

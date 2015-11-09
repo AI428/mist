@@ -161,9 +161,9 @@ module Mist {
         if (element.hasAttribute('mid')) {
 
           // a response.
-          response = '[mid='
+          response = '[mid="'
           + element.getAttribute('mid')
-          + ']';
+          + '"]';
         }
 
         // selector response.
@@ -177,9 +177,9 @@ module Mist {
         element.setAttribute('mid', response);
 
         // selector response.
-        return '[mid='
+        return '[mid="'
           + response
-          + ']';
+          + '"]';
       })());
   }
 }

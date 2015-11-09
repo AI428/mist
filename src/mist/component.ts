@@ -27,7 +27,6 @@ module Mist {
       modular: Function, ...o): T {
 
       var m = ser([modular]);
-
       var n = ser(o);
 
       // initialize.

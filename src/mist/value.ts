@@ -1,3 +1,4 @@
+/// <reference path='frame.ts'/>
 /// <reference path='promise.ts'/>
 /**
  * @copyright 2015 AI428
@@ -45,7 +46,7 @@ module Mist {
           this.txd || (() => {
             this.txd = true;
 
-            // lazy response.
+            // serial response.
             Frame.at(() => {
 
               var responsor;
@@ -84,7 +85,7 @@ module Mist {
 
         (responsor) => {
 
-          // lazy response.
+          // serial response.
           Frame.at(() => {
 
             // a response.

@@ -1,7 +1,7 @@
 {
   "author": "AI428",
   "bugs": {
-    "url": "https://github.com/ai428/mist.js/issues"
+    "url": "https://github.com/AI428/mist.js/issues"
   },
   "devDependencies": {
     "gulp": "~3.9.0",
@@ -12,7 +12,7 @@
   "name": "Mist",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ai428/mist.js"
+    "url": "https://github.com/AI428/mist.js"
   },
   "version": "0.1.0"
 }

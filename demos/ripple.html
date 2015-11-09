@@ -42,60 +42,54 @@
 
     (function(main) {
 
-      // statement response.
-
-      var pseudoElementA = main.concat('::after');
-
       // ev response.
-
       var panstart = main.on('panstart');
 
       // initialize.
-
-      var css = {
+      var pseudo = {
 
         borderRadius: '50%',
         content: '""',
-        height: 0,
         opacity: 0,
         position: 'absolute',
-        width: 0
+        transform: 'translate(-50%, -50%)'
 
       };
 
-      var r = 50;
-
       panstart.then(
 
-        function(e) {
+        function(event) {
 
-          pseudoElementA.style.set(css).then(
+          // lasting response.
+          var statement = mist(event.target).concat('::after');
+
+          statement.style.set(pseudo).then(
 
             function() {
 
-              pseudoElementA.style.add({
+              statement.style.add({
 
-                left: e.offsetX + 'px',
-                top: e.offsetY + 'px'
+                left: event.offsetX + 'px',
+                top: event.offsetY + 'px'
 
               }).then(
 
                 function() {
 
-                  pseudoElementA.style.add({
+                  statement.style.add({
 
-                    backgroundColor: '#FAA',
-                    marginLeft: -r + 'px',
-                    marginTop: -r + 'px',
-                    padding: r + 'px',
+                    borderColor: '#FAA',
+                    borderStyle: 'solid',
+                    padding: '2em',
                     transition: 'all .6s'
 
                   }).then(
 
                     function() {
 
-                      pseudoElementA.style.add({
+                      statement.style.add({
 
+                        borderWidth: '.2em',
                         opacity: .4
 
                       }, 10);

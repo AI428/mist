@@ -350,6 +350,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+/// <reference path='frame.ts'/>
 /// <reference path='promise.ts'/>
 /**
  * @copyright 2015 AI428
@@ -379,7 +380,7 @@ var Mist;
                     // begin response.
                     _this.txd || (function () {
                         _this.txd = true;
-                        // lazy response.
+                        // serial response.
                         Mist.Frame.at(function () {
                             var responsor;
                             try {
@@ -407,7 +408,7 @@ var Mist;
         Value.prototype.compose = function (composer) {
             var _this = this;
             return new Mist.Promise(function (responsor) {
-                // lazy response.
+                // serial response.
                 Mist.Frame.at(function () {
                     // a response.
                     _this.composite = composer(_this.composite);
@@ -422,6 +423,7 @@ var Mist;
     Mist.Value = Value;
 })(Mist || (Mist = {}));
 /// <reference path='frame.ts'/>
+/// <reference path='promise.ts'/>
 /// <reference path='statement.ts'/>
 /// <reference path='value.ts'/>
 /**
@@ -457,10 +459,11 @@ var Mist;
             this.value = new Mist.Value({});
             this.value.then(function (o) {
                 var response = [];
-                // format response.
                 for (var name in o) {
-                    response[o[name]] || (response[o[name]] = []);
-                    response[o[name]].push(name);
+                    // format response.
+                    var k = o[name];
+                    response[k] || (response[k] = []);
+                    response[k].push(name);
                     // initialize.
                     delete o[name];
                 }
@@ -732,6 +735,7 @@ var Mist;
     Mist.Emission = Emission;
 })(Mist || (Mist = {}));
 /// <reference path='frame.ts' />
+/// <reference path='promise.ts' />
 /// <reference path='statement.ts' />
 /// <reference path='value.ts' />
 /**
@@ -1076,9 +1080,9 @@ var Mist;
             var response;
             if (element.hasAttribute('mid')) {
                 // a response.
-                response = '[mid='
+                response = '[mid="'
                     + element.getAttribute('mid')
-                    + ']';
+                    + '"]';
             }
             // selector response.
             return response;
@@ -1087,9 +1091,9 @@ var Mist;
                 var response = sessions++;
                 element.setAttribute('mid', response);
                 // selector response.
-                return '[mid='
+                return '[mid="'
                     + response
-                    + ']';
+                    + '"]';
             })());
     }
 })(Mist || (Mist = {}));

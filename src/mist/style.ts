@@ -1,4 +1,5 @@
 /// <reference path='frame.ts' />
+/// <reference path='promise.ts' />
 /// <reference path='statement.ts' />
 /// <reference path='value.ts' />
 /**
