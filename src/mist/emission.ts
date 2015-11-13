@@ -26,63 +26,23 @@ module Mist {
 
       super((
 
-        resolver,
-        rejector
+        succeed,
+        erred
         ) => {
 
         emitter.add(name, function(response) {
 
           try {
             // commit response.
-            resolver(response);
+            succeed(response);
 
           } catch (e) {
 
             // fail response.
-            rejector(e)
+            erred(e)
           }
         });
       });
-    }
-
-    /**
-    * @description for listener.
-    */
-    cancel() {
-
-      this.then(
-        null,
-        null
-        );
-    }
-
-    /**
-    * @param {} resolver
-    * @param {} rejector
-    * @return {}
-    */
-    once(resolver: (response) => any,
-      rejector?: (response) => any): Promise {
-
-      // {} response.
-      return this.then(
-
-        (response) => {
-
-          this.cancel();
-
-          // commit response.
-          return resolver(response);
-
-        },
-
-        (response) => {
-
-          this.cancel();
-
-          // fail response.
-          return rejector(response);
-        });
     }
   }
 }

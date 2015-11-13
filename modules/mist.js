@@ -70,7 +70,6 @@ var Mist;
 (function (Mist) {
     /**
     * @class Promise
-    * @description thenable
     */
     var Promise = (function () {
         /**
@@ -78,72 +77,39 @@ var Mist;
         * @param {} process
         */
         function Promise(process) {
-            var _this = this;
-            /**
-            * @access private
-            * @param {} response
-            */
-            this.rejector = function (response) {
-                var o = _this.rejector;
-                // fail response.
-                if (o.statement) {
-                    o.statement(response);
-                }
-                else {
-                    // fixed response.
-                    o.completor = o.bind(o, response);
-                }
-            };
-            /**
-            * @access private
-            * @param {} response
-            */
-            this.resolver = function (response) {
-                var o = _this.resolver;
-                // commit response.
-                if (o.statement) {
-                    o.statement(response);
-                }
-                else {
-                    // fixed response.
-                    o.completor = o.bind(o, response);
-                }
-            };
-            // prev response.
-            if (process.rejector) {
-                this.rejector = process.rejector;
-            }
+            var s = this.succeed;
+            var e = this.erred;
+            // initialize.
+            this.resume();
             // lazy response.
-            process(this.resolver, this.rejector);
+            process(s.bind(this), e.bind(this));
         }
         /**
         * @access public
         * @static
         */
-        Promise.all = function (promises) {
-            return new Promise(function (resolver, rejector) {
-                // initialize.
+        Promise.all = function (commits) {
+            return new Promise(function (succeed, erred) {
+                var p;
                 var response = [];
-                var m;
-                promises.map(function (promise, n) {
-                    m = n;
-                    promise.then(function (o) {
-                        // fast response?
-                        if (!(n in response)) {
-                            response[n] = o;
+                function composer(a) {
+                    // composer.
+                    if (response.push(a) > p) {
+                        try {
                             // commit response.
-                            if (keys(response).length > m) {
-                                resolver(response);
-                                // initialize.
-                                response = [];
-                            }
+                            succeed(response);
                         }
-                    }).catch(function (e) {
+                        catch (e) {
+                            // fail response.
+                            erred(e);
+                        }
                         // initialize.
                         response = [];
-                        // fail response.
-                        rejector(e);
-                    });
+                    }
+                }
+                commits.map(function (commit, i) {
+                    commit.then(composer);
+                    p = i;
                 });
             });
         };
@@ -151,116 +117,170 @@ var Mist;
         * @access public
         * @static
         */
-        Promise.race = function (promises) {
-            return new Promise(function (resolver, rejector) {
+        Promise.race = function (commits) {
+            return new Promise(function (succeed, erred) {
                 // initialize.
-                var response = [];
-                var m;
-                promises.map(function (promise, n) {
-                    m = n;
-                    promise.then(function (o) {
-                        response[n] = o;
-                        // commit response.
-                        var l = keys(response).length;
-                        // a response.
-                        if (l < 2)
-                            resolver(o);
-                        if (l > m)
-                            response = [];
-                    }).catch(function (e) {
-                        // initialize.
-                        response = [];
-                        // fail response.
-                        rejector(e);
+                commits.forEach(function (commit) {
+                    commit.then(function (response) {
+                        try {
+                            // commit response.
+                            succeed(response);
+                        }
+                        catch (e) {
+                            // fail response.
+                            erred(e);
+                        }
                     });
                 });
             });
         };
         /**
-        * @param {} rejector
+        * @param {} err
         * @return {}
         */
-        Promise.prototype.catch = function (rejector) {
-            var o = this.rejector;
-            // lazy response.
-            var process = function (resolver) {
-                process.resolver = resolver;
-                process.rejector = resolver;
-                // fixed response.
-                if (o.completor)
-                    o.completor();
-            };
-            // initialize.
-            o.statement = function (response) {
-                try {
-                    var response = rejector(response);
-                    if (response != null) {
+        Promise.prototype.catch = function (err) {
+            var _this = this;
+            return new Promise(function (succeed, erred) {
+                // initialize.
+                _this.err = function (response) {
+                    try {
                         // commit response.
-                        process.resolver(response);
+                        succeed(err(response));
                     }
-                }
-                catch (e) {
-                    // fail response.
-                    process.rejector(e);
-                }
-            };
-            // {} response.
-            return new Promise(process);
+                    catch (e) {
+                        // fail response.
+                        erred(e);
+                    }
+                };
+                // fixed response.
+                _this.tx();
+            });
         };
         /**
-        * @param {} resolver
-        * @param {} rejector
+        * @description for loop
+        */
+        Promise.prototype.resume = function () {
+            // initialize.
+            this.txd = null;
+            this.txr = null;
+        };
+        /**
+        * @param {} success
+        * @param {} err
         * @return {}
         */
-        Promise.prototype.then = function (resolver, rejector) {
-            var o = this.resolver;
-            var e = this.rejector;
-            // lazy response.
-            var process = function (resolver) {
-                process.resolver = resolver;
-                process.rejector = e;
-                // fixed response.
-                if (o.completor)
-                    o.completor();
-            };
-            // initialize.
-            o.statement = function (response) {
-                try {
-                    var response = resolver(response);
-                    if (response != null) {
-                        // commit response.
-                        process.resolver(response);
+        Promise.prototype.then = function (success, err) {
+            var _this = this;
+            return new Promise(function (succeed, erred) {
+                // compose.
+                _this.err = erred;
+                // initialize.
+                _this.success = function (response) {
+                    try {
+                        // commit respoonse.
+                        succeed(success(response));
                     }
-                }
-                catch (e) {
-                    // catch response.
-                    if (rejector) {
-                        var response = rejector(e);
-                        if (response != null) {
-                            // commit response.
-                            process.resolver(response);
-                        }
-                    }
-                    else {
+                    catch (e) {
                         // fail response.
-                        process.rejector(e);
+                        err ? succeed(err(e)) : erred(e);
                     }
-                }
+                };
+                // fixed response.
+                _this.tx();
+            });
+        };
+        /**
+        * @param {} success
+        * @param {} err
+        * @return {}
+        */
+        Promise.prototype.when = function (success, err) {
+            var _this = this;
+            var s = function (response) {
+                var p = success(response);
+                // loop response.
+                _this.resume();
+                // passthru.
+                return p;
             };
+            var e = err ? function (response) {
+                var p = err(response);
+                // loop response.
+                _this.resume();
+                // passthru.
+                return p;
+            } : err;
             // {} response.
-            return new Promise(process);
+            return this.then(s, e);
+        };
+        /**
+        * @access private
+        */
+        Promise.prototype.erred = function (response) {
+            var _this = this;
+            // begin response.
+            if (!this.txd) {
+                var m = this.err;
+                if (m) {
+                    // end response.
+                    this.txd = true;
+                    // fail response.
+                    response instanceof Object ? response.then ?
+                        // lazy response.
+                        response.then(m) :
+                        // passthru.
+                        m(response) :
+                        m(response);
+                }
+                else {
+                    // initialize.
+                    this.txr = function () {
+                        // fixed response.
+                        _this.erred(response);
+                    };
+                }
+            }
+        };
+        /**
+        * @access private
+        */
+        Promise.prototype.succeed = function (response) {
+            var _this = this;
+            // begin response.
+            if (!this.txd) {
+                var m = this.success;
+                if (m) {
+                    // end response.
+                    this.txd = true;
+                    // commit response.
+                    response instanceof Object ? response.then ?
+                        // lazy response.
+                        response.then(m) :
+                        // passthru.
+                        m(response) :
+                        m(response);
+                }
+                else {
+                    // initialize.
+                    this.txr = function () {
+                        // fixed response.
+                        _this.succeed(response);
+                    };
+                }
+            }
+        };
+        /**
+        * @access private
+        */
+        Promise.prototype.tx = function () {
+            var responsor;
+            if (responsor = this.txr) {
+                responsor();
+            }
         };
         return Promise;
     })();
     Mist.Promise = Promise;
-    /**
-    * @access private
-    * @static
-    */
-    function keys(response) {
-        // [] response.
-        return Object.keys(response);
-    }
 })(Mist || (Mist = {}));
 /// <reference path='promise.ts'/>
 /**
@@ -273,7 +293,7 @@ var Mist;
 (function (Mist) {
     /**
     * @class Frame
-    * @description gear
+    * @description queuing
     */
     var Frame = (function () {
         function Frame() {
@@ -299,18 +319,18 @@ var Mist;
         Frame.on = function (responsor, delay) {
             var _this = this;
             if (delay === void 0) { delay = 0; }
-            return new Mist.Promise(function (resolver, rejector) {
+            return new Mist.Promise(function (succeed, erred) {
                 // initialize.
                 var response = [];
                 response.push(delay);
                 response.push(function () {
                     try {
                         // commit response.
-                        resolver(responsor());
+                        succeed(responsor());
                     }
                     catch (e) {
                         // fail response.
-                        rejector(e);
+                        erred(e);
                     }
                 });
                 // patch response.
@@ -373,29 +393,29 @@ var Mist;
         function Value(composite) {
             var _this = this;
             this.composite = composite;
-            this.txs = [];
-            _super.call(this, function (resolver, rejector) {
+            this.xs = [];
+            _super.call(this, function (succeed, erred) {
                 // initialize.
-                _this.txr = function () {
+                _this.xr = function () {
                     // begin response.
-                    _this.txd || (function () {
-                        _this.txd = true;
-                        // serial response.
+                    _this.xd || (function () {
+                        _this.xd = true;
+                        // ser response.
                         Mist.Frame.at(function () {
                             var responsor;
                             try {
                                 // commit response.
-                                resolver(_this.composite);
+                                succeed(_this.composite);
                             }
                             catch (e) {
                                 // fail response.
-                                rejector(e);
+                                erred(e);
                             }
-                            while (responsor = _this.txs.pop()) {
+                            while (responsor = _this.xs.pop()) {
                                 responsor(_this.composite);
                             }
                             // end response.
-                            _this.txd = false;
+                            _this.xd = false;
                         });
                     })();
                 };
@@ -408,13 +428,13 @@ var Mist;
         Value.prototype.compose = function (composer) {
             var _this = this;
             return new Mist.Promise(function (responsor) {
-                // serial response.
+                // ser response.
                 Mist.Frame.at(function () {
                     // a response.
                     _this.composite = composer(_this.composite);
                     // patch response.
-                    _this.txs.push(responsor);
-                    _this.txr();
+                    _this.xs.push(responsor);
+                    _this.xr();
                 });
             });
         };
@@ -438,12 +458,12 @@ var Mist;
     * @access private
     * @static
     */
-    var List;
-    (function (List) {
-        List[List["ADD"] = 0] = "ADD";
-        List[List["REMOVE"] = 1] = "REMOVE";
-        List[List["TOGGLE"] = 2] = "TOGGLE";
-    })(List || (List = {}));
+    var Command;
+    (function (Command) {
+        Command[Command["A"] = 0] = "A";
+        Command[Command["R"] = 1] = "R";
+        Command[Command["T"] = 2] = "T";
+    })(Command || (Command = {}));
     ;
     /**
     * @class Class
@@ -457,40 +477,25 @@ var Mist;
         function Class(statement) {
             this.statement = statement;
             this.value = new Mist.Value({});
-            this.value.then(function (o) {
+            this.value.when(function (o) {
                 var response = [];
                 for (var name in o) {
-                    // format response.
                     var k = o[name];
+                    // format response.
                     response[k] || (response[k] = []);
                     response[k].push(name);
                     // initialize.
                     delete o[name];
                 }
-                // () response.
-                if (response[List.ADD]) {
-                    function a(e) {
-                        e.classList.add.apply(e.classList, response[List.ADD]);
-                    }
-                }
-                // () response.
-                if (response[List.REMOVE]) {
-                    function r(e) {
-                        e.classList.remove.apply(e.classList, response[List.REMOVE]);
-                    }
-                }
-                // () response.
-                if (response[List.TOGGLE]) {
-                    function t(e) {
-                        response[List.TOGGLE].forEach(function (name) {
-                            e.classList.toggle(name);
-                        });
-                    }
-                }
                 this.statement.each(function (e) {
-                    a && a(e);
-                    r && r(e);
-                    t && t(e);
+                    var m = e.classList;
+                    var n;
+                    // patch response.
+                    !(n = response[Command.A]) || m.add.apply(m, n);
+                    !(n = response[Command.R]) || m.remove.apply(m, n);
+                    !(n = response[Command.T]) || n.forEach(function (name) {
+                        m.toggle(name);
+                    });
                 });
             });
         }
@@ -503,21 +508,19 @@ var Mist;
             var _this = this;
             if (dur === void 0) { dur = 0; }
             return new Mist.Promise(function (responsor) {
-                var f = dur > 0;
-                var g = _this.value.compose(function (o) {
+                var c = _this.value.compose(function (o) {
                     // composer.
-                    [].forEach.call(names, function (name) {
+                    names.forEach(function (name) {
                         // tagged response.
-                        o[name] = List.ADD;
+                        o[name] = Command.A;
                     });
                     // {} response.
                     return o;
                 });
                 // dur response.
-                f ? Mist.Frame.on(_this.remove.bind(_this, names), dur).then(function (g) {
-                    // gear response.
-                    g.then(responsor);
-                }) : g.then(responsor);
+                dur > 0 ? Mist.Frame.on(_this.remove.bind(_this, names), dur).then(function (c) {
+                    c.then(responsor);
+                }) : c.then(responsor);
             });
         };
         /**
@@ -529,21 +532,19 @@ var Mist;
             var _this = this;
             if (dur === void 0) { dur = 0; }
             return new Mist.Promise(function (responsor) {
-                var f = dur > 0;
-                var g = _this.value.compose(function (o) {
+                var c = _this.value.compose(function (o) {
                     // composer.
-                    [].forEach.call(names, function (name) {
+                    names.forEach(function (name) {
                         // tagged response.
-                        o[name] = List.REMOVE;
+                        o[name] = Command.R;
                     });
                     // {} response.
                     return o;
                 });
                 // dur response.
-                f ? Mist.Frame.on(_this.add.bind(_this, names), dur).then(function (g) {
-                    // gear response.
-                    g.then(responsor);
-                }) : g.then(responsor);
+                dur > 0 ? Mist.Frame.on(_this.add.bind(_this, names), dur).then(function (c) {
+                    c.then(responsor);
+                }) : c.then(responsor);
             });
         };
         /**
@@ -553,23 +554,23 @@ var Mist;
         Class.prototype.toggle = function (names) {
             return this.value.compose(function (o) {
                 // composer.
-                [].forEach.call(names, function (name) {
+                names.forEach(function (name) {
                     switch (o[name]) {
-                        case List.ADD:
+                        case Command.A:
                             // tagged response.
-                            o[name] = List.REMOVE;
+                            o[name] = Command.R;
                             break;
-                        case List.REMOVE:
+                        case Command.R:
                             // tagged response.
-                            o[name] = List.ADD;
+                            o[name] = Command.A;
                             break;
-                        case List.TOGGLE:
+                        case Command.T:
                             // tagged response.
                             delete o[name];
                             break;
                         default:
                             // tagged response.
-                            o[name] = List.TOGGLE;
+                            o[name] = Command.T;
                     }
                 });
                 // {} response.
@@ -691,45 +692,21 @@ var Mist;
         * @param {} name
         */
         function Emission(emitter, name) {
-            _super.call(this, function (resolver, rejector) {
+            _super.call(this, function (succeed, erred) {
                 emitter.add(name, function (response) {
                     try {
                         // commit response.
-                        resolver(response);
+                        succeed(response);
                     }
                     catch (e) {
                         // fail response.
-                        rejector(e);
+                        erred(e);
                     }
                 });
             });
             this.emitter = emitter;
             this.name = name;
         }
-        /**
-        * @description for listener.
-        */
-        Emission.prototype.cancel = function () {
-            this.then(null, null);
-        };
-        /**
-        * @param {} resolver
-        * @param {} rejector
-        * @return {}
-        */
-        Emission.prototype.once = function (resolver, rejector) {
-            var _this = this;
-            // {} response.
-            return this.then(function (response) {
-                _this.cancel();
-                // commit response.
-                return resolver(response);
-            }, function (response) {
-                _this.cancel();
-                // fail response.
-                return rejector(response);
-            });
-        };
         return Emission;
     })(Mist.Promise);
     Mist.Emission = Emission;
@@ -763,7 +740,7 @@ var Mist;
             document.head.appendChild(s);
             // initialize.
             this.value = new Mist.Value([{}]);
-            this.value.then(function (o) {
+            this.value.when(function (o) {
                 var response = o.map(function (p) {
                     var response = [];
                     // format response.
@@ -789,19 +766,18 @@ var Mist;
             var _this = this;
             if (dur === void 0) { dur = 0; }
             return new Mist.Promise(function (responsor) {
-                var f = dur > 0;
-                var g = _this.value.compose(function (o) {
+                var c = _this.value.compose(function (o) {
                     // initialize.
-                    var response = f ? {} : o[0];
+                    var response = dur > 0 ? {} : o[0];
                     // composer.
                     for (var name in css) {
                         response[name] = css[name];
                     }
                     // dur response.
-                    if (f) {
+                    if (dur > 0) {
                         o.push(response);
                         // lazy response.
-                        Mist.Frame.on(function () {
+                        var c = Mist.Frame.on(function () {
                             return _this.value.compose(function (o) {
                                 // composer.
                                 var i = o.indexOf(response);
@@ -809,16 +785,15 @@ var Mist;
                                 // [] response.
                                 return o;
                             });
-                        }, dur).then(function (g) {
-                            // gear response.
-                            g.then(responsor);
-                        });
+                        }, dur);
+                        // [] response.
+                        c.then(responsor);
                     }
                     // {} response.
                     return o;
                 });
-                // dur response.
-                f || g.then(responsor);
+                // passthru.
+                dur > 0 || c.then(responsor);
             });
         };
         /**
@@ -883,40 +858,56 @@ var Mist;
                 this.emitter = emitter;
                 // initialize.
                 var txd = false;
-                Mist.Promise.race([
-                    new Mist.Emission(emitter, 'mousedown'),
-                    new Mist.Emission(emitter, 'touchstart')
-                ]).then(function (e) {
-                    emitter.emit('panstart', e);
-                    // begin response.
-                    txd = true;
-                });
-                Mist.Promise.race([
-                    new Mist.Emission(emitter, 'mousemove'),
-                    new Mist.Emission(emitter, 'touchmove')
-                ]).then(function (e) {
-                    if (txd) {
-                        emitter.emit('panmove', e);
-                        // dir response.
-                        if (e.movementX < 0)
-                            emitter.emit('panleft', e);
-                        if (e.movementX > 0)
-                            emitter.emit('panright', e);
-                        if (e.movementY < 0)
-                            emitter.emit('panup', e);
-                        if (e.movementY > 0)
-                            emitter.emit('pandown', e);
-                    }
-                });
-                Mist.Promise.race([
-                    new Mist.Emission(emitter, 'mouseup'),
-                    new Mist.Emission(emitter, 'touchcancel'),
-                    new Mist.Emission(emitter, 'touchend')
-                ]).then(function (e) {
-                    emitter.emit('panend', e);
-                    // end reponse.
-                    txd = false;
-                });
+                (function () {
+                    var m = new Mist.Emission(emitter, 'mousedown');
+                    var t = new Mist.Emission(emitter, 'touchstart');
+                    var responsor = Mist.Promise.race([m, t]);
+                    responsor.when(function (e) {
+                        emitter.emit('panstart', e);
+                        // begin response.
+                        txd = true;
+                        // loop response.
+                        m.resume();
+                        t.resume();
+                    });
+                })();
+                (function () {
+                    var m = new Mist.Emission(emitter, 'mousemove');
+                    var t = new Mist.Emission(emitter, 'touchmove');
+                    var responsor = Mist.Promise.race([m, t]);
+                    responsor.when(function (e) {
+                        if (txd) {
+                            emitter.emit('panmove', e);
+                            // dir response.
+                            if (e.movementX < 0)
+                                emitter.emit('panleft', e);
+                            if (e.movementX > 0)
+                                emitter.emit('panright', e);
+                            if (e.movementY < 0)
+                                emitter.emit('panup', e);
+                            if (e.movementY > 0)
+                                emitter.emit('pandown', e);
+                        }
+                        // loop response.
+                        m.resume();
+                        t.resume();
+                    });
+                })();
+                (function () {
+                    var m = new Mist.Emission(emitter, 'mouseup');
+                    var c = new Mist.Emission(emitter, 'touchcancel');
+                    var t = new Mist.Emission(emitter, 'touchend');
+                    var responsor = Mist.Promise.race([m, c, t]);
+                    responsor.when(function (e) {
+                        emitter.emit('panend', e);
+                        // end response.
+                        txd = false;
+                        // loop response.
+                        m.resume();
+                        c.resume();
+                        t.resume();
+                    });
+                })();
             }
             return Pan;
         })();
@@ -946,11 +937,14 @@ var Mist;
             */
             function Tap(emitter) {
                 this.emitter = emitter;
-                Mist.Promise.race([
-                    new Mist.Emission(emitter, 'mouseup'),
-                    new Mist.Emission(emitter, 'touchend')
-                ]).then(function (e) {
+                var m = new Mist.Emission(emitter, 'mouseup');
+                var t = new Mist.Emission(emitter, 'touchend');
+                var responsor = Mist.Promise.race([m, t]);
+                responsor.when(function (e) {
                     emitter.emit('tap', e);
+                    // loop response.
+                    m.resume();
+                    t.resume();
                 });
             }
             return Tap;

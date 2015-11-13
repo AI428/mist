@@ -14,7 +14,7 @@ module Mist {
   * @access private
   * @static
   */
-  enum List { ADD, REMOVE, TOGGLE };
+  enum Command { A, R, T };
 
   /**
   * @class Class
@@ -31,7 +31,7 @@ module Mist {
     constructor(private statement: Statement) {
 
       this.value = new Value({});
-      this.value.then(
+      this.value.when(
 
         function(o) {
 
@@ -39,50 +39,36 @@ module Mist {
 
           for (var name in o) {
 
-            // format response.
             var k = o[name];
+
+            // format response.
 
             response[k] || (response[k] = []);
             response[k].push(name);
 
             // initialize.
+
             delete o[name];
           }
 
-          // () response.
-          if (response[List.ADD]) {
+          this.statement.each(
 
-            function a(e) {
-              e.classList.add.apply(
-                e.classList, response[List.ADD]);
-            }
-          }
+            function(e) {
 
-          // () response.
-          if (response[List.REMOVE]) {
+              var m = e.classList;
+              var n;
 
-            function r(e) {
-              e.classList.remove.apply(
-                e.classList, response[List.REMOVE]);
-            }
-          }
+              // patch response.
 
-          // () response.
-          if (response[List.TOGGLE]) {
+              !(n = response[Command.A]) || m.add.apply(m, n);
+              !(n = response[Command.R]) || m.remove.apply(m, n);
+              !(n = response[Command.T]) || n.forEach(
 
-            function t(e) {
-              response[List.TOGGLE].forEach(function(name) {
-                e.classList.toggle(name);
-              });
-            }
-          }
+                function(name) {
 
-          this.statement.each(function(e) {
-
-            a && a(e);
-            r && r(e);
-            t && t(e);
-          });
+                  m.toggle(name);
+                });
+            });
         });
     }
 
@@ -97,14 +83,13 @@ module Mist {
 
         (responsor) => {
 
-          var f = dur > 0;
-          var g = this.value.compose((o) => {
+          var c = this.value.compose((o) => {
 
             // composer.
-            [].forEach.call(names, function(name) {
+            names.forEach(function(name) {
 
               // tagged response.
-              o[name] = List.ADD;
+              o[name] = Command.A;
             });
 
             // {} response.
@@ -112,13 +97,17 @@ module Mist {
           });
 
           // dur response.
-          f ? Frame.on(
-            this.remove.bind(
-              this, names), dur).then(function(g) {
+          dur > 0 ? Frame.on(
 
-            // gear response.
-            g.then(responsor);
-          }) : g.then(responsor);
+            this.remove.bind(
+
+              this, names), dur).then(
+
+            function(c) {
+
+              c.then(responsor);
+
+            }) : c.then(responsor);
         });
     }
 
@@ -133,14 +122,13 @@ module Mist {
 
         (responsor) => {
 
-          var f = dur > 0;
-          var g = this.value.compose((o) => {
+          var c = this.value.compose((o) => {
 
             // composer.
-            [].forEach.call(names, function(name) {
+            names.forEach(function(name) {
 
               // tagged response.
-              o[name] = List.REMOVE;
+              o[name] = Command.R;
             });
 
             // {} response.
@@ -148,13 +136,17 @@ module Mist {
           });
 
           // dur response.
-          f ? Frame.on(
-            this.add.bind(
-              this, names), dur).then(function(g) {
+          dur > 0 ? Frame.on(
 
-            // gear response.
-            g.then(responsor);
-          }) : g.then(responsor);
+            this.add.bind(
+
+              this, names), dur).then(
+
+            function(c) {
+
+              c.then(responsor);
+
+            }) : c.then(responsor);
         });
     }
 
@@ -167,23 +159,23 @@ module Mist {
       return this.value.compose(function(o) {
 
         // composer.
-        [].forEach.call(names, function(name) {
+        names.forEach(function(name) {
 
           switch (o[name]) {
 
-            case List.ADD:
+            case Command.A:
 
               // tagged response.
-              o[name] = List.REMOVE;
+              o[name] = Command.R;
 
               break;
-            case List.REMOVE:
+            case Command.R:
 
               // tagged response.
-              o[name] = List.ADD;
+              o[name] = Command.A;
 
               break;
-            case List.TOGGLE:
+            case Command.T:
 
               // tagged response.
               delete o[name];
@@ -192,7 +184,7 @@ module Mist {
             default:
 
               // tagged response.
-              o[name] = List.TOGGLE;
+              o[name] = Command.T;
           }
         });
 

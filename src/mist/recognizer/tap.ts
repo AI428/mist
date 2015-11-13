@@ -22,16 +22,20 @@ module Mist {
       */
       constructor(private emitter: Emitter) {
 
-        Promise.race([
+        var m = new Emission(emitter, 'mouseup');
+        var t = new Emission(emitter, 'touchend');
 
-          new Emission(emitter, 'mouseup'),
-          new Emission(emitter, 'touchend')
+        var responsor = Promise.race([m, t]);
 
-        ]).then(
+        responsor.when(
 
           function(e) {
 
             emitter.emit('tap', e);
+
+            // loop response.
+            m.resume();
+            t.resume();
           });
       }
     }

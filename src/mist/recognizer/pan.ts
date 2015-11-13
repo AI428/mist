@@ -25,57 +25,79 @@ module Mist {
         // initialize.
         var txd = false;
 
-        Promise.race([
+        (function() {
 
-          new Emission(emitter, 'mousedown'),
-          new Emission(emitter, 'touchstart')
+          var m = new Emission(emitter, 'mousedown');
+          var t = new Emission(emitter, 'touchstart');
 
-        ]).then(
+          var responsor = Promise.race([m, t]);
 
-          function(e) {
+          responsor.when(
 
-            emitter.emit('panstart', e);
+            function(e) {
 
-            // begin response.
-            txd = true;
-          });
+              emitter.emit('panstart', e);
 
-        Promise.race([
+              // begin response.
+              txd = true;
 
-          new Emission(emitter, 'mousemove'),
-          new Emission(emitter, 'touchmove')
+              // loop response.
+              m.resume();
+              t.resume();
+            });
+        })();
 
-        ]).then(
+        (function() {
 
-          function(e) {
+          var m = new Emission(emitter, 'mousemove');
+          var t = new Emission(emitter, 'touchmove');
 
-            if (txd) {
+          var responsor = Promise.race([m, t]);
 
-              emitter.emit('panmove', e);
+          responsor.when(
 
-              // dir response.
-              if (e.movementX < 0) emitter.emit('panleft', e);
-              if (e.movementX > 0) emitter.emit('panright', e);
-              if (e.movementY < 0) emitter.emit('panup', e);
-              if (e.movementY > 0) emitter.emit('pandown', e);
-            }
-          });
+            function(e) {
 
-        Promise.race([
+              if (txd) {
 
-          new Emission(emitter, 'mouseup'),
-          new Emission(emitter, 'touchcancel'),
-          new Emission(emitter, 'touchend')
+                emitter.emit('panmove', e);
 
-        ]).then(
+                // dir response.
+                if (e.movementX < 0) emitter.emit('panleft', e);
+                if (e.movementX > 0) emitter.emit('panright', e);
+                if (e.movementY < 0) emitter.emit('panup', e);
+                if (e.movementY > 0) emitter.emit('pandown', e);
+              }
 
-          function(e) {
+              // loop response.
+              m.resume();
+              t.resume();
+            });
+        })();
 
-            emitter.emit('panend', e);
+        (function() {
 
-            // end reponse.
-            txd = false;
-          });
+          var m = new Emission(emitter, 'mouseup');
+          var c = new Emission(emitter, 'touchcancel');
+          var t = new Emission(emitter, 'touchend');
+
+          var responsor = Promise.race([m, c, t]);
+
+          responsor.when(
+
+            function(e) {
+
+              emitter.emit('panend', e);
+
+              // end response.
+              txd = false;
+
+              // loop response.
+              m.resume();
+              c.resume();
+              t.resume();
+            });
+        })();
       }
     }
   }

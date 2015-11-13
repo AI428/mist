@@ -14,9 +14,9 @@ module Mist {
   */
   export class Value extends Promise {
 
-    private txd;
-    private txr;
-    private txs;
+    private xd;
+    private xr;
+    private xs;
 
     /**
     * @access public
@@ -30,45 +30,45 @@ module Mist {
     constructor(composite) {
 
       this.composite = composite;
-      this.txs = [];
+      this.xs = [];
 
       super((
 
-        resolver,
-        rejector
+        succeed,
+        erred
         ) => {
 
         // initialize.
-        this.txr = (
+        this.xr = (
           ) => {
 
           // begin response.
-          this.txd || (() => {
-            this.txd = true;
+          this.xd || (() => {
+            this.xd = true;
 
-            // serial response.
+            // ser response.
             Frame.at(() => {
 
               var responsor;
 
               try {
                 // commit response.
-                resolver(this.composite);
+                succeed(this.composite);
 
               } catch (e) {
 
                 // fail response.
-                rejector(e);
+                erred(e);
               }
 
               while (
 
-                responsor = this.txs.pop()) {
+                responsor = this.xs.pop()) {
                 responsor(this.composite);
               }
 
               // end response.
-              this.txd = false;
+              this.xd = false;
             });
           })();
         }
@@ -85,15 +85,15 @@ module Mist {
 
         (responsor) => {
 
-          // serial response.
+          // ser response.
           Frame.at(() => {
 
             // a response.
             this.composite = composer(this.composite);
 
             // patch response.
-            this.txs.push(responsor);
-            this.txr();
+            this.xs.push(responsor);
+            this.xr();
           });
         });
     }

@@ -34,7 +34,7 @@ module Mist {
       // initialize.
 
       this.value = new Value([{}]);
-      this.value.then(
+      this.value.when(
 
         function(o) {
 
@@ -73,11 +73,10 @@ module Mist {
 
         (responsor) => {
 
-          var f = dur > 0;
-          var g = this.value.compose((o) => {
+          var c = this.value.compose((o) => {
 
             // initialize.
-            var response = f ? {} : o[0];
+            var response = dur > 0 ? {} : o[0];
 
             // composer.
             for (var name in css) {
@@ -85,12 +84,12 @@ module Mist {
             }
 
             // dur response.
-            if (f) {
+            if (dur > 0) {
 
               o.push(response);
 
               // lazy response.
-              Frame.on(() => {
+              var c = Frame.on(() => {
 
                 return this.value.compose(
 
@@ -104,19 +103,18 @@ module Mist {
                     return o;
                   });
 
-              }, dur).then(function(g) {
+              }, dur);
 
-                // gear response.
-                g.then(responsor);
-              });
+              // [] response.
+              c.then(responsor);
             }
 
             // {} response.
             return o;
           });
 
-          // dur response.
-          f || g.then(responsor);
+          // passthru.
+          dur > 0 || c.then(responsor);
         });
     }
 

@@ -53,30 +53,14 @@
       var panstart = main.on('panstart');
       var moved = main.on('moved');
 
-      panstart.then(
+      panstart.when(
 
         function() {
 
-          Mist.Promise.all([
+          // initialize.
 
-            moved, panend
-
-          ]).then(
-
-            function() {
-
-              pseudoElementB.style.add({
-
-                opacity: 0
-
-              });
-
-              main.style.add({
-
-                boxShadow: 'none'
-
-              });
-            });
+          panend.resume();
+          moved.resume();
 
           pseudoElementA.style.set({
 
@@ -105,7 +89,7 @@
               pseudoElementA.style.add({
 
                 backgroundColor: '#000',
-                opacity: .04,
+                opacity: .04
 
               }, 20).then(
 
@@ -128,15 +112,15 @@
 
           }).then(
 
-            function() {
+            // composer.
 
-              pseudoElementB.style.add({
+            pseudoElementB.style.add({
 
-                backgroundColor: '#000',
-                opacity: .02
+              backgroundColor: '#000',
+              opacity: .02
 
-              });
-            });
+            })
+          );
 
           main.style.set({
 
@@ -144,14 +128,35 @@
 
           }).then(
 
-            function() {
+            // composer.
 
-              main.style.add({
+            main.style.add({
 
-                boxShadow: '0 2px 8px rgba(0, 0, 0, .4)'
+              boxShadow: '0 2px 8px rgba(0, 0, 0, .4)'
 
-              });
-            });
+            })
+          );
+        });
+
+      Mist.Promise.all([
+
+        panend, moved
+
+      ]).when(
+
+        function() {
+
+          pseudoElementB.style.add({
+
+            opacity: 0
+
+          });
+
+          main.style.add({
+
+            boxShadow: 'none'
+
+          });
         });
 
     })(mist('.responsive'));

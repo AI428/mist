@@ -8,45 +8,13 @@ module Mist {
 
   /**
   * @class Promise
-  * @description thenable
   */
   export class Promise {
 
-    /**
-    * @access private
-    * @param {} response
-    */
-    private rejector: any = (response) => {
-
-      var o = this.rejector;
-
-      // fail response.
-      if (o.statement) {
-        o.statement(response);
-      } else {
-
-        // fixed response.
-        o.completor = o.bind(o, response);
-      }
-    };
-
-    /**
-    * @access private
-    * @param {} response
-    */
-    private resolver: any = (response) => {
-
-      var o = this.resolver;
-
-      // commit response.
-      if (o.statement) {
-        o.statement(response);
-      } else {
-
-        // fixed response.
-        o.completor = o.bind(o, response);
-      }
-    };
+    private err;
+    private success;
+    private txd;
+    private txr;
 
     /**
     * @constructor
@@ -54,65 +22,64 @@ module Mist {
     */
     constructor(process) {
 
-      // prev response.
-      if (process.rejector) {
-        this.rejector = process.rejector;
-      }
+      var s = this.succeed;
+      var e = this.erred;
+
+      // initialize.
+      this.resume();
 
       // lazy response.
       process(
-        this.resolver,
-        this.rejector
-        );
+
+        s.bind(this),
+        e.bind(this));
     }
 
     /**
     * @access public
     * @static
     */
-    static all(promises: Promise[]): Promise {
+    static all(commits: any[]): Promise {
 
       return new Promise(
 
         function(
 
-          resolver,
-          rejector
+          succeed,
+          erred
           ) {
 
-          // initialize.
+          var p;
           var response = [];
-          var m;
 
-          promises.map(function(promise, n) {
+          function composer(a) {
 
-            m = n;
-            promise.then(function(o) {
+            // composer.
+            if (response.push(a) > p) {
 
-              // fast response?
-              if (!(n in response)) {
-
-                response[n] = o;
-
+              try {
                 // commit response.
-                if (keys(response).length > m) {
+                succeed(response);
 
-                  resolver(
-                    response);
+              } catch (e) {
 
-                  // initialize.
-                  response = [];
-                }
+                // fail response.
+                erred(e);
               }
-            }).catch(function(e) {
 
               // initialize.
               response = [];
+            }
+          }
 
-              // fail response.
-              rejector(e);
+          commits.map(
+
+            function(commit, i) {
+
+              commit.then(composer);
+
+              p = i;
             });
-          });
         });
     }
 
@@ -120,146 +87,234 @@ module Mist {
     * @access public
     * @static
     */
-    static race(promises: Promise[]): Promise {
+    static race(commits: any[]): Promise {
 
       return new Promise(
 
         function(
 
-          resolver,
-          rejector
+          succeed,
+          erred
           ) {
 
           // initialize.
-          var response = [];
-          var m;
+          commits.forEach(function(commit) {
 
-          promises.map(function(promise, n) {
+            commit.then(
 
-            m = n;
-            promise.then(function(o) {
+              function(response) {
 
-              response[n] = o;
+                try {
+                  // commit response.
+                  succeed(response);
 
-              // commit response.
-              var l = keys(response).length;
+                } catch (e) {
 
-              // a response.
-              if (l < 2) resolver(o);
-              if (l > m) response = [];
-
-            }).catch(function(e) {
-
-              // initialize.
-              response = [];
-
-              // fail response.
-              rejector(e);
-            });
+                  // fail response.
+                  erred(e);
+                }
+              });
           });
         });
     }
 
     /**
-    * @param {} rejector
+    * @param {} err
     * @return {}
     */
-    catch(rejector: (response) => any): Promise {
+    catch(err: (response) => any): Promise {
 
-      var o = this.rejector;
+      return new Promise((
 
-      // lazy response.
-      var process: any = function(resolver) {
+        succeed,
+        erred
+        ) => {
 
-        process.resolver = resolver;
-        process.rejector = resolver;
+        // initialize.
+        this.err = function(response) {
 
-        // fixed response.
-        if (o.completor) o.completor();
-      };
-
-      // initialize.
-      o.statement = function(response) {
-
-        try {
-          var response = rejector(response);
-          if (response != null) {
-
+          try {
             // commit response.
-            process.resolver(response);
-          }
-        } catch (e) {
+            succeed(err(response));
 
-          // fail response.
-          process.rejector(e);
-        }
-      }
-
-      // {} response.
-      return new Promise(process);
-    }
-
-    /**
-    * @param {} resolver
-    * @param {} rejector
-    * @return {}
-    */
-    then(resolver: (response) => any, rejector?: (response) => any): Promise {
-
-      var o = this.resolver;
-      var e = this.rejector;
-
-      // lazy response.
-      var process: any = function(resolver) {
-
-        process.resolver = resolver;
-        process.rejector = e;
-
-        // fixed response.
-        if (o.completor) o.completor();
-      };
-
-      // initialize.
-      o.statement = function(response) {
-
-        try {
-          var response = resolver(response);
-          if (response != null) {
-
-            // commit response.
-            process.resolver(response);
-          }
-        } catch (e) {
-
-          // catch response.
-          if (rejector) {
-
-            var response = rejector(e);
-            if (response != null) {
-
-              // commit response.
-              process.resolver(response);
-            }
-          } else {
+          } catch (e) {
 
             // fail response.
-            process.rejector(e);
+            erred(e);
+          }
+        };
+
+        // fixed response.
+        this.tx();
+      });
+    }
+
+    /**
+    * @description for loop
+    */
+    resume() {
+
+      // initialize.
+      this.txd = null;
+      this.txr = null;
+    }
+
+    /**
+    * @param {} success
+    * @param {} err
+    * @return {}
+    */
+    then(success: (response) => any, err?: (response) => any): Promise {
+
+      return new Promise((
+
+        succeed,
+        erred
+        ) => {
+
+        // compose.
+        this.err = erred;
+
+        // initialize.
+        this.success = function(response) {
+
+          try {
+            // commit respoonse.
+            succeed(success(response));
+
+          } catch (e) {
+
+            // fail response.
+            err ? succeed(err(e)) : erred(e);
+          }
+        };
+
+        // fixed response.
+        this.tx();
+      });
+    }
+
+    /**
+    * @param {} success
+    * @param {} err
+    * @return {}
+    */
+    when(success: (response) => any, err?: (response) => any): Promise {
+
+      var s = (response) => {
+
+        var p = success(response);
+
+        // loop response.
+        this.resume();
+
+        // passthru.
+        return p;
+      };
+
+      var e = err ? (response) => {
+
+        var p = err(response);
+
+        // loop response.
+        this.resume();
+
+        // passthru.
+        return p;
+
+      } : err;
+
+      // {} response.
+      return this.then(s, e);
+    }
+
+    /**
+    * @access private
+    */
+    private erred(response) {
+
+      // begin response.
+      if (!this.txd) {
+
+        var m = this.err;
+
+        if (m) {
+
+          // end response.
+          this.txd = true;
+
+          // fail response.
+          response instanceof Object ? response.then ?
+
+            // lazy response.
+            response.then(m) :
+
+            // passthru.
+            m(response) :
+            m(response);
+
+        } else {
+
+          // initialize.
+          this.txr = (
+            ) => {
+
+            // fixed response.
+            this.erred(response);
           }
         }
       }
-
-      // {} response.
-      return new Promise(process);
     }
-  }
 
-  /**
-  * @access private
-  * @static
-  */
-  function keys(response) {
+    /**
+    * @access private
+    */
+    private succeed(response) {
 
-    // [] response.
-    return Object.keys(response);
+      // begin response.
+      if (!this.txd) {
+
+        var m = this.success;
+
+        if (m) {
+
+          // end response.
+          this.txd = true;
+
+          // commit response.
+          response instanceof Object ? response.then ?
+
+            // lazy response.
+            response.then(m) :
+
+            // passthru.
+            m(response) :
+            m(response);
+
+        } else {
+
+          // initialize.
+          this.txr = (
+            ) => {
+
+            // fixed response.
+            this.succeed(response);
+          }
+        }
+      }
+    }
+
+    /**
+    * @access private
+    */
+    private tx() {
+
+      var responsor;
+
+      if (
+        responsor = this.txr) {
+        responsor();
+      }
+    }
   }
 }

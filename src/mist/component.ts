@@ -24,7 +24,10 @@ module Mist {
     */
     static create<T>(
 
-      modular: Function, ...o): T {
+      modular: Function,
+      ...o
+
+      ): T {
 
       var m = ser([modular]);
       var n = ser(o);

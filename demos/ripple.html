@@ -43,9 +43,11 @@
     (function(main) {
 
       // ev response.
+
       var panstart = main.on('panstart');
 
       // initialize.
+
       var pseudo = {
 
         borderRadius: '50%',
@@ -56,46 +58,45 @@
 
       };
 
-      panstart.then(
+      panstart.when(
 
         function(event) {
 
-          // lasting response.
+          // pseudo response.
+
           var statement = mist(event.target).concat('::after');
 
           statement.style.set(pseudo).then(
 
-            function() {
+            // composer.
 
-              statement.style.add({
+            statement.style.add({
 
-                left: event.offsetX + 'px',
-                top: event.offsetY + 'px'
+              left: event.offsetX + 'px',
+              top: event.offsetY + 'px'
 
-              }).then(
+            })).then(
 
-                function() {
+            // composer.
 
-                  statement.style.add({
+            statement.style.add({
 
-                    borderColor: '#FAA',
-                    borderStyle: 'solid',
-                    padding: '2em',
-                    transition: 'all .6s'
+              borderColor: '#FAA',
+              borderStyle: 'solid',
+              padding: '2em',
+              transition: 'all .6s'
 
-                  }).then(
+            })).then(
 
-                    function() {
+            // composer.
 
-                      statement.style.add({
+            statement.style.add({
 
-                        borderWidth: '.2em',
-                        opacity: .4
+              borderWidth: '.2em',
+              opacity: .4
 
-                      }, 10);
-                    });
-                });
-            });
+            }, 10)
+          );
         });
 
     })(mist('.ripple'));

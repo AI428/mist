@@ -9,7 +9,7 @@ module Mist {
 
   /**
   * @class Frame
-  * @description gear
+  * @description queuing
   */
   export class Frame {
 
@@ -45,8 +45,8 @@ module Mist {
 
       return new Promise((
 
-        resolver,
-        rejector
+        succeed,
+        erred
         ) => {
 
         // initialize.
@@ -57,12 +57,12 @@ module Mist {
 
           try {
             // commit response.
-            resolver(responsor());
+            succeed(responsor());
 
           } catch (e) {
 
             // fail response.
-            rejector(e);
+            erred(e);
           }
         });
 
