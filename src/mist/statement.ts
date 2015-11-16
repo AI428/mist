@@ -5,6 +5,7 @@
 
 /// <reference path='recognizer/pan.ts' />
 /// <reference path='recognizer/tap.ts' />
+
 /**
  * @copyright 2015 AI428
  * @description multi event, style accessor

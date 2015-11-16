@@ -2,6 +2,7 @@
 /// <reference path='promise.ts' />
 /// <reference path='statement.ts' />
 /// <reference path='value.ts' />
+
 /**
  * @copyright 2015 AI428
  * @description multi event, style accessor

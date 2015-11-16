@@ -1,5 +1,6 @@
 /// <reference path='frame.ts'/>
 /// <reference path='promise.ts'/>
+
 /**
  * @copyright 2015 AI428
  * @description multi event, style accessor

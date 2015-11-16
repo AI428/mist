@@ -1,5 +1,6 @@
 /// <reference path='mist/component.ts' />
 /// <reference path='mist/statement.ts' />
+
 /*!
  * @copyright 2015 AI428
  * @description multi event, style accessor
@@ -7,6 +8,7 @@
  * @namespace Mist
  * @version 0.2.1
  */
+
 /**
  * @param {} statement
  * @return {Mist.Statement}
@@ -57,12 +59,12 @@ interface Element {
 * @class Element
 * @method Element.matches
 */
-(function(Element) {
+(function(p) {
 
-  Element.matches = Element.matches
-  || Element.mozMatchesSelector
-  || Element.msMatchesSelector
-  || Element.webkitMatchesSelector;
+  p.matches = p.matches
+  || p.mozMatchesSelector
+  || p.msMatchesSelector
+  || p.webkitMatchesSelector;
 
 })(Element.prototype);
 
@@ -70,13 +72,15 @@ interface Element {
 * @class Element
 * @method Element.closest
 */
-(function(Element) {
+(function(p) {
 
-  Element.closest = Element.closest || function(selector) {
+  p.closest = p.closest ||
 
+  function(selector) {
+
+    // initialize.
     var element = this;
 
-    // closest.
     while (element) {
       if (element.matches(selector)) break;
       element = element.parentElement;

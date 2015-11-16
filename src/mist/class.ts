@@ -2,6 +2,7 @@
 /// <reference path='promise.ts'/>
 /// <reference path='statement.ts'/>
 /// <reference path='value.ts'/>
+
 /**
  * @copyright 2015 AI428
  * @description multi event, style accessor
@@ -51,7 +52,7 @@ module Mist {
             delete o[name];
           }
 
-          this.statement.each(
+          statement.each(
 
             function(e) {
 
@@ -101,13 +102,7 @@ module Mist {
 
             this.remove.bind(
 
-              this, names), dur).then(
-
-            function(c) {
-
-              c.then(responsor);
-
-            }) : c.then(responsor);
+              this, names), dur).then(responsor) : c.then(responsor);
         });
     }
 
@@ -140,13 +135,7 @@ module Mist {
 
             this.add.bind(
 
-              this, names), dur).then(
-
-            function(c) {
-
-              c.then(responsor);
-
-            }) : c.then(responsor);
+              this, names), dur).then(responsor) : c.then(responsor);
         });
     }
 

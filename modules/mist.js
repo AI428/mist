@@ -365,13 +365,13 @@ var Mist;
     })();
     Mist.Frame = Frame;
 })(Mist || (Mist = {}));
+/// <reference path='frame.ts'/>
+/// <reference path='promise.ts'/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-/// <reference path='frame.ts'/>
-/// <reference path='promise.ts'/>
 /**
  * @copyright 2015 AI428
  * @description multi event, style accessor
@@ -487,7 +487,7 @@ var Mist;
                     // initialize.
                     delete o[name];
                 }
-                this.statement.each(function (e) {
+                statement.each(function (e) {
                     var m = e.classList;
                     var n;
                     // patch response.
@@ -518,9 +518,7 @@ var Mist;
                     return o;
                 });
                 // dur response.
-                dur > 0 ? Mist.Frame.on(_this.remove.bind(_this, names), dur).then(function (c) {
-                    c.then(responsor);
-                }) : c.then(responsor);
+                dur > 0 ? Mist.Frame.on(_this.remove.bind(_this, names), dur).then(responsor) : c.then(responsor);
             });
         };
         /**
@@ -542,9 +540,7 @@ var Mist;
                     return o;
                 });
                 // dur response.
-                dur > 0 ? Mist.Frame.on(_this.add.bind(_this, names), dur).then(function (c) {
-                    c.then(responsor);
-                }) : c.then(responsor);
+                dur > 0 ? Mist.Frame.on(_this.add.bind(_this, names), dur).then(responsor) : c.then(responsor);
             });
         };
         /**
@@ -1111,26 +1107,27 @@ function mist(statement) {
 * @class Element
 * @method Element.matches
 */
-(function (Element) {
-    Element.matches = Element.matches
-        || Element.mozMatchesSelector
-        || Element.msMatchesSelector
-        || Element.webkitMatchesSelector;
+(function (p) {
+    p.matches = p.matches
+        || p.mozMatchesSelector
+        || p.msMatchesSelector
+        || p.webkitMatchesSelector;
 })(Element.prototype);
 /**
 * @class Element
 * @method Element.closest
 */
-(function (Element) {
-    Element.closest = Element.closest || function (selector) {
-        var element = this;
-        // closest.
-        while (element) {
-            if (element.matches(selector))
-                break;
-            element = element.parentElement;
-        }
-        // {} response.
-        return element;
-    };
+(function (p) {
+    p.closest = p.closest ||
+        function (selector) {
+            // initialize.
+            var element = this;
+            while (element) {
+                if (element.matches(selector))
+                    break;
+                element = element.parentElement;
+            }
+            // {} response.
+            return element;
+        };
 })(Element.prototype);

@@ -1,4 +1,5 @@
 /// <reference path='statement.ts'/>
+
 /**
  * @copyright 2015 AI428
  * @description multi event, style accessor
@@ -50,6 +51,7 @@ module Mist {
       this.obss[name].push(listener);
 
       // lasting response.
+
       this.ready(name);
     }
 
@@ -60,6 +62,7 @@ module Mist {
     emit(name: string, response?) {
 
       for (var i in
+
         this.obss[name]) {
         this.obss[name][i](response);
       }
