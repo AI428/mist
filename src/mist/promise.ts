@@ -150,7 +150,7 @@ module Mist {
     }
 
     /**
-    * @description for loop
+    * @description for reuse
     */
     resume() {
 

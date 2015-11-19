@@ -102,7 +102,10 @@ module Mist {
 
             this.remove.bind(
 
-              this, names), dur).then(responsor) : c.then(responsor);
+              this, names), dur).then(responsor) :
+
+            // passthru.
+            c.then(responsor);
         });
     }
 
@@ -135,7 +138,10 @@ module Mist {
 
             this.add.bind(
 
-              this, names), dur).then(responsor) : c.then(responsor);
+              this, names), dur).then(responsor) :
+
+            // passthru.
+            c.then(responsor);
         });
     }
 

@@ -42,8 +42,6 @@
 
     (function(main) {
 
-      // statement response.
-
       var pseudoElementA = main.concat('::after');
       var pseudoElementB = main.concat('::before');
 
@@ -57,10 +55,9 @@
 
         function() {
 
-          // initialize.
+          moved.resume();
 
           panend.resume();
-          moved.resume();
 
           pseudoElementA.style.set({
 
@@ -112,15 +109,15 @@
 
           }).then(
 
-            // composer.
+            function() {
 
-            pseudoElementB.style.add({
+              pseudoElementB.style.add({
 
-              backgroundColor: '#000',
-              opacity: .02
+                backgroundColor: '#000',
+                opacity: .02
 
-            })
-          );
+              });
+            });
 
           main.style.set({
 
@@ -128,14 +125,14 @@
 
           }).then(
 
-            // composer.
+            function() {
 
-            main.style.add({
+              main.style.add({
 
-              boxShadow: '0 2px 8px rgba(0, 0, 0, .4)'
+                boxShadow: '0 2px 8px rgba(0, 0, 0, .4)'
 
-            })
-          );
+              });
+            });
         });
 
       Mist.Promise.all([

@@ -78,6 +78,28 @@ module Mist {
 
         (function() {
 
+          var m = new Emission(emitter, 'mouseout');
+          var t = new Emission(emitter, 'touchleave');
+
+          var responsor = Promise.race([m, t]);
+
+          responsor.when(
+
+            function(e) {
+
+              if (txd) emitter.emit('panleave', e);
+
+              // end response.
+              txd = false;
+
+              // loop response.
+              m.resume();
+              t.resume();
+            });
+        })();
+
+        (function() {
+
           var m = new Emission(emitter, 'mouseup');
           var c = new Emission(emitter, 'touchcancel');
           var t = new Emission(emitter, 'touchend');

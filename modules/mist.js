@@ -157,7 +157,7 @@ var Mist;
             });
         };
         /**
-        * @description for loop
+        * @description for reuse
         */
         Promise.prototype.resume = function () {
             // initialize.
@@ -442,6 +442,91 @@ var Mist;
     })(Mist.Promise);
     Mist.Value = Value;
 })(Mist || (Mist = {}));
+/// <reference path='promise.ts' />
+/// <reference path='statement.ts' />
+/// <reference path='value.ts' />
+/**
+ * @copyright 2015 AI428
+ * @description multi event, style accessor
+ * @license http://opensource.org/licenses/MIT
+ * @namespace Mist
+ */
+var Mist;
+(function (Mist) {
+    /**
+    * @class Attr
+    * @description accessor
+    */
+    var Attr = (function () {
+        /**
+        * @constructor
+        * @param {} statement
+        */
+        function Attr(statement) {
+            this.statement = statement;
+            this.value = new Mist.Value({});
+            this.value.when(function (o) {
+                for (var name in o) {
+                    switch (o[name]) {
+                        case undefined:
+                            statement.each(function (e) {
+                                // bind response.
+                                e.removeAttribute(name);
+                            });
+                            // initialize.
+                            delete o[name];
+                            break;
+                        default:
+                            statement.each(function (e) {
+                                // bind response.
+                                e.setAttribute(name, o[name]);
+                            });
+                    }
+                }
+            });
+        }
+        /**
+        * @param {} attr
+        * @return {}
+        */
+        Attr.prototype.add = function (attr) {
+            return this.value.compose(function (o) {
+                // composer.
+                for (var name in attr) {
+                    // mapped response.
+                    o[name] = attr[name];
+                }
+                // {} response.
+                return o;
+            });
+        };
+        /**
+        * @description mapped attr
+        * @return {}
+        */
+        Attr.prototype.get = function () {
+            // {} response.
+            return this.value.composite;
+        };
+        /**
+        * @param {} names
+        * @return {}
+        */
+        Attr.prototype.remove = function (names) {
+            return this.value.compose(function (o) {
+                // composer.
+                names.forEach(function (name) {
+                    // tagged response.
+                    o[name] = undefined;
+                });
+                // {} response.
+                return o;
+            });
+        };
+        return Attr;
+    })();
+    Mist.Attr = Attr;
+})(Mist || (Mist = {}));
 /// <reference path='frame.ts'/>
 /// <reference path='promise.ts'/>
 /// <reference path='statement.ts'/>
@@ -518,7 +603,9 @@ var Mist;
                     return o;
                 });
                 // dur response.
-                dur > 0 ? Mist.Frame.on(_this.remove.bind(_this, names), dur).then(responsor) : c.then(responsor);
+                dur > 0 ? Mist.Frame.on(_this.remove.bind(_this, names), dur).then(responsor) :
+                    // passthru.
+                    c.then(responsor);
             });
         };
         /**
@@ -540,7 +627,9 @@ var Mist;
                     return o;
                 });
                 // dur response.
-                dur > 0 ? Mist.Frame.on(_this.add.bind(_this, names), dur).then(responsor) : c.then(responsor);
+                dur > 0 ? Mist.Frame.on(_this.add.bind(_this, names), dur).then(responsor) :
+                    // passthru.
+                    c.then(responsor);
             });
         };
         /**
@@ -890,6 +979,20 @@ var Mist;
                     });
                 })();
                 (function () {
+                    var m = new Mist.Emission(emitter, 'mouseout');
+                    var t = new Mist.Emission(emitter, 'touchleave');
+                    var responsor = Mist.Promise.race([m, t]);
+                    responsor.when(function (e) {
+                        if (txd)
+                            emitter.emit('panleave', e);
+                        // end response.
+                        txd = false;
+                        // loop response.
+                        m.resume();
+                        t.resume();
+                    });
+                })();
+                (function () {
                     var m = new Mist.Emission(emitter, 'mouseup');
                     var c = new Mist.Emission(emitter, 'touchcancel');
                     var t = new Mist.Emission(emitter, 'touchend');
@@ -948,6 +1051,7 @@ var Mist;
         Recognizer.Tap = Tap;
     })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
 })(Mist || (Mist = {}));
+/// <reference path='attr.ts' />
 /// <reference path='class.ts' />
 /// <reference path='emission.ts' />
 /// <reference path='emitter.ts' />
@@ -972,6 +1076,8 @@ var Mist;
         */
         function Statement(statement) {
             this.statement = statement;
+            // initialize.
+            this.attr = new Mist.Attr(this);
             this.class = new Mist.Class(this);
             this.emitter = new Mist.Emitter(this);
             this.style = new Mist.Style(this);
