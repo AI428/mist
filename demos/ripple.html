@@ -58,11 +58,11 @@
 
       panstart.when(
 
-        function(event) {
+        function(ev) {
 
           // pseudo response.
 
-          var statement = mist(event.target).concat('::after');
+          var statement = mist(ev.target).concat('::after');
 
           statement.style.set(pseudo).then(
 
@@ -70,8 +70,8 @@
 
               return statement.style.add({
 
-                left: event.offsetX + 'px',
-                top: event.offsetY + 'px'
+                left: ev.offsetX + 'px',
+                top: ev.offsetY + 'px'
 
               });
             }).then(
@@ -80,10 +80,10 @@
 
               return statement.style.add({
 
-                borderColor: '#FAA',
+                borderColor: '#000',
                 borderStyle: 'solid',
                 padding: '2em',
-                transition: 'all .6s'
+                transition: 'all .8s'
 
               });
             }).then(
@@ -92,10 +92,10 @@
 
               statement.style.add({
 
-                borderWidth: '.2em',
-                opacity: .4
+                borderWidth: '1em',
+                opacity: .1
 
-              }, 8);
+              }, 12);
             });
         });
 

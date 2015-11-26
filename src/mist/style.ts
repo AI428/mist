@@ -123,10 +123,22 @@ module Mist {
     * @description scoped style
     * @return {}
     */
-    get(): any[] {
+    get(): any {
 
-      // [] response.
-      return this.value.composite;
+      var response = {};
+
+      this.value.composite.forEach(
+
+        function(css) {
+
+          // composer.
+          for (var name in css) {
+            response[name] = css[name];
+          }
+        });
+
+      // {} response.
+      return response;
     }
 
     /**

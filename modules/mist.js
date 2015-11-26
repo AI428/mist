@@ -886,8 +886,15 @@ var Mist;
         * @return {}
         */
         Style.prototype.get = function () {
-            // [] response.
-            return this.value.composite;
+            var response = {};
+            this.value.composite.forEach(function (css) {
+                // composer.
+                for (var name in css) {
+                    response[name] = css[name];
+                }
+            });
+            // {} response.
+            return response;
         };
         /**
         * @param {} css
@@ -1135,6 +1142,14 @@ var Mist;
         Statement.prototype.on = function (name) {
             // {} response.
             return new Mist.Emission(this.emitter, name);
+        };
+        /**
+        * @param {} name
+        * @return {}
+        */
+        Statement.prototype.once = function (name) {
+            // lasting response.
+            return Mist.Component.create(Mist.Emission, this.emitter, name);
         };
         /**
         * @description mapped selector

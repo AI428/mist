@@ -123,6 +123,17 @@ module Mist {
     }
 
     /**
+    * @param {} name
+    * @return {}
+    */
+    once(name: string): Emission {
+
+      // lasting response.
+      return Component.create<Emission>(
+        Emission, this.emitter, name);
+    }
+
+    /**
     * @description mapped selector
     * @return {}
     */
