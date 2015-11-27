@@ -1,6 +1,6 @@
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -62,7 +62,7 @@ var Mist;
 })(Mist || (Mist = {}));
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -285,7 +285,7 @@ var Mist;
 /// <reference path='promise.ts'/>
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -374,7 +374,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -447,7 +447,7 @@ var Mist;
 /// <reference path='value.ts' />
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -533,7 +533,7 @@ var Mist;
 /// <reference path='value.ts'/>
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -669,7 +669,7 @@ var Mist;
 /// <reference path='statement.ts'/>
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -755,11 +755,39 @@ var Mist;
     })();
     Mist.Emitter = Emitter;
 })(Mist || (Mist = {}));
+/**
+* @class Element
+* @method Element.matches
+*/
+(function (p) {
+    p.matches = p.matches
+        || p.mozMatchesSelector
+        || p.msMatchesSelector
+        || p.webkitMatchesSelector;
+})(Element.prototype);
+/**
+* @class Element
+* @method Element.closest
+*/
+(function (p) {
+    p.closest = p.closest ||
+        function (selector) {
+            // initialize.
+            var element = this;
+            while (element) {
+                if (element.matches(selector))
+                    break;
+                element = element.parentElement;
+            }
+            // {} response.
+            return element;
+        };
+})(Element.prototype);
 /// <reference path='emitter.ts'/>
 /// <reference path='promise.ts'/>
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -802,7 +830,7 @@ var Mist;
 /// <reference path='value.ts' />
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -929,7 +957,7 @@ var Mist;
 /// <reference path='../emitter.ts'/>
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -1024,7 +1052,7 @@ var Mist;
 /// <reference path='../emitter.ts'/>
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -1060,6 +1088,7 @@ var Mist;
 })(Mist || (Mist = {}));
 /// <reference path='attr.ts' />
 /// <reference path='class.ts' />
+/// <reference path='component.ts' />
 /// <reference path='emission.ts' />
 /// <reference path='emitter.ts' />
 /// <reference path='style.ts' />
@@ -1067,7 +1096,7 @@ var Mist;
 /// <reference path='recognizer/tap.ts' />
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
@@ -1212,7 +1241,7 @@ var Mist;
 /// <reference path='mist/statement.ts' />
 /*!
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  * @version 0.2.1
@@ -1224,31 +1253,3 @@ var Mist;
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);
 }
-/**
-* @class Element
-* @method Element.matches
-*/
-(function (p) {
-    p.matches = p.matches
-        || p.mozMatchesSelector
-        || p.msMatchesSelector
-        || p.webkitMatchesSelector;
-})(Element.prototype);
-/**
-* @class Element
-* @method Element.closest
-*/
-(function (p) {
-    p.closest = p.closest ||
-        function (selector) {
-            // initialize.
-            var element = this;
-            while (element) {
-                if (element.matches(selector))
-                    break;
-                element = element.parentElement;
-            }
-            // {} response.
-            return element;
-        };
-})(Element.prototype);

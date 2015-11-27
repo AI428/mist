@@ -1,5 +1,6 @@
 /// <reference path='attr.ts' />
 /// <reference path='class.ts' />
+/// <reference path='component.ts' />
 /// <reference path='emission.ts' />
 /// <reference path='emitter.ts' />
 /// <reference path='style.ts' />
@@ -9,7 +10,7 @@
 
 /**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */

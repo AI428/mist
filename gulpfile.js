@@ -1,13 +1,13 @@
-/*!
+/**
  * @copyright 2015 AI428
- * @description multi event, style accessor
+ * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  */
 var gulp = require('gulp');
-var gulp_rename = require('gulp-rename');
-var gulp_typescript = require('gulp-typescript');
-var gulp_uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
+var typescript = require('gulp-typescript');
+var uglify = require('gulp-uglify');
 
 // def response.
 
@@ -17,25 +17,29 @@ gulp.task('default',
 
     gulp.src('src/mist.ts')
       .pipe(
-        gulp_typescript({
+        typescript({
           out: 'mist.js',
           target: 'ES5'
         })
       )
       .pipe(
-        gulp.dest('modules/')
+        gulp.dest(
+          'modules/'
+        )
       )
       .pipe(
-        gulp_uglify({
+        uglify({
           preserveComments: 'license'
         })
       )
       .pipe(
-        gulp_rename({
+        rename({
           extname: '.min.js'
         })
       )
       .pipe(
-        gulp.dest('modules/')
+        gulp.dest(
+          'modules/'
+        )
       );
   });
