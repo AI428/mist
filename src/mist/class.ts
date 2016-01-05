@@ -15,7 +15,7 @@ module Mist {
   * @access private
   * @static
   */
-  enum Command { A, R, T };
+  enum command { a, r, t };
 
   /**
   * @class Class
@@ -42,13 +42,10 @@ module Mist {
 
             var k = o[name];
 
-            // format response.
-
             response[k] || (response[k] = []);
             response[k].push(name);
 
             // initialize.
-
             delete o[name];
           }
 
@@ -60,10 +57,9 @@ module Mist {
               var n;
 
               // patch response.
-
-              !(n = response[Command.A]) || m.add.apply(m, n);
-              !(n = response[Command.R]) || m.remove.apply(m, n);
-              !(n = response[Command.T]) || n.forEach(
+              !(n = response[command.a]) || m.add.apply(m, n);
+              !(n = response[command.r]) || m.remove.apply(m, n);
+              !(n = response[command.t]) || n.forEach(
 
                 function(name) {
 
@@ -87,11 +83,10 @@ module Mist {
           var c = this.value.compose((o) => {
 
             // composer.
-            names.forEach(function(name) {
-
-              // tagged response.
-              o[name] = Command.A;
-            });
+            names.forEach(
+              function(name) {
+                o[name] = command.a;
+              });
 
             // {} response.
             return o;
@@ -101,7 +96,6 @@ module Mist {
           dur > 0 ? Frame.on(
 
             this.remove.bind(
-
               this, names), dur).then(responsor) :
 
             // passthru.
@@ -123,11 +117,10 @@ module Mist {
           var c = this.value.compose((o) => {
 
             // composer.
-            names.forEach(function(name) {
-
-              // tagged response.
-              o[name] = Command.R;
-            });
+            names.forEach(
+              function(name) {
+                o[name] = command.r;
+              });
 
             // {} response.
             return o;
@@ -137,7 +130,6 @@ module Mist {
           dur > 0 ? Frame.on(
 
             this.add.bind(
-
               this, names), dur).then(responsor) :
 
             // passthru.
@@ -158,19 +150,19 @@ module Mist {
 
           switch (o[name]) {
 
-            case Command.A:
+            case command.a:
 
               // tagged response.
-              o[name] = Command.R;
+              o[name] = command.r;
 
               break;
-            case Command.R:
+            case command.r:
 
               // tagged response.
-              o[name] = Command.A;
+              o[name] = command.a;
 
               break;
-            case Command.T:
+            case command.t:
 
               // tagged response.
               delete o[name];
@@ -179,7 +171,7 @@ module Mist {
             default:
 
               // tagged response.
-              o[name] = Command.T;
+              o[name] = command.t;
           }
         });
 

@@ -49,9 +49,7 @@ module Mist {
 
       this.obss[name] || (this.obss[name] = []);
       this.obss[name].push(listener);
-
       // lasting response.
-
       this.ready(name);
     }
 
@@ -62,7 +60,6 @@ module Mist {
     emit(name: string, response?) {
 
       for (var i in
-
         this.obss[name]) {
         this.obss[name][i](response);
       }
@@ -154,20 +151,18 @@ interface Element {
 */
 (function(p) {
 
-  p.closest = p.closest ||
+  p.closest = p.closest || function(selector) {
 
-  function(selector) {
+    var s = this;
 
-    // initialize.
-    var element = this;
-
-    while (element) {
-      if (element.matches(selector)) break;
-      element = element.parentElement;
+    // ref response.
+    while (s) {
+      if (s.matches(selector)) break;
+      s = s.parentElement;
     }
 
     // {} response.
-    return element;
+    return s;
   };
 
 })(Element.prototype);

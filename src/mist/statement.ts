@@ -1,4 +1,3 @@
-/// <reference path='attr.ts' />
 /// <reference path='class.ts' />
 /// <reference path='component.ts' />
 /// <reference path='emission.ts' />
@@ -24,11 +23,6 @@ module Mist {
     /**
     * @access public
     */
-    attr: Attr;
-
-    /**
-    * @access public
-    */
     class: Class;
 
     /**
@@ -48,7 +42,6 @@ module Mist {
     constructor(private statement) {
 
       // initialize.
-      this.attr = new Attr(this);
       this.class = new Class(this);
       this.emitter = new Emitter(this);
       this.style = new Style(this);

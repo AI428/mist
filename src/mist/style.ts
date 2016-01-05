@@ -17,6 +17,14 @@ module Mist {
   */
   export class Style {
 
+    /**
+    * @access public
+    */
+    element: HTMLStyleElement;
+
+    /**
+    * @access private
+    */
     private value: Value;
 
     /**
@@ -25,19 +33,10 @@ module Mist {
     */
     constructor(private statement: Statement) {
 
-      var s = document.createElement('style');
-      var t = document.createTextNode('');
-
-      s.appendChild(t);
-
-      document.head.appendChild(s);
-
-      // initialize.
-
       this.value = new Value([{}]);
       this.value.when(
 
-        function(o) {
+        (o) => {
 
           var response = o.map(
 
@@ -59,7 +58,7 @@ module Mist {
             });
 
           // inner response.
-          s.innerHTML = response.join('');
+          this.create().innerHTML = response.join('');
         });
     }
 
@@ -159,6 +158,28 @@ module Mist {
         // [] response.
         return [response];
       });
+    }
+
+    /**
+    * @access private
+    */
+    private create() {
+
+      if (!this.element) {
+
+        var s = document.createElement('style');
+        var t = document.createTextNode('');
+
+        s.appendChild(t);
+
+        document.head.appendChild(s);
+
+        // initialize.
+        this.element = s;
+      }
+
+      // lasting response.
+      return this.element;
     }
   }
 

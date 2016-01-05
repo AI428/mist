@@ -78,6 +78,7 @@ module Mist {
 
               commit.then(composer);
 
+              // bind response.
               p = i;
             });
         });

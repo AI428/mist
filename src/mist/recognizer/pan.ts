@@ -18,110 +18,210 @@ module Mist {
     export class Pan {
 
       /**
+      * @access public
+      * @static
+      */
+      static err: number = 2;
+
+      /**
       * @constructor
       * @param {} emitter
       */
       constructor(private emitter: Emitter) {
 
-        // initialize.
+        // transaction.
         var txd = false;
+        var txv;
 
         (function() {
 
-          var m = new Emission(emitter, 'mousedown');
-          var t = new Emission(emitter, 'touchstart');
+          function responsor(e) {
 
-          var responsor = Promise.race([m, t]);
+            emitter.emit('panstart', mat(e));
 
-          responsor.when(
+            // begin response.
+            txd = true;
+            txv = e;
+          }
+
+          new Emission(emitter, 'mousedown').when(responsor);
+          new Emission(emitter, 'touchstart').when(
 
             function(e) {
 
-              emitter.emit('panstart', e);
+              e.preventDefault();
 
-              // begin response.
-              txd = true;
+              // passthru.
+              return e;
 
-              // loop response.
-              m.resume();
-              t.resume();
-            });
+            }).when(responsor);
         })();
 
         (function() {
 
-          var m = new Emission(emitter, 'mousemove');
-          var t = new Emission(emitter, 'touchmove');
+          function responsor(e) {
 
-          var responsor = Promise.race([m, t]);
+            if (txd) {
 
-          responsor.when(
+              var m = mat(e, txv);
 
-            function(e) {
+              // filt response.
+              if (Pan.err < Math.sqrt((
 
-              if (txd) {
+                m.transX *
+                m.transX
+                ) + (
+                  m.transY *
+                  m.transY
+                  ))) {
 
-                emitter.emit('panmove', e);
+                emitter.emit('panmove', m);
 
                 // dir response.
-                if (e.movementX < 0) emitter.emit('panleft', e);
-                if (e.movementX > 0) emitter.emit('panright', e);
-                if (e.movementY < 0) emitter.emit('panup', e);
-                if (e.movementY > 0) emitter.emit('pandown', e);
+                if (m.transX < 0) emitter.emit('panleft', m);
+                if (m.transX > 0) emitter.emit('panright', m);
+                if (m.transY < 0) emitter.emit('panup', m);
+                if (m.transY > 0) emitter.emit('pandown', m);
+
+                txv = e;
               }
+            }
+          }
 
-              // loop response.
-              m.resume();
-              t.resume();
-            });
+          new Emission(emitter, 'mousemove').when(responsor);
+          new Emission(emitter, 'touchmove').when(
+
+            function(e) {
+
+              e.preventDefault();
+
+              // passthru.
+              return e;
+
+            }).when(responsor);
         })();
 
         (function() {
 
-          var m = new Emission(emitter, 'mouseout');
-          var t = new Emission(emitter, 'touchleave');
+          function responsor(e) {
 
-          var responsor = Promise.race([m, t]);
+            if (txd) {
 
-          responsor.when(
-
-            function(e) {
-
-              if (txd) emitter.emit('panleave', e);
+              emitter.emit('panleave', mat(e));
 
               // end response.
               txd = false;
+              txv = e;
+            }
+          }
 
-              // loop response.
-              m.resume();
-              t.resume();
-            });
+          new Emission(emitter, 'mouseout').when(responsor);
+          new Emission(emitter, 'touchleave').when(
+
+            function(e) {
+
+              e.preventDefault();
+
+              // passthru.
+              return e;
+
+            }).when(responsor);
         })();
 
         (function() {
 
-          var m = new Emission(emitter, 'mouseup');
-          var c = new Emission(emitter, 'touchcancel');
-          var t = new Emission(emitter, 'touchend');
+          function responsor(e) {
 
-          var responsor = Promise.race([m, c, t]);
+            emitter.emit('panend', mat(e));
 
-          responsor.when(
+            // end response.
+            txd = false;
+            txv = e;
+          }
+
+          new Emission(emitter, 'mouseup').when(responsor);
+          new Emission(emitter, 'touchcancel').when(responsor);
+          new Emission(emitter, 'touchend').when(
 
             function(e) {
 
-              emitter.emit('panend', e);
+              e.preventDefault();
 
-              // end response.
-              txd = false;
+              // passthru.
+              return e;
 
-              // loop response.
-              m.resume();
-              c.resume();
-              t.resume();
-            });
+            }).when(responsor);
         })();
       }
+    }
+
+    /**
+    * @access private
+    * @static
+    */
+    function mat(e, prev?) {
+
+      var response;
+
+      var x = 0;
+      var y = 0;
+
+      switch (e.type) {
+
+        case 'mousedown':
+        case 'mousemove':
+        case 'mouseout':
+        case 'mouseup':
+
+          // initialize.
+          response = e;
+
+          if (prev) {
+
+            x = response.pageX - prev.pageX;
+            y = response.pageY - prev.pageY;
+          }
+
+          break;
+        case 'touchcancel':
+        case 'touchend':
+        case 'touchleave':
+        case 'touchmove':
+        case 'touchstart':
+
+          // initialize.
+          response = e.changedTouches[0];
+
+          if (prev) {
+
+            var o = prev.changedTouches[0];
+
+            x = response.pageX - o.pageX;
+            y = response.pageY - o.pageY;
+          }
+
+          break;
+      }
+
+      // {} response.
+      return {
+
+        clientX: response.clientX,
+        clientY: response.clientY,
+
+        pageX: response.pageX,
+        pageY: response.pageY,
+
+        screenX: response.screenX,
+        screenY: response.screenY,
+
+        src: e,
+
+        target: response.target,
+
+        transX: x,
+        transY: y
+      };
     }
   }
 }
