@@ -2,11 +2,11 @@
 /// <reference path='mist/statement.ts' />
 
 /*!
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.2.1
+ * @version 0.3.0
  */
 
 /**

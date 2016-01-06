@@ -4,7 +4,7 @@
 /// <reference path='value.ts'/>
 
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -42,10 +42,10 @@ module Mist {
 
             var k = o[name];
 
+            // mat response.
             response[k] || (response[k] = []);
             response[k].push(name);
 
-            // initialize.
             delete o[name];
           }
 
@@ -80,7 +80,7 @@ module Mist {
 
         (responsor) => {
 
-          var c = this.value.compose((o) => {
+          var r = this.value.compose((o) => {
 
             // composer.
             names.forEach(
@@ -94,12 +94,11 @@ module Mist {
 
           // dur response.
           dur > 0 ? Frame.on(
-
             this.remove.bind(
               this, names), dur).then(responsor) :
 
             // passthru.
-            c.then(responsor);
+            r.then(responsor);
         });
     }
 
@@ -114,7 +113,7 @@ module Mist {
 
         (responsor) => {
 
-          var c = this.value.compose((o) => {
+          var r = this.value.compose((o) => {
 
             // composer.
             names.forEach(
@@ -128,12 +127,11 @@ module Mist {
 
           // dur response.
           dur > 0 ? Frame.on(
-
             this.add.bind(
               this, names), dur).then(responsor) :
 
             // passthru.
-            c.then(responsor);
+            r.then(responsor);
         });
     }
 

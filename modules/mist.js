@@ -1,5 +1,5 @@
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -61,7 +61,7 @@ var Mist;
     }
 })(Mist || (Mist = {}));
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -285,7 +285,7 @@ var Mist;
 })(Mist || (Mist = {}));
 /// <reference path='promise.ts'/>
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -374,7 +374,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -448,7 +448,7 @@ var Mist;
 /// <reference path='statement.ts'/>
 /// <reference path='value.ts'/>
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -482,9 +482,9 @@ var Mist;
                 var response = [];
                 for (var name in o) {
                     var k = o[name];
+                    // mat response.
                     response[k] || (response[k] = []);
                     response[k].push(name);
-                    // initialize.
                     delete o[name];
                 }
                 statement.each(function (e) {
@@ -508,7 +508,7 @@ var Mist;
             var _this = this;
             if (dur === void 0) { dur = 0; }
             return new Mist.Promise(function (responsor) {
-                var c = _this.value.compose(function (o) {
+                var r = _this.value.compose(function (o) {
                     // composer.
                     names.forEach(function (name) {
                         o[name] = command.a;
@@ -519,7 +519,7 @@ var Mist;
                 // dur response.
                 dur > 0 ? Mist.Frame.on(_this.remove.bind(_this, names), dur).then(responsor) :
                     // passthru.
-                    c.then(responsor);
+                    r.then(responsor);
             });
         };
         /**
@@ -531,7 +531,7 @@ var Mist;
             var _this = this;
             if (dur === void 0) { dur = 0; }
             return new Mist.Promise(function (responsor) {
-                var c = _this.value.compose(function (o) {
+                var r = _this.value.compose(function (o) {
                     // composer.
                     names.forEach(function (name) {
                         o[name] = command.r;
@@ -542,7 +542,7 @@ var Mist;
                 // dur response.
                 dur > 0 ? Mist.Frame.on(_this.add.bind(_this, names), dur).then(responsor) :
                     // passthru.
-                    c.then(responsor);
+                    r.then(responsor);
             });
         };
         /**
@@ -581,7 +581,7 @@ var Mist;
 })(Mist || (Mist = {}));
 /// <reference path='statement.ts'/>
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -698,7 +698,7 @@ var Mist;
 /// <reference path='emitter.ts'/>
 /// <reference path='promise.ts'/>
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -741,7 +741,7 @@ var Mist;
 /// <reference path='statement.ts' />
 /// <reference path='value.ts' />
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -787,18 +787,31 @@ var Mist;
             var _this = this;
             if (dur === void 0) { dur = 0; }
             return new Mist.Promise(function (responsor) {
-                var c = _this.value.compose(function (o) {
+                var r = _this.value.compose(function (o) {
                     // initialize.
                     var response = dur > 0 ? {} : o[0];
                     // composer.
                     for (var name in css) {
-                        response[name] = css[name];
+                        if (css[name] instanceof Mist.Promise) {
+                            // lazy response.
+                            css[name].when(function (v) {
+                                // initialize.
+                                var response = {};
+                                response[name] = v;
+                                // a response.
+                                _this.add(response, dur);
+                            });
+                        }
+                        else {
+                            // passthru.
+                            response[name] = css[name];
+                        }
                     }
                     // dur response.
                     if (dur > 0) {
                         o.push(response);
                         // lazy response.
-                        var c = Mist.Frame.on(function () {
+                        var r = Mist.Frame.on(function () {
                             return _this.value.compose(function (o) {
                                 // composer.
                                 var i = o.indexOf(response);
@@ -808,13 +821,13 @@ var Mist;
                             });
                         }, dur);
                         // [] response.
-                        c.then(responsor);
+                        r.then(responsor);
                     }
                     // {} response.
                     return o;
                 });
                 // passthru.
-                dur > 0 || c.then(responsor);
+                dur > 0 || r.then(responsor);
             });
         };
         /**
@@ -844,23 +857,24 @@ var Mist;
                     response[name] = css[name];
                 }
                 // [] response.
-                return [response];
+                return [
+                    response
+                ];
             });
         };
         /**
         * @access private
         */
         Style.prototype.create = function () {
-            if (!this.element) {
+            if (!this.e) {
                 var s = document.createElement('style');
                 var t = document.createTextNode('');
                 s.appendChild(t);
                 document.head.appendChild(s);
-                // initialize.
-                this.element = s;
+                this.e = s;
             }
             // lasting response.
-            return this.element;
+            return this.e;
         };
         return Style;
     })();
@@ -879,7 +893,7 @@ var Mist;
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -1038,7 +1052,7 @@ var Mist;
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -1076,7 +1090,7 @@ var Mist;
 /// <reference path='recognizer/pan.ts' />
 /// <reference path='recognizer/tap.ts' />
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -1220,11 +1234,11 @@ var Mist;
 /// <reference path='mist/component.ts' />
 /// <reference path='mist/statement.ts' />
 /*!
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.2.1
+ * @version 0.3.0
  */
 /**
  * @param {} statement

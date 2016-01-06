@@ -19,9 +19,40 @@
 <body>
   <main></main>
   <script>
-    mist('body, html').style.set({
+    /** common stateament */
+
+    mist('body, html, main').style.set({
 
       height: '100%'
+    });
+
+    /** scoped statemet */
+
+    var statement = mist('main');
+
+    statement.style.set({
+
+      transition: 'all .1s'
+    });
+
+    statement.style.add({
+
+      background: statement.on('panmove').when(
+
+        function(e) {
+
+          var d = Math.sqrt(
+            (
+              e.clientX *
+              e.clientX
+            ) + (
+              e.clientY *
+              e.clientY
+            ));
+
+          // a response.
+          return 'hsl(' + (d / 2 % 360) + ',50%,50%)';
+        })
     });
   </script>
 </body>

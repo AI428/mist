@@ -1,7 +1,7 @@
 /// <reference path='statement.ts'/>
 
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist

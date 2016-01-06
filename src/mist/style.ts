@@ -4,7 +4,7 @@
 /// <reference path='value.ts' />
 
 /**
- * @copyright 2015 AI428
+ * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
@@ -17,14 +17,7 @@ module Mist {
   */
   export class Style {
 
-    /**
-    * @access public
-    */
-    element: HTMLStyleElement;
-
-    /**
-    * @access private
-    */
+    private e: HTMLStyleElement;
     private value: Value;
 
     /**
@@ -73,14 +66,33 @@ module Mist {
 
         (responsor) => {
 
-          var c = this.value.compose((o) => {
+          var r = this.value.compose((o) => {
 
             // initialize.
             var response = dur > 0 ? {} : o[0];
 
             // composer.
             for (var name in css) {
-              response[name] = css[name];
+
+              if (css[name] instanceof Promise) {
+
+                // lazy response.
+                css[name].when(
+
+                  (v) => {
+                    // initialize.
+                    var response = {};
+
+                    response[name] = v;
+
+                    // a response.
+                    this.add(response, dur);
+                  });
+
+              } else {
+                // passthru.
+                response[name] = css[name];
+              }
             }
 
             // dur response.
@@ -89,7 +101,7 @@ module Mist {
               o.push(response);
 
               // lazy response.
-              var c = Frame.on(() => {
+              var r = Frame.on(() => {
 
                 return this.value.compose(
 
@@ -106,7 +118,7 @@ module Mist {
               }, dur);
 
               // [] response.
-              c.then(responsor);
+              r.then(responsor);
             }
 
             // {} response.
@@ -114,7 +126,7 @@ module Mist {
           });
 
           // passthru.
-          dur > 0 || c.then(responsor);
+          dur > 0 || r.then(responsor);
         });
     }
 
@@ -156,7 +168,9 @@ module Mist {
         }
 
         // [] response.
-        return [response];
+        return [
+          response
+        ];
       });
     }
 
@@ -165,7 +179,7 @@ module Mist {
     */
     private create() {
 
-      if (!this.element) {
+      if (!this.e) {
 
         var s = document.createElement('style');
         var t = document.createTextNode('');
@@ -174,12 +188,11 @@ module Mist {
 
         document.head.appendChild(s);
 
-        // initialize.
-        this.element = s;
+        this.e = s;
       }
 
       // lasting response.
-      return this.element;
+      return this.e;
     }
   }
 
