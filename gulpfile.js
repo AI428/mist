@@ -1,11 +1,9 @@
-/** common statement */
+'use strict';
 
 var gulp = require('gulp');
 var rename = require('gulp-rename');
 var typescript = require('gulp-typescript');
 var uglify = require('gulp-uglify');
-
-/** scoped statement */
 
 gulp.task('default',
 
@@ -20,7 +18,7 @@ gulp.task('default',
       )
       .pipe(
         gulp.dest(
-          'modules/'
+          ''
         )
       )
       .pipe(
@@ -35,7 +33,7 @@ gulp.task('default',
       )
       .pipe(
         gulp.dest(
-          'modules/'
+          ''
         )
       );
   });
