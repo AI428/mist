@@ -1,13 +1,8 @@
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 module Mist {
 
   /**
   * @class Promise
+  * @description thenable
   */
   export class Promise {
 
@@ -245,13 +240,14 @@ module Mist {
           this.txd = true;
 
           // fail response.
-          response instanceof Object ? response.then ?
+          response instanceof Object ?
 
             // lazy response.
-            response.then(m) :
+            response.then ?
+              response.then(m) :
 
-            // passthru.
-            m(response) :
+              // passthru.
+              m(response) :
             m(response);
 
         } else {
@@ -283,13 +279,14 @@ module Mist {
           this.txd = true;
 
           // commit response.
-          response instanceof Object ? response.then ?
+          response instanceof Object ?
 
             // lazy response.
-            response.then(m) :
+            response.then ?
+              response.then(m) :
 
-            // passthru.
-            m(response) :
+              // passthru.
+              m(response) :
             m(response);
 
         } else {

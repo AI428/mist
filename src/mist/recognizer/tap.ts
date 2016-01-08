@@ -1,12 +1,6 @@
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
 
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 module Mist {
 
   export module Recognizer {

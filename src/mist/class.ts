@@ -3,12 +3,6 @@
 /// <reference path='statement.ts'/>
 /// <reference path='value.ts'/>
 
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 module Mist {
 
   /**
@@ -19,7 +13,7 @@ module Mist {
 
   /**
   * @class Class
-  * @description accessor
+  * @description binder
   */
   export class Class {
 

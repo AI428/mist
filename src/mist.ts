@@ -1,7 +1,7 @@
 /// <reference path='mist/component.ts' />
 /// <reference path='mist/statement.ts' />
 
-/*!
+/**
  * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT

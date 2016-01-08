@@ -1,16 +1,10 @@
 /// <reference path='promise.ts'/>
 
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 module Mist {
 
   /**
   * @class Frame
-  * @description queuing
+  * @description queuer
   */
   export class Frame {
 

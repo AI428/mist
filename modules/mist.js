@@ -1,9 +1,3 @@
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 var Mist;
 (function (Mist) {
     /**
@@ -60,16 +54,11 @@ var Mist;
         }));
     }
 })(Mist || (Mist = {}));
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 var Mist;
 (function (Mist) {
     /**
     * @class Promise
+    * @description thenable
     */
     var Promise = (function () {
         /**
@@ -226,11 +215,12 @@ var Mist;
                     // end response.
                     this.txd = true;
                     // fail response.
-                    response instanceof Object ? response.then ?
+                    response instanceof Object ?
                         // lazy response.
-                        response.then(m) :
-                        // passthru.
-                        m(response) :
+                        response.then ?
+                            response.then(m) :
+                            // passthru.
+                            m(response) :
                         m(response);
                 }
                 else {
@@ -254,11 +244,12 @@ var Mist;
                     // end response.
                     this.txd = true;
                     // commit response.
-                    response instanceof Object ? response.then ?
+                    response instanceof Object ?
                         // lazy response.
-                        response.then(m) :
-                        // passthru.
-                        m(response) :
+                        response.then ?
+                            response.then(m) :
+                            // passthru.
+                            m(response) :
                         m(response);
                 }
                 else {
@@ -284,17 +275,11 @@ var Mist;
     Mist.Promise = Promise;
 })(Mist || (Mist = {}));
 /// <reference path='promise.ts'/>
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 var Mist;
 (function (Mist) {
     /**
     * @class Frame
-    * @description queuing
+    * @description queuer
     */
     var Frame = (function () {
         function Frame() {
@@ -373,12 +358,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 var Mist;
 (function (Mist) {
     /**
@@ -447,12 +426,6 @@ var Mist;
 /// <reference path='promise.ts'/>
 /// <reference path='statement.ts'/>
 /// <reference path='value.ts'/>
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 var Mist;
 (function (Mist) {
     /**
@@ -468,7 +441,7 @@ var Mist;
     ;
     /**
     * @class Class
-    * @description accessor
+    * @description binder
     */
     var Class = (function () {
         /**
@@ -580,16 +553,11 @@ var Mist;
     Mist.Class = Class;
 })(Mist || (Mist = {}));
 /// <reference path='statement.ts'/>
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 var Mist;
 (function (Mist) {
     /**
     * @class Emitter
+    * @description event
     */
     var Emitter = (function () {
         /**
@@ -697,12 +665,6 @@ var Mist;
 })(Element.prototype);
 /// <reference path='emitter.ts'/>
 /// <reference path='promise.ts'/>
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 var Mist;
 (function (Mist) {
     /**
@@ -740,17 +702,11 @@ var Mist;
 /// <reference path='promise.ts' />
 /// <reference path='statement.ts' />
 /// <reference path='value.ts' />
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 var Mist;
 (function (Mist) {
     /**
     * @class Style
-    * @description accessor
+    * @description binder
     */
     var Style = (function () {
         /**
@@ -892,12 +848,6 @@ var Mist;
 })(Mist || (Mist = {}));
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 var Mist;
 (function (Mist) {
     var Recognizer;
@@ -913,7 +863,6 @@ var Mist;
             */
             function Pan(emitter) {
                 this.emitter = emitter;
-                // transaction.
                 var txd = false;
                 var txv;
                 (function () {
@@ -1051,12 +1000,6 @@ var Mist;
 })(Mist || (Mist = {}));
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 var Mist;
 (function (Mist) {
     var Recognizer;
@@ -1089,12 +1032,6 @@ var Mist;
 /// <reference path='style.ts' />
 /// <reference path='recognizer/pan.ts' />
 /// <reference path='recognizer/tap.ts' />
-/**
- * @copyright AI428
- * @description statement for CSS in JS
- * @license http://opensource.org/licenses/MIT
- * @namespace Mist
- */
 var Mist;
 (function (Mist) {
     /**
@@ -1233,7 +1170,7 @@ var Mist;
 })(Mist || (Mist = {}));
 /// <reference path='mist/component.ts' />
 /// <reference path='mist/statement.ts' />
-/*!
+/**
  * @copyright AI428
  * @description statement for CSS in JS
  * @license http://opensource.org/licenses/MIT
