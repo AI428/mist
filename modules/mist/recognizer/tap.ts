@@ -21,7 +21,6 @@ module Mist {
 
           function(e) {
 
-            // as response.
             emitter.emit('tap', e);
           });
       }
