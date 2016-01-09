@@ -9,7 +9,7 @@ gulp.task('default',
 
   function() {
 
-    gulp.src('src/mist.ts')
+    gulp.src('modules/mist.ts')
       .pipe(
         typescript({
           out: 'mist.js',

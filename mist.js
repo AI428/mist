@@ -1016,7 +1016,6 @@ var Mist;
             function Tap(emitter) {
                 this.emitter = emitter;
                 new Mist.Emission(emitter, 'panend').when(function (e) {
-                    // as response.
                     emitter.emit('tap', e);
                 });
             }
@@ -1172,7 +1171,7 @@ var Mist;
 /// <reference path='mist/statement.ts' />
 /**
  * @copyright AI428
- * @description statement for CSS in JS
+ * @description for scoped style in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  * @version 0.3.0
