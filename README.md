@@ -2,9 +2,7 @@
 A JavaScript statement, for scoped style in JS.
 
 ```js
-var statement = mist('some selector');
-
-statement.style.add({
+mist('CSS Selector').style.add({
 
   position: 'absolute',
 
@@ -25,7 +23,24 @@ statement.style.add({
   transform: 'translate(-50%,-50%)'
 });
 ```
+
 When you click on the body, "some selector" elements are moved to the click point.
 
+## Scope
+How to scope,
+
+```js
+var statement = mist('CSS Selector');
+var statement = mist(HTMLElement);
+```
+
+If you later add a selector,
+
+```js
+var statement = mist('div,main').concat('::after');
+```
+
+This is mean the 'div::after,main::after'.
+
 # License
-This is released under the [MIT License](//opensource.org/licenses/MIT). © AI428
+This is released under the [MIT](//opensource.org/licenses/MIT). © AI428
