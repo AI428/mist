@@ -24,7 +24,7 @@ mist('CSS Selector').style.add({
 });
 ```
 
-When you click on the body, "some selector" elements are moved to the click point.
+When you click on the body, "CSS Selector" elements are moved to the click point.
 
 ## Scope
 How to scope,
