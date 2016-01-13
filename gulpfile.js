@@ -1,13 +1,13 @@
 'use strict';
 
-// globals modules.
+/** global modules. */
 
 var gulp = require('gulp');
 var rename = require('gulp-rename');
 var typescript = require('gulp-typescript');
 var uglify = require('gulp-uglify');
 
-// globals consts.
+/** global consts. */
 
 var DIST_DIR = '';
 var DIST_MIN_EXT = '.min.js';
