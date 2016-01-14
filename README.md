@@ -17,7 +17,7 @@ mist('selector').style.add({
 
 When you click on the body, "selector" elements are moved to the click point.
 
-## HOW_TO_SCOPE
+## HOW TO SCOPE
 
 ```js
 var element = document.getElementById('id');
@@ -33,13 +33,9 @@ If you later add a selector,
 var statement = mist('div,main').concat('::after');
 ```
 
-This is same mean the next.
+This is same mean the "div::after,main::after".
 
-```js
-var statement = mist('div::after,main::after');
-```
-
-## HOW_TO_STYLE
+## HOW TO STYLE
 
 ```js
 var statement = mist('selector');
@@ -55,7 +51,7 @@ var css_of_statement = {
 statement.style.set(css_of_statement);
 ```
 
-set() is one of the way that will be forced css_of_statement.
+**set()** is one of the way that will be forced.
 
 ```js
 var statement = mist('selector');
@@ -72,7 +68,7 @@ var css_of_statement = {
 statement.style.add(css_of_statement);
 ```
 
-The other is add(). It can take a [Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise) like argument.
+The other is **add()**. It can take a argument like [Promise](//developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
 ```js
 var frames_of_duration = 30;
@@ -80,7 +76,7 @@ var frames_of_duration = 30;
 statement.style.add(css, frames_of_duration);
 ```
 
-If you pass the frames_of_duration, It will be removed after [requestAnimationFrame()](https://developer.mozilla.org/docs/Web/API/Window/requestAnimationFrame) has been called past times.
+If you pass the frames of duration, It will be removed after  [requestAnimationFrame()](//developer.mozilla.org/docs/Web/API/Window/requestAnimationFrame) has been called past times.
 
 And to continue after,
 
