@@ -17,7 +17,7 @@ mist('selector').style.add({
 
 When you click on the body, "selector" elements are moved to the click point.
 
-## HOW TO SCOPE
+## HOW_TO_SCOPE
 
 ```js
 var element = document.getElementById('id');
@@ -39,7 +39,7 @@ This is same mean the next.
 var statement = mist('div::after,main::after');
 ```
 
-## HOW TO STYLE
+## HOW_TO_STYLE
 
 ```js
 var statement = mist('selector');
@@ -55,7 +55,7 @@ var css_of_statement = {
 statement.style.set(css_of_statement);
 ```
 
-set() is one of the way that will be forced css\_of\_statement.
+set() is one of the way that will be forced css_of_statement.
 
 ```js
 var statement = mist('selector');
@@ -80,7 +80,7 @@ var frames_of_duration = 30;
 statement.style.add(css, frames_of_duration);
 ```
 
-If you pass the frames\_of\_duration, It will be removed after requestAnimationFrame() has been called 30 times.
+If you pass the frames_of_duration, It will be removed after [requestAnimationFrame()](https://developer.mozilla.org/docs/Web/API/Window/requestAnimationFrame) has been called past times.
 
 And to continue after,
 
@@ -88,7 +88,7 @@ And to continue after,
 statement.style.add(css, frames_of_duration).then(
 
   function() {
-  
+
     // your code.
   });
 ```
