@@ -71,18 +71,23 @@ module Mist {
               if (css[name] instanceof Promise) {
 
                 // lazy response.
-                css[name].when(
+                css[name].when((
 
-                  (v) => {
+                  function(name, v) {
+
                     // initialize.
                     var response = {};
 
                     response[name] = v;
 
-                    // a response.
+                    // no response.
                     this.add(response, dur);
-                  });
 
+                  }).bind(
+
+                  this, name
+
+                  ));
               } else {
                 // passthru.
                 response[name] = css[name];

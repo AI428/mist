@@ -11,7 +11,7 @@ mist('selector').style.add({
   left: screen.on('click').then(
     function(event) { return `${ event.clientX }px`; }),
   top: screen.on('click').then(
-    function(event) { return `${ event.clientY }px`; }),
+    function(event) { return `${ event.clientY }px`; })
 });
 ```
 
@@ -51,7 +51,7 @@ var css_of_statement = {
 statement.style.set(css_of_statement);
 ```
 
-**set()** is one of the way that will be forced.
+style.set() is one of the way that will be forced.
 
 ```js
 var statement = mist('selector');
@@ -68,7 +68,7 @@ var css_of_statement = {
 statement.style.add(css_of_statement);
 ```
 
-The other is **add()**. It can take a argument like [Promise](//developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+The other is style.add(). It can take a argument like [Promise](//developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
 ```js
 var frames_of_duration = 30;

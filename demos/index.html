@@ -21,7 +21,9 @@
   <script>
     /** common stateament */
 
-    mist('body, html, main').style.set({
+    var screens = mist('body, html');
+
+    screens.style.set({
 
       height: '100%'
     });
@@ -32,27 +34,25 @@
 
     statement.style.set({
 
-      transition: 'all .1s'
+      boxShadow: '0 1px 4px gray',
+      height: '2em',
+      left: '50%',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translate3d(-50%,-50%,0)',
+      transition: 'all .2s',
+      width: '2em'
     });
 
     statement.style.add({
 
-      background: statement.on('panmove').when(
+      left: screens.on('tap').when(function(event) {
+        return `${ event.clientX }px`;
+      }),
 
-        function(e) {
-
-          var d = Math.sqrt(
-            (
-              e.clientX *
-              e.clientX
-            ) + (
-              e.clientY *
-              e.clientY
-            ));
-
-          // a response.
-          return 'hsl(' + (d / 2 % 360) + ',50%,50%)';
-        })
+      top: screens.on('tap').when(function(event) {
+        return `${ event.clientY }px`;
+      })
     });
   </script>
 </body>

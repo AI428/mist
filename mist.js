@@ -750,13 +750,13 @@ var Mist;
                     for (var name in css) {
                         if (css[name] instanceof Mist.Promise) {
                             // lazy response.
-                            css[name].when(function (v) {
+                            css[name].when((function (name, v) {
                                 // initialize.
                                 var response = {};
                                 response[name] = v;
-                                // a response.
-                                _this.add(response, dur);
-                            });
+                                // no response.
+                                this.add(response, dur);
+                            }).bind(_this, name));
                         }
                         else {
                             // passthru.
@@ -1174,7 +1174,7 @@ var Mist;
  * @description for scoped style in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.3.0
+ * @version 0.3.1
  */
 /**
  * @param {} statement
