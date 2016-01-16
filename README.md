@@ -1,4 +1,5 @@
-# MIST
+![alt MIST](//github.com/AI428/mist.js/master/logos/mist_800_590.png)
+
 A JavaScript statement, for scoped style in JS.
 
 ```js
@@ -17,7 +18,7 @@ mist('selector').style.add({
 
 When you click on the body, "selector" elements are moved to the click point.
 
-## HOW TO SCOPE
+### HOW TO SCOPE
 
 ```js
 var element = document.getElementById('id');
@@ -35,7 +36,7 @@ var statement = mist('div,main').concat('::after');
 
 This is same mean the "div::after,main::after".
 
-## HOW TO STYLE
+### HOW TO STYLE
 
 ```js
 var statement = mist('selector');
