@@ -1,4 +1,4 @@
-![alt MIST](//github.com/AI428/mist.js/master/logos/mist_800_590.png)
+![alt MIST](//raw.githubusercontent.com/AI428/mist.js/master/logos/mist_800_590.png)
 
 A JavaScript statement, for scoped style in JS.
 
