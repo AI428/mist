@@ -854,7 +854,7 @@ var Mist;
     (function (Recognizer) {
         /**
         * @class Pan
-        * @description recognizer
+        * @module recognizer
         */
         var Pan = (function () {
             /**
@@ -1006,7 +1006,7 @@ var Mist;
     (function (Recognizer) {
         /**
         * @class Tap
-        * @description recognizer
+        * @module recognizer
         */
         var Tap = (function () {
             /**

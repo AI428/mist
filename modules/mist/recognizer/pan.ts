@@ -7,7 +7,7 @@ module Mist {
 
     /**
     * @class Pan
-    * @description recognizer
+    * @module recognizer
     */
     export class Pan {
 

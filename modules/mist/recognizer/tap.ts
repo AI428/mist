@@ -7,7 +7,7 @@ module Mist {
 
     /**
     * @class Tap
-    * @description recognizer
+    * @module recognizer
     */
     export class Tap {
 
