@@ -1,6 +1,6 @@
-<img alt='MIST' src='https://github.com/AI428/mist.js/blob/master/logos/mist_1600_1180.png' width='100%'>
+![MIST](https://github.com/AI428/mist.js/blob/master/logos/mist_1600_1180.png)
 
-A JavaScript statement, for scoped style in JS.
+_JavaScript statement, for scoped style in JS._
 
 ```js
 var screen = mist('body');
@@ -16,9 +16,10 @@ mist('selector').style.add({
 });
 ```
 
-When you click on the body, "selector" elements are moved to the click point.
+When you click on the body, 'selector' elements are moved to the click point.
 
-# HOW TO SCOPE
+# USAGE
+## SCOPE
 
 ```js
 var element = document.getElementById('id');
@@ -34,9 +35,10 @@ If you later add a selector,
 var statement = mist('div,main').concat('::after');
 ```
 
-This is same mean the "div::after,main::after".
+This is same mean the 'div::after, main::after'.
 
-# HOW TO STYLE
+## STYLE
+### SET
 
 ```js
 var statement = mist('selector');
@@ -52,7 +54,7 @@ var css_of_statement = {
 statement.style.set(css_of_statement);
 ```
 
-style.set() is one of the way that will be forced.
+### ADD
 
 ```js
 var statement = mist('selector');
@@ -69,7 +71,53 @@ var css_of_statement = {
 statement.style.add(css_of_statement);
 ```
 
-The other is style.add(). It can take a argument like [Promise](//developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+This can take a argument [Promise](#promise). It's supported [Duration](#duration).
+
+## CLASS
+### ADD
+### REMOVE
+
+```js
+var statement = mist('selector');
+
+var names_of_class = [
+  'class_name'
+];
+
+statement.class.add(names_of_class);
+statement.class.remove(names_of_class);
+```
+
+It's supported [Duration](#duration).
+
+### TOGGLE
+
+```js
+var statement = mist('selector');
+
+var names_of_class = [
+  'class_name'
+];
+
+statement.class.toggle(names_of_class);
+```
+
+## EVENT
+### ON
+
+```js
+var statement = mist('selector');
+
+var name_of_event = 'click';
+
+statement.on(name_of_event).then(
+  function(e) {
+    // your code.
+  });
+```
+
+## OPTION
+### DURATION
 
 ```js
 var frames_of_duration = 30;
@@ -77,20 +125,59 @@ var frames_of_duration = 30;
 statement.style.add(css, frames_of_duration);
 ```
 
-If you pass the frames of duration, It will be removed after  [requestAnimationFrame()](//developer.mozilla.org/docs/Web/API/Window/requestAnimationFrame) has been called past times.
-
-And to continue after,
+If you pass the frames of duration, It will be removed after  [requestAnimationFrame](//developer.mozilla.org/docs/Web/API/Window/requestAnimationFrame) has been called past times. And to continue after,
 
 ```js
 statement.style.add(css, frames_of_duration).then(
-
   function() {
-
     // your code.
   });
 ```
 
 It will be sort of.
+
+# API
+## PROMISE
+This is like a [Promise/A+](//developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise). It has been some extension.
+
+### RESUME
+
+```js
+var responsor = new Mist.Promise(
+
+  function(succeed, erred) {
+
+    // lazy example.
+    function clock() {
+
+      succeed(new Date());
+      setTimeout(clock, 100);
+    }
+
+    clock();
+  });
+```
+
+At this time,
+
+```js
+responsor.then(
+  function(date) {
+    // your code.
+    responsor.resume();
+  });
+```
+
+The callback function will be called only once, But it can be reused in this. Also, it's same as the next code.
+
+### WHEN
+
+```js
+responsor.when(
+  function(date) {
+    // your code.
+  });
+```
 
 # LICENSE
 This is released under the [MIT](//opensource.org/licenses/MIT). © AI428
