@@ -9,9 +9,9 @@ mist('selector').style.add({
 
   position: 'absolute',
   transform: 'translate(-50%,-50%)',
-  left: screen.on('click').then(
+  left: screen.on('tap').then(
     function(event) { return `${ event.clientX }px`; }),
-  top: screen.on('click').then(
+  top: screen.on('tap').then(
     function(event) { return `${ event.clientY }px`; })
 });
 ```
@@ -30,6 +30,8 @@ var statement = mist('selector');
 ```
 
 If you later add a selector,
+
+### CONCAT
 
 ```js
 var statement = mist('div,main').concat('::after');
@@ -115,9 +117,7 @@ statement.class.toggle(names_of_class);
 ```js
 var statement = mist('selector');
 
-var name_of_event = 'click';
-
-statement.on(name_of_event).then(
+statement.on('tap').then(
   function(e) {
     // your code.
   });
