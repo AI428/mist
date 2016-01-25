@@ -35,7 +35,11 @@ If you later add a selector,
 var statement = mist('div,main').concat('::after');
 ```
 
-This is same mean the 'div::after, main::after'.
+It's same as the next code.
+
+```js
+var statement = mist('div::after, main::after');
+```
 
 ## STYLE
 ### SET
@@ -55,6 +59,7 @@ statement.style.set(css_of_statement);
 ```
 
 ### ADD
+This can take a argument [Promise](#promise).
 
 ```js
 var statement = mist('selector');
@@ -71,20 +76,28 @@ var css_of_statement = {
 statement.style.add(css_of_statement);
 ```
 
-This can take a argument [Promise](#promise). It's supported [Duration](#duration).
+It's supported [Duration](#duration).
 
 ## CLASS
 ### ADD
-### REMOVE
 
 ```js
 var statement = mist('selector');
 
 var names_of_class = [
+
+  // class as string.
   'class_name'
 ];
 
 statement.class.add(names_of_class);
+```
+
+And the other,
+
+### REMOVE
+
+```js
 statement.class.remove(names_of_class);
 ```
 
@@ -93,12 +106,6 @@ It's supported [Duration](#duration).
 ### TOGGLE
 
 ```js
-var statement = mist('selector');
-
-var names_of_class = [
-  'class_name'
-];
-
 statement.class.toggle(names_of_class);
 ```
 
