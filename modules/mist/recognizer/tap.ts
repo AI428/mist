@@ -19,9 +19,9 @@ module Mist {
 
         new Emission(emitter, 'panend').when(
 
-          function(e) {
+          function(m) {
 
-            emitter.emit('tap', e);
+            emitter.emit('tap', m);
           });
       }
     }

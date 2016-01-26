@@ -15,7 +15,7 @@ module Mist {
       * @access public
       * @static
       */
-      static err: number = 2;
+      static upper: number = 10;
 
       /**
       * @constructor
@@ -59,14 +59,7 @@ module Mist {
               var m = mat(e, txv);
 
               // filt response.
-              if (Pan.err < Math.sqrt((
-
-                m.transX *
-                m.transX
-                ) + (
-                  m.transY *
-                  m.transY
-                  ))) {
+              if (Pan.upper < m.transV) {
 
                 emitter.emit('panmove', m);
 
@@ -100,7 +93,7 @@ module Mist {
 
             if (txd) {
 
-              emitter.emit('panleave', mat(e));
+              emitter.emit('panleave', mat(e, txv));
 
               // end response.
               txd = false;
@@ -125,7 +118,7 @@ module Mist {
 
           function responsor(e) {
 
-            emitter.emit('panend', mat(e));
+            emitter.emit('panend', mat(e, txv));
 
             // end response.
             txd = false;
@@ -156,6 +149,9 @@ module Mist {
 
       var response;
 
+      // trans mseconds.
+      var s = prev ? e.timeStamp - prev.timeStamp : 0;
+
       var x = 0;
       var y = 0;
 
@@ -171,6 +167,7 @@ module Mist {
 
           if (prev) {
 
+            // trans response.
             x = response.pageX - prev.pageX;
             y = response.pageY - prev.pageY;
           }
@@ -189,6 +186,7 @@ module Mist {
 
             var o = prev.changedTouches[0];
 
+            // trans response.
             x = response.pageX - o.pageX;
             y = response.pageY - o.pageY;
           }
@@ -196,22 +194,38 @@ module Mist {
           break;
       }
 
+      // trans response.
+      var v = Math.sqrt(x * x + y * y);
+
       // {} response.
       return {
 
+        // :number
         clientX: response.clientX,
         clientY: response.clientY,
 
+        // :number
         pageX: response.pageX,
         pageY: response.pageY,
 
+        // :number
         screenX: response.screenX,
         screenY: response.screenY,
 
+        // :HTMLEvent
         src: e,
 
+        // :HTMLElement
         target: response.target,
 
+        // :number
+        tpms: s ? v / s : 0,
+
+        // :number
+        transTime: s,
+
+        // :number
+        transV: v,
         transX: x,
         transY: y
       };

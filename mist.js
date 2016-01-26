@@ -884,9 +884,7 @@ var Mist;
                         if (txd) {
                             var m = mat(e, txv);
                             // filt response.
-                            if (Pan.err < Math.sqrt((m.transX *
-                                m.transX) + (m.transY *
-                                m.transY))) {
+                            if (Pan.upper < m.transV) {
                                 emitter.emit('panmove', m);
                                 // dir response.
                                 if (m.transX < 0)
@@ -911,7 +909,7 @@ var Mist;
                 (function () {
                     function responsor(e) {
                         if (txd) {
-                            emitter.emit('panleave', mat(e));
+                            emitter.emit('panleave', mat(e, txv));
                             // end response.
                             txd = false;
                             txv = e;
@@ -926,7 +924,7 @@ var Mist;
                 })();
                 (function () {
                     function responsor(e) {
-                        emitter.emit('panend', mat(e));
+                        emitter.emit('panend', mat(e, txv));
                         // end response.
                         txd = false;
                         txv = e;
@@ -944,7 +942,7 @@ var Mist;
             * @access public
             * @static
             */
-            Pan.err = 2;
+            Pan.upper = 10;
             return Pan;
         })();
         Recognizer.Pan = Pan;
@@ -954,6 +952,8 @@ var Mist;
         */
         function mat(e, prev) {
             var response;
+            // trans mseconds.
+            var s = prev ? e.timeStamp - prev.timeStamp : 0;
             var x = 0;
             var y = 0;
             switch (e.type) {
@@ -964,6 +964,7 @@ var Mist;
                     // initialize.
                     response = e;
                     if (prev) {
+                        // trans response.
                         x = response.pageX - prev.pageX;
                         y = response.pageY - prev.pageY;
                     }
@@ -977,25 +978,93 @@ var Mist;
                     response = e.changedTouches[0];
                     if (prev) {
                         var o = prev.changedTouches[0];
+                        // trans response.
                         x = response.pageX - o.pageX;
                         y = response.pageY - o.pageY;
                     }
                     break;
             }
+            // trans response.
+            var v = Math.sqrt(x * x + y * y);
             // {} response.
             return {
+                // :number
                 clientX: response.clientX,
                 clientY: response.clientY,
+                // :number
                 pageX: response.pageX,
                 pageY: response.pageY,
+                // :number
                 screenX: response.screenX,
                 screenY: response.screenY,
+                // :HTMLEvent
                 src: e,
+                // :HTMLElement
                 target: response.target,
+                // :number
+                tpms: s ? v / s : 0,
+                // :number
+                transTime: s,
+                // :number
+                transV: v,
                 transX: x,
                 transY: y
             };
         }
+    })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
+})(Mist || (Mist = {}));
+/// <reference path='../emission.ts'/>
+/// <reference path='../emitter.ts'/>
+var Mist;
+(function (Mist) {
+    var Recognizer;
+    (function (Recognizer) {
+        /**
+        * @class Swipe
+        * @module recognizer
+        */
+        var Swipe = (function () {
+            /**
+            * @constructor
+            * @param {} emitter
+            */
+            function Swipe(emitter) {
+                this.emitter = emitter;
+                new Mist.Emission(emitter, 'panend').when(function (m) {
+                    var s = Swipe.tpms / Math.SQRT2;
+                    var v = Swipe.tpms;
+                    // filt response.
+                    if (v < m.tpms) {
+                        emitter.emit('swipe', m);
+                        // filt response.
+                        if (s < Math.sqrt((m.transX *
+                            m.transX)) / m.transTime) {
+                            // dir response.
+                            if (m.transX < 0)
+                                emitter.emit('swipeleft', m);
+                            if (m.transX > 0)
+                                emitter.emit('swiperight', m);
+                        }
+                        // filt response.
+                        if (s < Math.sqrt((m.transY *
+                            m.transY)) / m.transTime) {
+                            // dir response.
+                            if (m.transY < 0)
+                                emitter.emit('swipeup', m);
+                            if (m.transY > 0)
+                                emitter.emit('swipedown', m);
+                        }
+                    }
+                });
+            }
+            /**
+            * @access public
+            * @static
+            */
+            Swipe.tpms = 0.65;
+            return Swipe;
+        })();
+        Recognizer.Swipe = Swipe;
     })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
 })(Mist || (Mist = {}));
 /// <reference path='../emission.ts'/>
@@ -1015,8 +1084,8 @@ var Mist;
             */
             function Tap(emitter) {
                 this.emitter = emitter;
-                new Mist.Emission(emitter, 'panend').when(function (e) {
-                    emitter.emit('tap', e);
+                new Mist.Emission(emitter, 'panend').when(function (m) {
+                    emitter.emit('tap', m);
                 });
             }
             return Tap;
@@ -1030,6 +1099,7 @@ var Mist;
 /// <reference path='emitter.ts' />
 /// <reference path='style.ts' />
 /// <reference path='recognizer/pan.ts' />
+/// <reference path='recognizer/swipe.ts' />
 /// <reference path='recognizer/tap.ts' />
 var Mist;
 (function (Mist) {
@@ -1049,6 +1119,7 @@ var Mist;
             this.style = new Mist.Style(this);
             // recognizer.
             new Mist.Recognizer.Pan(this.emitter);
+            new Mist.Recognizer.Swipe(this.emitter);
             new Mist.Recognizer.Tap(this.emitter);
         }
         /**

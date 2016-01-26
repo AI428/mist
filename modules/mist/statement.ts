@@ -5,6 +5,7 @@
 /// <reference path='style.ts' />
 
 /// <reference path='recognizer/pan.ts' />
+/// <reference path='recognizer/swipe.ts' />
 /// <reference path='recognizer/tap.ts' />
 
 module Mist {
@@ -42,6 +43,7 @@ module Mist {
 
       // recognizer.
       new Recognizer.Pan(this.emitter);
+      new Recognizer.Swipe(this.emitter);
       new Recognizer.Tap(this.emitter);
     }
 

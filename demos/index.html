@@ -46,13 +46,15 @@
 
     statement.style.add({
 
-      left: screens.on('tap').when(function(event) {
-        return `${ event.clientX }px`;
-      }),
+      left: screens.on('tap').when(
+        function(event) {
+          return `${ event.clientX }px`;
+        }),
 
-      top: screens.on('tap').when(function(event) {
-        return `${ event.clientY }px`;
-      })
+      top: screens.on('tap').when(
+        function(event) {
+          return `${ event.clientY }px`;
+        })
     });
   </script>
 </body>
