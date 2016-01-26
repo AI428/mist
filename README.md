@@ -34,13 +34,29 @@ If you later add a selector,
 ### CONCAT
 
 ```js
-var statement = mist('div,main').concat('::after');
+// It's same as the next code.
+var statement = mist('div, main').concat('::after');
+var statement = mist('div::after, main::after');
 ```
 
-It's same as the next code.
+If you want to narrow the scope then
+
+### ELEMENTS
 
 ```js
-var statement = mist('div::after, main::after');
+var elements: HTMLElement[] = statement.elements();
+```
+
+### EACH
+
+```js
+var statement = mist('selector');
+
+statement.each(
+  function(element) {
+    var child_statement = mist(element);
+    // your code.
+  });
 ```
 
 ## STYLE
@@ -50,7 +66,6 @@ var statement = mist('div::after, main::after');
 var statement = mist('selector');
 
 var css_of_statement = {
-
   // property as string.
   border: '1px solid red',
   // property as number.
@@ -67,7 +82,6 @@ This can take a argument [Promise](#promise).
 var statement = mist('selector');
 
 var css_of_statement = {
-
   // property as string.
   border: '1px solid blue',
   // property as dynamic string.
@@ -87,7 +101,6 @@ It's supported [Duration](#duration).
 var statement = mist('selector');
 
 var names_of_class = [
-
   // class as string.
   'class_name'
 ];
@@ -95,7 +108,7 @@ var names_of_class = [
 statement.class.add(names_of_class);
 ```
 
-And the other,
+And one more thing
 
 ### REMOVE
 
@@ -108,6 +121,13 @@ It's supported [Duration](#duration).
 ### TOGGLE
 
 ```js
+var statement = mist('selector');
+
+var names_of_class = [
+  // class as string.
+  'class_name'
+];
+
 statement.class.toggle(names_of_class);
 ```
 
@@ -151,21 +171,18 @@ This is like a [Promise/A+](//developer.mozilla.org/docs/Web/JavaScript/Referenc
 
 ```js
 var responsor = new Mist.Promise(
-
   function(succeed, erred) {
-
-    // lazy example.
     function clock() {
-
       succeed(new Date());
       setTimeout(clock, 100);
     }
 
+    // lazy response.
     clock();
   });
 ```
 
-At this time,
+At this time
 
 ```js
 responsor.then(
