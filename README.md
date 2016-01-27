@@ -6,17 +6,20 @@ _JavaScript statement, for scoped style in JS._
 var screen = mist('body');
 
 mist('selector').style.add({
-
+  // as string.
   position: 'absolute',
+  // as string.
   transform: 'translate(-50%,-50%)',
+  // as dynamic string.
   left: screen.on('tap').then(
-    function(event) { return `${ event.clientX }px`; }),
+    function(e) { return `${ e.clientX }px`; }),
+  // as dynamic string.
   top: screen.on('tap').then(
-    function(event) { return `${ event.clientY }px`; })
+    function(e) { return `${ e.clientY }px`; })
 });
 ```
 
-When you click on the body, 'selector' elements are moved to the click point.
+When you click on the body, 'selector' elements are moved to the pointer.
 
 # USAGE
 ## SCOPE
@@ -24,28 +27,22 @@ When you click on the body, 'selector' elements are moved to the click point.
 ```js
 var element = document.getElementById('id');
 
-// HTMLElement or selector.
+// Element or selector.
 var statement = mist(element);
 var statement = mist('selector');
 ```
 
-If you later add a selector,
+If you later add a selector then
 
 ### CONCAT
 
 ```js
-// It's same as the next code.
+// Same as the next code.
 var statement = mist('div, main').concat('::after');
 var statement = mist('div::after, main::after');
 ```
 
 If you want to narrow the scope then
-
-### ELEMENTS
-
-```js
-var elements: HTMLElement[] = statement.elements();
-```
 
 ### EACH
 
@@ -66,9 +63,9 @@ statement.each(
 var statement = mist('selector');
 
 var css_of_statement = {
-  // property as string.
+  // as string.
   border: '1px solid red',
-  // property as number.
+  // as number.
   opacity: 0.5
 };
 
@@ -76,15 +73,15 @@ statement.style.set(css_of_statement);
 ```
 
 ### ADD
-This can take a argument [Promise](#promise).
+This can take a argument as [Promise](#promise).
 
 ```js
 var statement = mist('selector');
 
 var css_of_statement = {
-  // property as string.
+  // as string.
   border: '1px solid blue',
-  // property as dynamic string.
+  // as dynamic string.
   color: statement.on('click').then(
     function() { return `hsl(${ Math.random() * 360 },50%,50%)`; })
 };
@@ -101,7 +98,7 @@ It's supported [Duration](#duration).
 var statement = mist('selector');
 
 var names_of_class = [
-  // class as string.
+
   'class_name'
 ];
 
@@ -124,7 +121,7 @@ It's supported [Duration](#duration).
 var statement = mist('selector');
 
 var names_of_class = [
-  // class as string.
+
   'class_name'
 ];
 
@@ -143,6 +140,8 @@ statement.on('tap').then(
   });
 ```
 
+It's supported [Recognizer](#recognizer)
+
 ## OPTION
 ### DURATION
 
@@ -152,7 +151,7 @@ var frames_of_duration = 30;
 statement.style.add(css, frames_of_duration);
 ```
 
-If you pass the frames of duration, It will be removed after  [requestAnimationFrame](//developer.mozilla.org/docs/Web/API/Window/requestAnimationFrame) has been called past times. And to continue after,
+If you pass the frames of duration, It will be removed after  [requestAnimationFrame](//developer.mozilla.org/docs/Web/API/Window/requestAnimationFrame) has been called past times. And to continue after
 
 ```js
 statement.style.add(css, frames_of_duration).then(
@@ -163,9 +162,58 @@ statement.style.add(css, frames_of_duration).then(
 
 It will be sort of.
 
+## RECOGNIZER
+For support touch gestures.
+
+```js
+var statement = mist('selector');
+
+statement.on('pandown').then(
+  function(e) {
+    e.clientX;
+    e.clientY;
+    e.pageX;
+    e.pageY;
+    e.screenX;
+    e.screenY;
+    e.src;
+    e.target;
+    e.tpms; // trans per milliseconds.
+    e.transTime;
+    e.transV;
+    e.transX;
+    e.transY;
+  });
+```
+
+All response this properties.
+
+### PAN
+Emit when the pointer is moved.
+- pandown
+- panend
+- panleave
+- panleft
+- panmove
+- panright
+- panstart
+- panup
+
+### SWIPE
+Emit when the pointer is moving fast.
+- swipe
+- swipedown
+- swipeleft
+- swiperight
+- swipeup
+
+### TAP
+Emit when the pointer is doing a touch or click.
+- tap
+
 # API
 ## PROMISE
-This is like a [Promise/A+](//developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise). It has been some extension.
+Like a [Promise/A+](//developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise). It has been some extension.
 
 ### RESUME
 
