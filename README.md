@@ -7,10 +7,19 @@ var screen = mist('body');
 
 mist('selector').style.add({
 
+  // as string.
   position: 'absolute',
+
+  // as string.
   transform: 'translate(-50%,-50%)',
-  left: screen.on('tap').then(function(e) { return `${ e.clientX }px`; }),
-  top: screen.on('tap').then(function(e) { return `${ e.clientY }px`; })
+
+  // as dynamic string.
+  left: screen.on('tap').then(
+    function(e) { return `${ e.clientX }px`; }),
+
+  // as dynamic string.
+  top: screen.on('tap').then(
+    function(e) { return `${ e.clientY }px`; })
 });
 ```
 
@@ -59,7 +68,10 @@ var statement = mist('selector');
 
 var css_of_statement = {
 
+  // as string.
   border: '1px solid red',
+
+  // as number.
   opacity: 0.5
 };
 
@@ -74,8 +86,12 @@ var statement = mist('selector');
 
 var css_of_statement = {
 
+  // as string.
   border: '1px solid blue',
-  color: statement.on('tap').then(function() { return `hsl(${ Math.random() * 360 },50%,50%)`; })
+
+  // as dynamic string.
+  color: statement.on('tap').then(
+    function() { return `hsl(${ Math.random() * 360 },50%,50%)`; })
 };
 
 statement.style.add(css_of_statement);
