@@ -27,7 +27,7 @@ mist('selector').style.add({
 });
 ```
 
-When you click on the body, 'selector' elements are moved to the pointer.
+When you tap on the body, 'selector' elements are moved to the pointer.
 
 # USAGE
 ## SCOPED
