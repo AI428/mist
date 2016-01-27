@@ -9,17 +9,15 @@ mist('selector').style.add({
 
   position: 'absolute',
   transform: 'translate(-50%,-50%)',
-  left: screen.on('tap').then(
-    function(e) { return `${ e.clientX }px`; }),
-  top: screen.on('tap').then(
-    function(e) { return `${ e.clientY }px`; })
+  left: screen.on('tap').then(function(e) { return `${ e.clientX }px`; }),
+  top: screen.on('tap').then(function(e) { return `${ e.clientY }px`; })
 });
 ```
 
 When you click on the body, 'selector' elements are moved to the pointer.
 
 # USAGE
-## SCOPE
+## _SCOPED_
 
 ```js
 var element = document.getElementById('id');
@@ -29,19 +27,9 @@ var statement = mist(element);
 var statement = mist('selector');
 ```
 
-If you later add a selector then
-
-### CONCAT
-
-```js
-// Same as the next code.
-var statement = mist('div, main').concat('::after');
-var statement = mist('div::after, main::after');
-```
-
 If you want to narrow the scope then
 
-### EACH
+### _EACH_
 
 ```js
 var statement = mist('selector');
@@ -53,34 +41,41 @@ statement.each(
   });
 ```
 
+If you later add a selector then
+
+### _CONCAT_
+
+```js
+// Same as the next code.
+var statement = mist('div, main').concat('::after');
+var statement = mist('div::after, main::after');
+```
+
 ## STYLE
-### SET
+### _SET_
 
 ```js
 var statement = mist('selector');
 
 var css_of_statement = {
-  // as string.
+
   border: '1px solid red',
-  // as number.
   opacity: 0.5
 };
 
 statement.style.set(css_of_statement);
 ```
 
-### ADD
+### _ADD_
 This can take a argument is [Promise](#promise).
 
 ```js
 var statement = mist('selector');
 
 var css_of_statement = {
-  // as string.
+
   border: '1px solid blue',
-  // as dynamic string.
-  color: statement.on('click').then(
-    function() { return `hsl(${ Math.random() * 360 },50%,50%)`; })
+  color: statement.on('tap').then(function() { return `hsl(${ Math.random() * 360 },50%,50%)`; })
 };
 
 statement.style.add(css_of_statement);
@@ -91,44 +86,43 @@ It's supported [Duration](#duration).
 ## CLASS
 Like a [classList](//developer.mozilla.org/docs/Web/API/Element/classList). It's supported multiple.
 
-### ADD
+### _ADD_
 
 ```js
 var statement = mist('selector');
 
-var names_of_class = [
+statement.class.add([
 
   'class_name'
-];
-
-statement.class.add(names_of_class);
+]);
 ```
 
 And one more thing
 
-### REMOVE
+### _REMOVE_
 
 ```js
-statement.class.remove(names_of_class);
+statement.class.remove([
+
+  'class_name'
+]);
 ```
 
 It's supported [Duration](#duration).
 
-### TOGGLE
+### _TOGGLE_
 
 ```js
 var statement = mist('selector');
 
-var names_of_class = [
+statement.class.toggle([
 
   'class_name'
-];
-
-statement.class.toggle(names_of_class);
+]);
 ```
 
 ## EVENT
-### ON
+### _ON_
 
 ```js
 var statement = mist('selector');
@@ -142,7 +136,7 @@ statement.on('tap').then(
 It's supported [Recognizer](#recognizer)
 
 ## OPTION
-### DURATION
+### _DURATION_
 
 ```js
 var frames_of_duration = 30;
@@ -167,7 +161,7 @@ For support touch gestures.
 ```js
 var statement = mist('selector');
 
-statement.on('pandown').then(
+statement.on('tap').then(
   function(e) {
     e.clientX;
     e.clientY;
@@ -187,7 +181,7 @@ statement.on('pandown').then(
 
 All respond this properties.
 
-### PAN
+### _PAN_
 Emit when the pointer is moved.
 - pandown
 - panend
@@ -198,7 +192,7 @@ Emit when the pointer is moved.
 - panstart
 - panup
 
-### SWIPE
+### _SWIPE_
 Emit when the pointer is moving fast.
 - swipe
 - swipedown
@@ -206,7 +200,7 @@ Emit when the pointer is moving fast.
 - swiperight
 - swipeup
 
-### TAP
+### _TAP_
 Emit when the pointer is doing a touch or click.
 - tap
 
@@ -214,7 +208,7 @@ Emit when the pointer is doing a touch or click.
 ## PROMISE
 Like a [Promise/A+](//developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise). It has been some extension.
 
-### RESUME
+### _RESUME_
 
 ```js
 var responsor = new Mist.Promise(
@@ -241,7 +235,7 @@ responsor.then(
 
 The callback function will be called only once, But it can be reused in this. Also, it's same as the next code.
 
-### WHEN
+### _WHEN_
 
 ```js
 responsor.when(
