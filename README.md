@@ -1,19 +1,16 @@
 ![MIST](https://github.com/AI428/mist.js/blob/master/logos/mist_1600_1180.png)
 
-_JavaScript statement, for scoped style in JS._
+> _JavaScript statement, for scoped style in JS._
 
 ```js
 var screen = mist('body');
 
 mist('selector').style.add({
-  // as string.
+
   position: 'absolute',
-  // as string.
   transform: 'translate(-50%,-50%)',
-  // as dynamic string.
   left: screen.on('tap').then(
     function(e) { return `${ e.clientX }px`; }),
-  // as dynamic string.
   top: screen.on('tap').then(
     function(e) { return `${ e.clientY }px`; })
 });
@@ -73,7 +70,7 @@ statement.style.set(css_of_statement);
 ```
 
 ### ADD
-This can take a argument as [Promise](#promise).
+This can take a argument is [Promise](#promise).
 
 ```js
 var statement = mist('selector');
@@ -92,6 +89,8 @@ statement.style.add(css_of_statement);
 It's supported [Duration](#duration).
 
 ## CLASS
+Like a [classList](//developer.mozilla.org/docs/Web/API/Element/classList). It's supported multiple.
+
 ### ADD
 
 ```js
@@ -186,7 +185,7 @@ statement.on('pandown').then(
   });
 ```
 
-All response this properties.
+All respond this properties.
 
 ### PAN
 Emit when the pointer is moved.
