@@ -997,9 +997,9 @@ var Mist;
                 // :number
                 screenX: response.screenX,
                 screenY: response.screenY,
-                // :HTMLEvent
+                // :Event
                 src: e,
-                // :HTMLElement
+                // :Element
                 target: response.target,
                 // :number
                 tpms: s ? v / s : 0,
