@@ -7,27 +7,23 @@ var screen = mist('body');
 
 mist('selector').style.add({
 
-  // as string.
-  position: 'absolute',
-
-  // as string.
-  transform: 'translate(-50%,-50%)',
-
-  // as dynamic string.
   left: screen.on('tap').then(
 
-    function(e) {
+    function(response) {
 
-      return `${ e.clientX }px`;
+      return `${ response.clientX }px`;
     }),
 
-  // as dynamic string.
+  position: 'absolute',
+
   top: screen.on('tap').then(
 
-    function(e) {
+    function(response) {
 
-      return `${ e.clientY }px`;
-    })
+      return `${ response.clientY }px`;
+    }),
+
+  transform: 'translate(-50%,-50%)',
 });
 ```
 
@@ -63,9 +59,8 @@ If you later add a selector then
 ### _CONCAT_
 
 ```js
-// Same as the next code.
 var statement = mist('div, main').concat('::after');
-var statement = mist('div::after, main::after');
+var statement = mist('div::after, main::after'); // same.
 ```
 
 ## STYLE
@@ -76,11 +71,9 @@ var statement = mist('selector');
 
 var css_of_statement = {
 
-  // as string.
-  border: '1px solid red',
+  background: '#000',
 
-  // as number.
-  opacity: 0.5
+  opacity: 1 / 2
 };
 
 statement.style.set(css_of_statement);
@@ -94,15 +87,13 @@ var statement = mist('selector');
 
 var css_of_statement = {
 
-  // as string.
-  border: '1px solid blue',
+  background: '#000',
 
-  // as dynamic string.
   color: statement.on('tap').then(
 
-    function() {
+    function(response) {
 
-      return `hsl(${ Math.random() * 360 },50%,50%)`;
+      return `hsl(${ response.clientX % 360 },50%,50%)`;
     })
 };
 
@@ -156,7 +147,7 @@ statement.class.toggle([
 var statement = mist('selector');
 
 statement.on('tap').then(
-  function(e) {
+  function(response) {
     // your code.
   });
 ```
