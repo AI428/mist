@@ -1245,7 +1245,7 @@ var Mist;
  * @description for scoped style in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.3.1
+ * @version 0.4.0
  */
 /**
  * @param {} statement

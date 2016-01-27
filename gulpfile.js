@@ -1,24 +1,20 @@
 'use strict';
 
-/** global modules. */
-
-var gulp = require('gulp');
+var g = require('gulp');
 var rename = require('gulp-rename');
 var typescript = require('gulp-typescript');
 var uglify = require('gulp-uglify');
-
-/** global consts. */
 
 var DIST_DIR = '';
 var DIST_MIN_EXT = '.min.js';
 var DIST_NAME = 'mist.js';
 var NAME = 'modules/mist.ts';
 
-gulp.task('default',
+g.task('default',
 
   function() {
 
-    gulp.src(NAME)
+    g.src(NAME)
       .pipe(
         typescript({
           out: DIST_NAME,
@@ -26,7 +22,7 @@ gulp.task('default',
         })
       )
       .pipe(
-        gulp.dest(
+        g.dest(
           DIST_DIR
         )
       )
@@ -41,7 +37,7 @@ gulp.task('default',
         })
       )
       .pipe(
-        gulp.dest(
+        g.dest(
           DIST_DIR
         )
       );
