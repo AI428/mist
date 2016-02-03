@@ -187,11 +187,11 @@ statement.on('panend').then(
     response.move.x;
     response.move.y;
     response.mpms; // move per milliseconds.
-    response.page.y;
+    response.page.x;
     response.page.y;
     response.passed; // move milliseconds.
     response.screen.x;
-    response.screen.x;
+    response.screen.y;
     response.src;
     response.vector;
   });
