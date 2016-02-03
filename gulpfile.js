@@ -1,42 +1,42 @@
 'use strict';
 
 var g = require('gulp');
-var rename = require('gulp-rename');
-var typescript = require('gulp-typescript');
-var uglify = require('gulp-uglify');
+var r = require('gulp-rename');
+var t = require('gulp-typescript');
+var u = require('gulp-uglify');
 
-var DIST_DIR = '';
-var DIST_MIN_EXT = '.min.js';
-var DIST_NAME = 'mist.js';
-var NAME = 'modules/mist.ts';
+var dist_dir = '';
+var dist_min_ext = '.min.js';
+var dist_name = 'mist.js';
+var name = 'modules/mist.ts';
 
 g.task('default',
 
   function() {
 
-    g.src(
-      NAME
-    ).pipe(
-      typescript({
-        noImplicitAny: true,
-        out: DIST_NAME,
-        target: 'ES5'
-      })
-    ).pipe(
-      g.dest(
-        DIST_DIR
-      )
-    ).pipe(
-      uglify({
-        preserveComments: 'license'
-      })
-    ).pipe(
-      rename({
-        extname: DIST_MIN_EXT
-      })
-    ).pipe(
-      g.dest(
-        DIST_DIR
-      )
-    );
+    // initialize.
+
+    var m = g.dest(dist_dir);
+    var n = g.dest(dist_dir);
+
+    // main.
+
+    g.src(name).pipe(t({
+
+      // ts response.
+      noImplicitAny: true,
+      out: dist_name,
+      target: 'ES5'
+
+    })).pipe(n).pipe(u({
+
+      // uglify response.
+      preserveComments: 'license'
+
+    })).pipe(r({
+
+      // rename response.
+      extname: dist_min_ext
+
+    })).pipe(m);
   });
