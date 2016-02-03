@@ -1,21 +1,23 @@
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
 
-module Mist {
+/// <reference path='detail.ts'/>
 
-  export module Recognizer {
+namespace Mist {
+
+  export namespace Recognizer {
 
     /**
     * @class Swipe
-    * @module recognizer
     */
     export class Swipe {
 
       /**
       * @access public
       * @static
+      * @summary move per milliseconds
       */
-      static tpms: number = 0.65;
+      static mpms: number = 0.65;
 
       /**
       * @constructor
@@ -25,45 +27,45 @@ module Mist {
 
         new Emission(emitter, 'panend').when(
 
-          function(m) {
+          function(response: Detail) {
 
-            var s = Swipe.tpms / Math.SQRT2;
-            var v = Swipe.tpms;
+            var s = Swipe.mpms / Math.SQRT2;
+            var v = Swipe.mpms;
 
             // filt response.
 
-            if (v < m.tpms) {
+            if (v < response.mpms) {
 
-              emitter.emit('swipe', m);
+              emitter.emit('swipe', response);
 
               // filt response.
 
               if (s < Math.sqrt((
 
-                m.transX *
-                m.transX
+                response.move.x *
+                response.move.x
 
-                )) / m.transTime) {
+                )) / response.passed) {
 
                 // dir response.
 
-                if (m.transX < 0) emitter.emit('swipeleft', m);
-                if (m.transX > 0) emitter.emit('swiperight', m);
+                if (response.move.x < 0) emitter.emit('swipeleft', response);
+                if (response.move.x > 0) emitter.emit('swiperight', response);
               }
 
               // filt response.
 
               if (s < Math.sqrt((
 
-                m.transY *
-                m.transY
+                response.move.y *
+                response.move.y
 
-                )) / m.transTime) {
+                )) / response.passed) {
 
                 // dir response.
 
-                if (m.transY < 0) emitter.emit('swipeup', m);
-                if (m.transY > 0) emitter.emit('swipedown', m);
+                if (response.move.y < 0) emitter.emit('swipeup', response);
+                if (response.move.y > 0) emitter.emit('swipedown', response);
               }
             }
           });

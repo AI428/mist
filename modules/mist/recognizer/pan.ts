@@ -1,19 +1,25 @@
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
 
-module Mist {
+/// <reference path='detail.ts'/>
 
-  export module Recognizer {
+namespace Mist {
+
+  export namespace Recognizer {
 
     /**
     * @class Pan
-    * @module recognizer
+    * @namespace Recognizer
     */
     export class Pan {
+
+      private txd: boolean;
+      private txv: any;
 
       /**
       * @access public
       * @static
+      * @summary for error
       */
       static upper: number = 10;
 
@@ -23,121 +29,134 @@ module Mist {
       */
       constructor(private emitter: Emitter) {
 
-        var txd = false;
-        var txv;
+        this.end();
+        this.enter();
+        this.leave();
+        this.move();
+        this.start();
+      }
 
-        (function() {
+      /**
+      * @access private
+      */
+      private end() {
 
-          function responsor(e) {
+        var s = this;
 
-            emitter.emit('panstart', mat(e));
+        function responsor(e: any) {
 
-            // begin response.
-            txd = true;
-            txv = e;
-          }
+          s.emitter.emit('panend', new Detail(e, s.txv));
 
-          new Emission(emitter, 'mousedown').when(responsor);
-          new Emission(emitter, 'touchstart').when(
+          // end response.
 
-            function(e) {
+          s.txd = false;
+          s.txv = e;
+        }
 
-              e.preventDefault();
+        new Emission(s.emitter, 'mouseup').when(responsor);
+        new Emission(s.emitter, 'touchcancel').when(responsor);
+        new Emission(s.emitter, 'touchend').when(prevent).when(responsor);
+      }
 
-              // passthru.
-              return e;
+      /**
+      * @access private
+      */
+      private enter() {
 
-            }).when(responsor);
-        })();
+        var s = this;
 
-        (function() {
+        function responsor(e: any) {
 
-          function responsor(e) {
+          s.emitter.emit('panenter', new Detail(e));
 
-            if (txd) {
+          // begin response.
 
-              var m = mat(e, txv);
+          s.txd = true;
+          s.txv = e;
+        }
 
-              // filt response.
-              if (Pan.upper < m.transV) {
+        new Emission(s.emitter, 'mouseenter').when(responsor);
+        new Emission(s.emitter, 'touchenter').when(prevent).when(responsor);
+      }
 
-                emitter.emit('panmove', m);
+      /**
+      * @access private
+      */
+      private leave() {
 
-                // dir response.
-                if (m.transX < 0) emitter.emit('panleft', m);
-                if (m.transX > 0) emitter.emit('panright', m);
-                if (m.transY < 0) emitter.emit('panup', m);
-                if (m.transY > 0) emitter.emit('pandown', m);
+        var s = this;
 
-                txv = e;
-              }
-            }
-          }
+        function responsor(e: any) {
 
-          new Emission(emitter, 'mousemove').when(responsor);
-          new Emission(emitter, 'touchmove').when(
+          if (s.txd) {
 
-            function(e) {
-
-              e.preventDefault();
-
-              // passthru.
-              return e;
-
-            }).when(responsor);
-        })();
-
-        (function() {
-
-          function responsor(e) {
-
-            if (txd) {
-
-              emitter.emit('panleave', mat(e, txv));
-
-              // end response.
-              txd = false;
-              txv = e;
-            }
-          }
-
-          new Emission(emitter, 'mouseout').when(responsor);
-          new Emission(emitter, 'touchleave').when(
-
-            function(e) {
-
-              e.preventDefault();
-
-              // passthru.
-              return e;
-
-            }).when(responsor);
-        })();
-
-        (function() {
-
-          function responsor(e) {
-
-            emitter.emit('panend', mat(e, txv));
+            s.emitter.emit('panleave', new Detail(e, s.txv));
 
             // end response.
-            txd = false;
-            txv = e;
+
+            s.txd = false;
+            s.txv = e;
           }
+        }
 
-          new Emission(emitter, 'mouseup').when(responsor);
-          new Emission(emitter, 'touchcancel').when(responsor);
-          new Emission(emitter, 'touchend').when(
+        new Emission(s.emitter, 'mouseout').when(responsor);
+        new Emission(s.emitter, 'touchleave').when(prevent).when(responsor);
+      }
 
-            function(e) {
+      /**
+      * @access private
+      */
+      private move() {
 
-              e.preventDefault();
+        var s = this;
 
-              // passthru.
-              return e;
+        function responsor(e: any) {
 
-            }).when(responsor);
-        })();
+          if (s.txd) {
+
+            var r = new Detail(e, s.txv);
+
+            // filt response.
+
+            if (Pan.upper < r.vector) {
+
+              s.emitter.emit('panmove', r);
+
+              // dir response.
+
+              if (r.move.x < 0) s.emitter.emit('panleft', r);
+              if (r.move.x > 0) s.emitter.emit('panright', r);
+              if (r.move.y < 0) s.emitter.emit('panup', r);
+              if (r.move.y > 0) s.emitter.emit('pandown', r);
+
+              s.txv = e;
+            }
+          }
+        }
+
+        new Emission(s.emitter, 'mousemove').when(responsor);
+        new Emission(s.emitter, 'touchmove').when(prevent).when(responsor);
+      }
+
+      /**
+      * @access private
+      */
+      private start() {
+
+        var s = this;
+
+        function responsor(e: any) {
+
+          s.emitter.emit('panstart', new Detail(e));
+
+          // begin response.
+
+          s.txd = true;
+          s.txv = e;
+        }
+
+        new Emission(s.emitter, 'mousedown').when(responsor);
+        new Emission(s.emitter, 'touchstart').when(prevent).when(responsor);
       }
     }
 
@@ -145,90 +164,12 @@ module Mist {
     * @access private
     * @static
     */
-    function mat(e, prev?) {
+    function prevent(e: Event) {
 
-      var response;
+      e.preventDefault();
 
-      // trans mseconds.
-      var s = prev ? e.timeStamp - prev.timeStamp : 0;
-
-      var x = 0;
-      var y = 0;
-
-      switch (e.type) {
-
-        case 'mousedown':
-        case 'mousemove':
-        case 'mouseout':
-        case 'mouseup':
-
-          // initialize.
-          response = e;
-
-          if (prev) {
-
-            // trans response.
-            x = response.pageX - prev.pageX;
-            y = response.pageY - prev.pageY;
-          }
-
-          break;
-        case 'touchcancel':
-        case 'touchend':
-        case 'touchleave':
-        case 'touchmove':
-        case 'touchstart':
-
-          // initialize.
-          response = e.changedTouches[0];
-
-          if (prev) {
-
-            var o = prev.changedTouches[0];
-
-            // trans response.
-            x = response.pageX - o.pageX;
-            y = response.pageY - o.pageY;
-          }
-
-          break;
-      }
-
-      // trans response.
-      var v = Math.sqrt(x * x + y * y);
-
-      // {} response.
-      return {
-
-        // :number
-        clientX: response.clientX,
-        clientY: response.clientY,
-
-        // :number
-        pageX: response.pageX,
-        pageY: response.pageY,
-
-        // :number
-        screenX: response.screenX,
-        screenY: response.screenY,
-
-        // :Event
-        src: e,
-
-        // :Element
-        target: response.target,
-
-        // :number
-        tpms: s ? v / s : 0,
-
-        // :number
-        transTime: s,
-
-        // :number
-        transV: v,
-        transX: x,
-        transY: y
-      };
+      // passthru.
+      return e;
     }
   }
 }
