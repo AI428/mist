@@ -1,25 +1,25 @@
-module Mist {
+namespace Mist {
 
   /**
   * @class Component
-  * @description factory
+  * @summary factory
   */
   export class Component {
 
-    /**
-    * @access private
-    * @static
-    */
-    private static responses = {};
+    static responses: any = {};
 
     /**
-    * @constructor
+    * @param {} modular
+    * @param {} o
     * @return {}
     */
     static create<T>(
 
-      modular: Function,
-      ...o): T {
+      modular: any,
+
+      ...o: any[]
+
+      ): T {
 
       var m = ser([modular]);
       var n = ser(o);
@@ -52,7 +52,7 @@ module Mist {
   * @access private
   * @static
   */
-  function ser(response) {
+  function ser(response: any[]) {
 
     return JSON.stringify(
 

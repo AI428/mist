@@ -6,9 +6,8 @@
 
 /// <reference path='recognizer/pan.ts' />
 /// <reference path='recognizer/swipe.ts' />
-/// <reference path='recognizer/tap.ts' />
 
-module Mist {
+namespace Mist {
 
   /**
   * @class Statement
@@ -34,7 +33,19 @@ module Mist {
     * @constructor
     * @param {} statement
     */
-    constructor(private statement) {
+    constructor(statement: Element);
+
+    /**
+    * @constructor
+    * @param {} statement
+    */
+    constructor(statement: string);
+
+    /**
+    * @constructor
+    * @param {} statement
+    */
+    constructor(private statement: any) {
 
       // initialize.
       this.class = new Class(this);
@@ -44,7 +55,6 @@ module Mist {
       // recognizer.
       new Recognizer.Pan(this.emitter);
       new Recognizer.Swipe(this.emitter);
-      new Recognizer.Tap(this.emitter);
     }
 
     /**
@@ -68,7 +78,6 @@ module Mist {
     }
 
     /**
-    * @description each elements
     * @param {} listener
     */
     each(listener: (element: HTMLElement) => void) {
@@ -77,16 +86,16 @@ module Mist {
     }
 
     /**
-    * @description mapped elements
     * @return {}
+    * @summary mapped
     */
     elements(): HTMLElement[] {
+
+      var response: HTMLElement[];
 
       var s = this.statement;
 
       // mapped.
-      var response;
-
       if (s instanceof HTMLElement) {
         // [] response.
         response = [s];
@@ -95,7 +104,7 @@ module Mist {
         response = s.elements();
       } else {
         // [] response.
-        response = [].map.call(document.querySelectorAll(s), (element) => element);
+        response = [].map.call(document.querySelectorAll(s), (element: HTMLElement) => element);
       }
 
       // mapped response.
@@ -124,16 +133,16 @@ module Mist {
     }
 
     /**
-    * @description mapped selector
     * @return {}
+    * @summary mapped
     */
     selector(): string {
+
+      var response: string;
 
       var s = this.statement;
 
       // mapped.
-      var response;
-
       if (s instanceof HTMLElement) {
         // [] response.
         response = ser(s);
@@ -160,13 +169,13 @@ module Mist {
   * @access private
   * @static
   */
-  function ser(element) {
+  function ser(element: Element) {
 
     return element.id ? '#' + element.id : (
 
       (function() {
 
-        var response;
+        var response: string;
 
         if (element.hasAttribute('mid')) {
 
@@ -185,7 +194,7 @@ module Mist {
 
         var response = sessions++;
 
-        element.setAttribute('mid', response);
+        element.setAttribute('mid', '' + response);
 
         // selector response.
         return '[mid="'

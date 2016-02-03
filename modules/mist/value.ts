@@ -1,7 +1,7 @@
 /// <reference path='frame.ts'/>
 /// <reference path='promise.ts'/>
 
-module Mist {
+namespace Mist {
 
   /**
   * @class Value
@@ -9,20 +9,20 @@ module Mist {
   */
   export class Value extends Promise {
 
-    private xd;
-    private xr;
-    private xs;
+    private xd: boolean;
+    private xr: () => void;
+    private xs: ((response: any) => void)[];
 
     /**
     * @access public
     */
-    composite;
+    composite: any;
 
     /**
     * @constructor
     * @param {} composite
     */
-    constructor(composite) {
+    constructor(composite: any) {
 
       this.composite = composite;
       this.xs = [];
@@ -44,7 +44,7 @@ module Mist {
             // ser response.
             Frame.at(() => {
 
-              var responsor;
+              var responsor: (response: any) => void;
 
               try {
                 // commit response.
@@ -74,7 +74,7 @@ module Mist {
     * @param {} composer
     * @return {}
     */
-    compose(composer: (composite) => any): Promise {
+    compose(composer: (composite: any) => any): Promise {
 
       return new Promise(
 

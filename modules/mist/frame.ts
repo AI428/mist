@@ -1,40 +1,45 @@
 /// <reference path='promise.ts'/>
 
-module Mist {
+namespace Mist {
 
   /**
   * @class Frame
-  * @description queuer
+  * @summary queuer
   */
   export class Frame {
 
-    /**
-    * @access private
-    * @static
-    */
-    private static txd;
-    private static txs = [];
+    static txd: boolean;
+    static txs: (() => boolean)[] = [];
 
     /**
-    * @access public
-    * @static
+    * @param {} responsor
+    * @param {} delay
     */
-    static at(responsor: () => any, delay: number = 0) {
-
-      // initialize.
-      var response = [];
-
-      response.push(delay);
-      response.push(responsor);
+    static at(responsor: () => void, delay: number = 0) {
 
       // patch response.
-      this.txs.push(response);
+      this.txs.push(
+
+        function() {
+
+          var r = 0 > delay--;
+
+          if (r) {
+
+            // commit response.
+            responsor();
+          }
+
+          return r;
+        });
+
       this.tx();
     }
 
     /**
-    * @access public
-    * @static
+    * @param {} responsor
+    * @param {} delay
+    * @return {}
     */
     static on(responsor: () => any, delay: number = 0): Promise {
 
@@ -44,25 +49,29 @@ module Mist {
         erred
         ) => {
 
-        // initialize.
-        var response = [];
-
-        response.push(delay);
-        response.push(function() {
-
-          try {
-            // commit response.
-            succeed(responsor());
-
-          } catch (e) {
-
-            // fail response.
-            erred(e);
-          }
-        });
-
         // patch response.
-        this.txs.push(response);
+        this.txs.push(
+
+          function() {
+
+            var r = 0 > delay--;
+
+            if (r) {
+
+              try {
+                // commit response.
+                succeed(responsor());
+
+              } catch (e) {
+
+                // fail response.
+                erred(e);
+              }
+            }
+
+            return r;
+          });
+
         this.tx();
       });
     }
@@ -74,27 +83,38 @@ module Mist {
     private static tx() {
 
       // begin response.
+
       this.txd || (() => {
         this.txd = true;
 
-        var _;
+        var s = this;
 
-        // lazy response.
-        (_ = () => {
+        (function composer() {
 
-          var p = [];
-          var responsor;
+          // initialize.
+
+          var o: (() => boolean)[] = [];
+
+          var responsor: () => boolean;
 
           while (
 
-            responsor = this.txs.pop()) {
-            responsor[0]-- < 0 ? responsor[1]() : p.push(responsor);
+            responsor = s.txs.pop()) {
+            responsor() || o.push(responsor);
           }
 
           // end response.
-          this.txs.push.apply(
-            this.txs, p) ? requestAnimationFrame(_) : (
-              this.txd = false);
+
+          if (s.txd =
+            s.txs.push.apply(
+              s.txs, o
+              ) > 0
+            ) {
+
+            // re response.
+
+            requestAnimationFrame(composer);
+          }
         })();
       })();
     }

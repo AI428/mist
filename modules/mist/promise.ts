@@ -1,22 +1,29 @@
-module Mist {
+namespace Mist {
 
   /**
   * @class Promise
-  * @description thenable
+  * @summary thenable
   */
   export class Promise {
 
-    private err;
-    private success;
-    private txd;
-    private txr;
+    private err: (response: any) => any;
+    private success: (response: any) => any;
+    private txd: boolean;
+    private txr: () => void;
 
     /**
     * @constructor
     * @param {} process
     */
-    constructor(process) {
+    constructor(process: (
 
+      succeed
+      : (response: any) => void,
+      erred
+      : (response: any) => void
+      ) => void) {
+
+      // bind response.
       var s = this.succeed;
       var e = this.erred;
 
@@ -31,10 +38,10 @@ module Mist {
     }
 
     /**
-    * @access public
-    * @static
+    * @param {} commits
+    * @return {}
     */
-    static all(commits: any[]): Promise {
+    static all(commits: Promise[]): Promise {
 
       return new Promise(
 
@@ -44,10 +51,10 @@ module Mist {
           erred
           ) {
 
-          var p;
-          var response = [];
+          var p: number;
+          var response: any[] = [];
 
-          function composer(a) {
+          function composer(a: any) {
 
             // composer.
             if (response.push(a) > p) {
@@ -80,10 +87,10 @@ module Mist {
     }
 
     /**
-    * @access public
-    * @static
+    * @param {} commits
+    * @return {}
     */
-    static race(commits: any[]): Promise {
+    static race(commits: Promise[]): Promise {
 
       return new Promise(
 
@@ -98,7 +105,7 @@ module Mist {
 
             commit.then(
 
-              function(response) {
+              function(response: any) {
 
                 try {
                   // commit response.
@@ -118,7 +125,7 @@ module Mist {
     * @param {} err
     * @return {}
     */
-    catch(err: (response) => any): Promise {
+    catch(err: (response: any) => any): Promise {
 
       return new Promise((
 
@@ -146,7 +153,7 @@ module Mist {
     }
 
     /**
-    * @description for reuse
+    * @summary for loop
     */
     resume() {
 
@@ -160,7 +167,7 @@ module Mist {
     * @param {} err
     * @return {}
     */
-    then(success: (response) => any, err?: (response) => any): Promise {
+    then(success: (response: any) => any, err?: (response: any) => any): Promise {
 
       return new Promise((
 
@@ -195,9 +202,9 @@ module Mist {
     * @param {} err
     * @return {}
     */
-    when(success: (response) => any, err?: (response) => any): Promise {
+    when(success: (response: any) => any, err?: (response: any) => any): Promise {
 
-      var s = (response) => {
+      var s = (response: any) => {
 
         var p = success(response);
 
@@ -208,7 +215,7 @@ module Mist {
         return p;
       };
 
-      var e = err ? (response) => {
+      var e = err ? (response: any) => {
 
         var p = err(response);
 
@@ -227,7 +234,7 @@ module Mist {
     /**
     * @access private
     */
-    private erred(response) {
+    private erred(response: any) {
 
       // begin response.
       if (!this.txd) {
@@ -266,7 +273,7 @@ module Mist {
     /**
     * @access private
     */
-    private succeed(response) {
+    private succeed(response: any) {
 
       // begin response.
       if (!this.txd) {
@@ -307,7 +314,7 @@ module Mist {
     */
     private tx() {
 
-      var responsor;
+      var responsor: () => void;
 
       if (
         responsor = this.txr) {

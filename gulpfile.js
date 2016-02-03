@@ -14,31 +14,29 @@ g.task('default',
 
   function() {
 
-    g.src(NAME)
-      .pipe(
-        typescript({
-          out: DIST_NAME,
-          target: 'ES5'
-        })
+    g.src(
+      NAME
+    ).pipe(
+      typescript({
+        noImplicitAny: true,
+        out: DIST_NAME,
+        target: 'ES5'
+      })
+    ).pipe(
+      g.dest(
+        DIST_DIR
       )
-      .pipe(
-        g.dest(
-          DIST_DIR
-        )
+    ).pipe(
+      uglify({
+        preserveComments: 'license'
+      })
+    ).pipe(
+      rename({
+        extname: DIST_MIN_EXT
+      })
+    ).pipe(
+      g.dest(
+        DIST_DIR
       )
-      .pipe(
-        uglify({
-          preserveComments: 'license'
-        })
-      )
-      .pipe(
-        rename({
-          extname: DIST_MIN_EXT
-        })
-      )
-      .pipe(
-        g.dest(
-          DIST_DIR
-        )
-      );
+    );
   });

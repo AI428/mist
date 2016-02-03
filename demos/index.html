@@ -46,16 +46,18 @@
 
     statement.style.add({
 
-      left: screens.on('tap').when(
+      left: screens.on('panend').when(
 
-        function(e) {
-          return `${ e.clientX }px`;
+        function(response) {
+
+          return `${ response.client.x }px`;
         }),
 
-      top: screens.on('tap').when(
+      top: screens.on('panend').when(
 
-        function(e) {
-          return `${ e.clientY }px`;
+        function(response) {
+
+          return `${ response.client.y }px`;
         })
     });
   </script>

@@ -3,17 +3,17 @@
 /// <reference path='statement.ts'/>
 /// <reference path='value.ts'/>
 
-module Mist {
+namespace Mist {
 
-  /**
-  * @access private
-  * @static
-  */
-  enum command { a, r, t };
+  const ADD
+    : number = 1;
+  const REMOVE
+    : number = 2;
+  const TOGGLE
+    : number = 4;
 
   /**
   * @class Class
-  * @description binder
   */
   export class Class {
 
@@ -30,13 +30,13 @@ module Mist {
 
         function(o) {
 
-          var response = [];
+          var response: string[][] = [];
 
-          for (var name in o) {
+          // mat response.
+          for (let name in o) {
 
-            var k = o[name];
+            let k = o[name];
 
-            // mat response.
             response[k] || (response[k] = []);
             response[k].push(name);
 
@@ -48,12 +48,12 @@ module Mist {
             function(e) {
 
               var m = e.classList;
-              var n;
+              var n: string[];
 
               // patch response.
-              !(n = response[command.a]) || m.add.apply(m, n);
-              !(n = response[command.r]) || m.remove.apply(m, n);
-              !(n = response[command.t]) || n.forEach(
+              !(n = response[ADD]) || m.add.apply(m, n);
+              !(n = response[REMOVE]) || m.remove.apply(m, n);
+              !(n = response[TOGGLE]) || n.forEach(
 
                 function(name) {
 
@@ -70,30 +70,32 @@ module Mist {
     */
     add(names: string[], dur: number = 0): Promise {
 
-      return new Promise(
+      return new Promise((responsor) => {
 
-        (responsor) => {
+        var r = this.value.compose(
 
-          var r = this.value.compose((o) => {
+          function(o) {
 
-            // composer.
             names.forEach(
+
               function(name) {
-                o[name] = command.a;
+
+                // composer.
+                o[name] = ADD;
               });
 
             // {} response.
             return o;
           });
 
-          // dur response.
-          dur > 0 ? Frame.on(
-            this.remove.bind(
-              this, names), dur).then(responsor) :
+        // dur response.
+        dur > 0 ? Frame.on(
+          this.remove.bind(
+            this, names), dur).then(responsor) :
 
-            // passthru.
-            r.then(responsor);
-        });
+          // passthru.
+          r.then(responsor);
+      });
     }
 
     /**
@@ -103,30 +105,32 @@ module Mist {
     */
     remove(names: string[], dur: number = 0): Promise {
 
-      return new Promise(
+      return new Promise((responsor) => {
 
-        (responsor) => {
+        var r = this.value.compose(
 
-          var r = this.value.compose((o) => {
+          function(o) {
 
-            // composer.
             names.forEach(
+
               function(name) {
-                o[name] = command.r;
+
+                // composer.
+                o[name] = REMOVE;
               });
 
             // {} response.
             return o;
           });
 
-          // dur response.
-          dur > 0 ? Frame.on(
-            this.add.bind(
-              this, names), dur).then(responsor) :
+        // dur response.
+        dur > 0 ? Frame.on(
+          this.add.bind(
+            this, names), dur).then(responsor) :
 
-            // passthru.
-            r.then(responsor);
-        });
+          // passthru.
+          r.then(responsor);
+      });
     }
 
     /**
@@ -135,41 +139,45 @@ module Mist {
     */
     toggle(names: string[]): Promise {
 
-      return this.value.compose(function(o) {
+      return this.value.compose(
 
-        // composer.
-        names.forEach(function(name) {
+        function(o) {
 
-          switch (o[name]) {
+          // composer.
+          names.forEach(
 
-            case command.a:
+            function(name) {
 
-              // tagged response.
-              o[name] = command.r;
+              switch (o[name]) {
 
-              break;
-            case command.r:
+                case ADD:
 
-              // tagged response.
-              o[name] = command.a;
+                  // tagged response.
+                  o[name] = REMOVE;
 
-              break;
-            case command.t:
+                  break;
+                case REMOVE:
 
-              // tagged response.
-              delete o[name];
+                  // tagged response.
+                  o[name] = ADD;
 
-              break;
-            default:
+                  break;
+                case TOGGLE:
 
-              // tagged response.
-              o[name] = command.t;
-          }
+                  // tagged response.
+                  delete o[name];
+
+                  break;
+                default:
+
+                  // tagged response.
+                  o[name] = TOGGLE;
+              }
+            });
+
+          // {} response.
+          return o;
         });
-
-        // {} response.
-        return o;
-      });
     }
   }
 }

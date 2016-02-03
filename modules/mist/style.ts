@@ -3,11 +3,10 @@
 /// <reference path='statement.ts' />
 /// <reference path='value.ts' />
 
-module Mist {
+namespace Mist {
 
   /**
   * @class Style
-  * @description binder
   */
   export class Style {
 
@@ -23,13 +22,13 @@ module Mist {
       this.value = new Value([{}]);
       this.value.when(
 
-        (o) => {
+        (o: CSSStyleDeclaration[]) => {
 
           var response = o.map(
 
             function(p) {
 
-              var response = [];
+              var response: string[] = [];
 
               // format response.
               for (var name in p) {
@@ -54,40 +53,41 @@ module Mist {
     * @param {} dur
     * @return {}
     */
-    add(css, dur: number = 0): Promise {
+    add(css: any, dur: number = 0): Promise {
 
-      return new Promise(
+      return new Promise((responsor) => {
 
-        (responsor) => {
+        var s = this;
+        var r = s.value.compose(
 
-          var r = this.value.compose((o) => {
+          function(o) {
 
             // initialize.
             var response = dur > 0 ? {} : o[0];
 
             // composer.
-            for (var name in css) {
+            for (let name in css) {
 
               if (css[name] instanceof Promise) {
 
+                function composer(
+
+                  name: string,
+                  v: string
+                  ) {
+
+                  // initialize.
+                  var response: any = {};
+
+                  response[name] = v;
+
+                  // no response.
+                  s.add(response, dur);
+                }
+
                 // lazy response.
-                css[name].when((
+                css[name].when(composer.bind(s, name));
 
-                  function(name, v) {
-
-                    // initialize.
-                    var response = {};
-
-                    response[name] = v;
-
-                    // no response.
-                    this.add(response, dur);
-
-                  }).bind(
-
-                  this, name
-
-                  ));
               } else {
                 // passthru.
                 response[name] = css[name];
@@ -100,21 +100,23 @@ module Mist {
               o.push(response);
 
               // lazy response.
-              var r = Frame.on(() => {
+              var r = Frame.on(
 
-                return this.value.compose(
+                function() {
 
-                  function(o) {
+                  return s.value.compose(
 
-                    // composer.
-                    var i = o.indexOf(response);
-                    i < 0 || o.splice(i, 1);
+                    function(o) {
 
-                    // [] response.
-                    return o;
-                  });
+                      // composer.
+                      var i = o.indexOf(response);
+                      i < 0 || o.splice(i, 1);
 
-              }, dur);
+                      // [] response.
+                      return o;
+                    });
+
+                }, dur);
 
               // [] response.
               r.then(responsor);
@@ -124,25 +126,26 @@ module Mist {
             return o;
           });
 
-          // passthru.
-          dur > 0 || r.then(responsor);
-        });
+        // passthru.
+        dur > 0 || r.then(responsor);
+      });
     }
 
     /**
-    * @description scoped style
     * @return {}
+    * @summary scoped
     */
     get(): any {
 
-      var response = {};
+      var response: any = {};
 
       this.value.composite.forEach(
 
-        function(css) {
+        function(css: CSSStyleDeclaration) {
 
           // composer.
-          for (var name in css) {
+          for (let name in css) {
+
             response[name] = css[name];
           }
         });
@@ -155,22 +158,24 @@ module Mist {
     * @param {} css
     * @return {}
     */
-    set(css): Promise {
+    set(css: CSSStyleDeclaration): Promise {
 
-      return this.value.compose(function() {
+      return this.value.compose(
 
-        var response = {};
+        function() {
 
-        // composer.
-        for (var name in css) {
-          response[name] = css[name];
-        }
+          // initialize.
+          var response: any = [{}];
 
-        // [] response.
-        return [
-          response
-        ];
-      });
+          // composer.
+          for (let name in css) {
+
+            response[0][name] = css[name];
+          }
+
+          // [] response.
+          return response;
+        });
     }
 
     /**
@@ -199,7 +204,7 @@ module Mist {
   * @access private
   * @static
   */
-  function hycase(name) {
+  function hycase(name: string) {
 
     // hy response.
     return name.replace(/[A-Z]/g, function(m) {

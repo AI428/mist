@@ -1,7 +1,7 @@
 /// <reference path='emitter.ts'/>
 /// <reference path='promise.ts'/>
 
-module Mist {
+namespace Mist {
 
   /**
   * @class Emission

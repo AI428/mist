@@ -1,15 +1,15 @@
 /// <reference path='statement.ts'/>
 
-module Mist {
+namespace Mist {
 
   /**
   * @class Emitter
-  * @description event
+  * @summary for event
   */
   export class Emitter {
 
-    private emits = {};
-    private obss = {};
+    private emits: any = {};
+    private obss: any = {};
 
     /**
     * @constructor
@@ -19,8 +19,9 @@ module Mist {
     }
 
     /**
-    * @access public
-    * @static
+    * @param {} name
+    * @param {} options
+    * @return {}
     */
     static customize(name: string, options: any = {}): Event {
 
@@ -40,7 +41,7 @@ module Mist {
     * @param {} name
     * @param {} listener
     */
-    add(name: string, listener: (response) => void) {
+    add(name: string, listener: (response: any) => void) {
 
       this.obss[name] || (this.obss[name] = []);
       this.obss[name].push(listener);
@@ -52,9 +53,9 @@ module Mist {
     * @param {} name
     * @param {} response
     */
-    emit(name: string, response?) {
+    emit(name: string, response?: any) {
 
-      for (var i in
+      for (let i in
         this.obss[name]) {
         this.obss[name][i](response);
       }
@@ -64,7 +65,7 @@ module Mist {
     * @param {} name
     * @param {} listener
     */
-    remove(name: string, listener?: (response) => void) {
+    remove(name: string, listener?: (response: any) => void) {
 
       var o = this.obss[name];
 
@@ -82,13 +83,13 @@ module Mist {
     /**
     * @access private
     */
-    private ready(name) {
+    private ready(name: string) {
 
       var o = this.emits;
 
       // lasting response.
       o[name] || document.addEventListener(name,
-        o[name] = (e) => {
+        o[name] = (e: Event) => {
           var element = e.target;
           if (element instanceof Element) {
             if (element.closest(this.statement.selector())) {
@@ -104,25 +105,25 @@ module Mist {
 
 /**
 * @class Element
-* @description for vendor
+* @summary for vendor
 */
 interface Element {
 
   /**
-  * @param {string} selector
-  * @return {Element}
+  * @param {} selector
+  * @return {}
   */
   closest: (selector: string) => Element;
 
   /**
-  * @param {string} selector
-  * @return {boolean}
+  * @param {} selector
+  * @return {}
   */
   matches: (selector: string) => boolean;
 
   /**
-  * @param {string} selector
-  * @return {boolean}
+  * @param {} selector
+  * @return {}
   */
   mozMatchesSelector: (selector: string) => boolean;
 }
@@ -131,7 +132,7 @@ interface Element {
 * @class Element
 * @method Element.matches
 */
-(function(p) {
+(function(p: Element) {
 
   p.matches = p.matches
   || p.mozMatchesSelector
@@ -144,19 +145,19 @@ interface Element {
 * @class Element
 * @method Element.closest
 */
-(function(p) {
+(function(p: Element) {
 
-  p.closest = p.closest || function(selector) {
+  p.closest = p.closest || function(selector: string) {
 
     var s = this;
 
     // ref response.
+
     while (s) {
       if (s.matches(selector)) break;
       s = s.parentElement;
     }
 
-    // {} response.
     return s;
   };
 
