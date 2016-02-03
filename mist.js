@@ -914,7 +914,7 @@ var Mist;
                 this.move.x = x;
                 this.move.y = y;
                 this.mpms = s ? v / s : 0;
-                this.page.y = t.pageX;
+                this.page.x = t.pageX;
                 this.page.y = t.pageY;
                 this.passed = s;
                 this.screen.x = t.screenX;
@@ -1275,7 +1275,7 @@ var Mist;
  * @description for scoped style in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.4.1
+ * @version 0.4.2
  */
 /**
  * @param {} statement
