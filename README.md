@@ -7,37 +7,35 @@ var screen = mist('body');
 
 mist('selector').style.add({
 
-  left: screen.on('tap').then(
+  left: screen.on('panend').then(
 
     function(response) {
 
-      return `${ response.clientX }px`;
+      return `${ response.client.x }px`;
     }),
 
   position: 'absolute',
 
-  top: screen.on('tap').then(
+  top: screen.on('panend').then(
 
     function(response) {
 
-      return `${ response.clientY }px`;
+      return `${ response.client.y }px`;
     }),
 
   transform: 'translate(-50%,-50%)',
 });
 ```
 
-When you tap on the body, 'selector' elements are moved to the pointer.
+When you pan on the body, 'selector' elements are moved to the pointer.
 
 # USAGE
 ## SCOPED
 
 ```js
-var element = document.getElementById('id');
-
 // Element or selector.
-var statement = mist(element);
 var statement = mist('selector');
+var statement = mist(document.getElementById('id'));
 ```
 
 If you want to narrow the scope then
@@ -89,11 +87,11 @@ var css_of_statement = {
 
   background: '#000',
 
-  color: statement.on('tap').then(
+  color: statement.on('panend').then(
 
     function(response) {
 
-      return `hsl(${ response.clientX % 360 },50%,50%)`;
+      return `hsl(${ response.client.x % 360 },50%,50%)`;
     })
 };
 
@@ -146,7 +144,7 @@ statement.class.toggle([
 ```js
 var statement = mist('selector');
 
-statement.on('tap').then(
+statement.on('panstart').then(
   function(response) {
     // your code.
   });
@@ -180,21 +178,22 @@ For support touch gestures.
 ```js
 var statement = mist('selector');
 
-statement.on('tap').then(
-  function(e) {
-    e.clientX;
-    e.clientY;
-    e.pageX;
-    e.pageY;
-    e.screenX;
-    e.screenY;
-    e.src;
-    e.target;
-    e.tpms; // trans per milliseconds.
-    e.transTime;
-    e.transV;
-    e.transX;
-    e.transY;
+statement.on('panend').then(
+
+  function(response) {
+
+    response.client.x;
+    response.client.y;
+    response.move.x;
+    response.move.y;
+    response.mpms; // move per milliseconds.
+    response.page.y;
+    response.page.y;
+    response.passed; // move milliseconds.
+    response.screen.x;
+    response.screen.x;
+    response.src;
+    response.vector;
   });
 ```
 
@@ -204,6 +203,7 @@ All respond this properties.
 Emit when the pointer is moved.
 - pandown
 - panend
+- panenter
 - panleave
 - panleft
 - panmove
@@ -218,10 +218,6 @@ Emit when the pointer is moving fast.
 - swipeleft
 - swiperight
 - swipeup
-
-### _TAP_
-Emit when the pointer is doing a touch or click.
-- tap
 
 # API
 ## PROMISE
