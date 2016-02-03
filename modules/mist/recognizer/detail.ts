@@ -155,7 +155,7 @@ namespace Mist {
 
         this.mpms = s ? v / s : 0;
 
-        this.page.y = t.pageX;
+        this.page.x = t.pageX;
         this.page.y = t.pageY;
 
         this.passed = s;
