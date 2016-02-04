@@ -247,16 +247,15 @@ namespace Mist {
           this.txd = true;
 
           // fail response.
-          response instanceof Object ?
+          if (response instanceof Promise) {
 
-            // lazy response.
-            response.then ?
-              response.then(m) :
+            // lazy response
+            response.then(m);
 
-              // passthru.
-              m(response) :
+          } else {
+            // passthru.
             m(response);
-
+          }
         } else {
 
           // initialize.
@@ -286,16 +285,15 @@ namespace Mist {
           this.txd = true;
 
           // commit response.
-          response instanceof Object ?
+          if (response instanceof Promise) {
 
-            // lazy response.
-            response.then ?
-              response.then(m) :
+            // lazy response
+            response.then(m);
 
-              // passthru.
-              m(response) :
+          } else {
+            // passthru.
             m(response);
-
+          }
         } else {
 
           // initialize.

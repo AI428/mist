@@ -213,13 +213,14 @@ var Mist;
                     // end response.
                     this.txd = true;
                     // fail response.
-                    response instanceof Object ?
-                        // lazy response.
-                        response.then ?
-                            response.then(m) :
-                            // passthru.
-                            m(response) :
+                    if (response instanceof Promise) {
+                        // lazy response
+                        response.then(m);
+                    }
+                    else {
+                        // passthru.
                         m(response);
+                    }
                 }
                 else {
                     // initialize.
@@ -242,13 +243,14 @@ var Mist;
                     // end response.
                     this.txd = true;
                     // commit response.
-                    response instanceof Object ?
-                        // lazy response.
-                        response.then ?
-                            response.then(m) :
-                            // passthru.
-                            m(response) :
+                    if (response instanceof Promise) {
+                        // lazy response
+                        response.then(m);
+                    }
+                    else {
+                        // passthru.
                         m(response);
+                    }
                 }
                 else {
                     // initialize.
@@ -549,6 +551,34 @@ var Mist;
     })();
     Mist.Class = Class;
 })(Mist || (Mist = {}));
+/**
+* @class Element
+* @method Element.matches
+*/
+(function (p) {
+    p.matches = p.matches
+        || p.mozMatchesSelector
+        || p.msMatchesSelector
+        || p.webkitMatchesSelector;
+})(Element.prototype);
+/**
+* @class Element
+* @method Element.closest
+*/
+(function (p) {
+    p.closest =
+        p.closest || function (selector) {
+            var s = this;
+            // ref response.
+            while (s) {
+                if (s.matches(selector))
+                    break;
+                s = s.parentElement;
+            }
+            return s;
+        };
+})(Element.prototype);
+/// <reference path='element.ts'/>
 /// <reference path='statement.ts'/>
 var Mist;
 (function (Mist) {
@@ -634,32 +664,6 @@ var Mist;
     })();
     Mist.Emitter = Emitter;
 })(Mist || (Mist = {}));
-/**
-* @class Element
-* @method Element.matches
-*/
-(function (p) {
-    p.matches = p.matches
-        || p.mozMatchesSelector
-        || p.msMatchesSelector
-        || p.webkitMatchesSelector;
-})(Element.prototype);
-/**
-* @class Element
-* @method Element.closest
-*/
-(function (p) {
-    p.closest = p.closest || function (selector) {
-        var s = this;
-        // ref response.
-        while (s) {
-            if (s.matches(selector))
-                break;
-            s = s.parentElement;
-        }
-        return s;
-    };
-})(Element.prototype);
 /// <reference path='emitter.ts'/>
 /// <reference path='promise.ts'/>
 var Mist;
