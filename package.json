@@ -11,7 +11,7 @@
     "gulp-uglify": "~1.4.2"
   },
   "license": "MIT",
-  "name": "Mist",
+  "name": "MIST",
   "repository": {
     "type": "git",
     "url": "https://github.com/AI428/mist.js"
