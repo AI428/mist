@@ -1,41 +1,38 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title></title>
-  <meta charset='UTF-8'>
-  <meta name='apple-mobile-web-app-capable' content='yes'>
-  <meta name='apple-mobile-web-app-status-bar-style' content='black'>
-  <meta name='description' content=''>
-  <meta name='mobile-web-app-capable' content='yes'>
-  <meta name='MobileOptimized' content='320'>
-  <meta name='viewport' content='maximum-scale=1.0,width=device-width'>
-  <!---->
-  <link href='css/normalize.css' rel='stylesheet'>
-  <!---->
-  <script src='../mist.js'></script>
-</head>
+  <head>
+    <title></title>
+    <meta charset='UTF-8'>
+    <meta name='apple-mobile-web-app-capable' content='yes'>
+    <meta name='apple-mobile-web-app-status-bar-style' content='black'>
+    <meta name='description' content=''>
+    <meta name='mobile-web-app-capable' content='yes'>
+    <meta name='MobileOptimized' content='320'>
+    <meta name='viewport' content='maximum-scale=1.0,width=device-width'>
+    <!---->
+    <link href='normalize.css' rel='stylesheet'>
+    <!---->
+    <script src='../dist/mist.min.js'></script>
+  </head>
 
-<body>
-  <main></main>
-  <script>
-    /** common stateament */
+  <body>
+    <main></main>
+    <script>
+      /** common stateament */
 
-    mist('body, html').style.set({
+      mist('body, html').style.set({height: '100%'});
 
-      height: '100%'
-    });
+      /** scoped statemet */
 
-    /** scoped statemet */
-
-    var clock = new Mist.Promise(
-
-      function(succeed, erred) {
+      var clock = new Mist.Promise(function (succeed, erred) {
 
         function pad(n) {
 
           // padded response.
-          return n < 10 ? `0${n}` : n;
+          return n < 10
+            ? `0${n}`
+            : n;
         }
 
         function clock() {
@@ -43,37 +40,29 @@
           var d = new Date();
 
           // mat response.
-          succeed('"' +
-            pad(d.getHours()) + ':' +
-            pad(d.getMinutes()) + ':' +
-            pad(d.getSeconds()) + '"'
-          );
+          succeed('"' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + '"');
 
           setTimeout(clock, 1000);
         }
 
         // lazy response.
         clock();
-      }
-    );
+      });
 
-    var statement = mist('main');
+      var statement = mist('main');
 
-    statement.style.set({
+      statement.style.set({
 
-      fontSize: '10em',
-      fontWeight: 'bold',
-      left: '50%',
-      position: 'absolute',
-      top: '50%',
-      transform: 'translate3d(-50%,-50%,0)'
-    });
+        fontSize: '10em',
+        fontWeight: 'bold',
+        left: '50%',
+        position: 'absolute',
+        top: '50%',
+        transform: 'translate3d(-50%,-50%,0)'
+      });
 
-    statement.concat('::before').style.add({
-
-      content: clock
-    });
-  </script>
-</body>
+      statement.concat('::before').style.add({content: clock});
+    </script>
+  </body>
 
 </html>
