@@ -24,16 +24,16 @@ namespace Mist {
     */
     constructor(composite: any) {
 
-      this.composite = composite;
-      this.xs = [];
-
       super((
 
         succeed,
         erred
         ) => {
 
+        this.composite = composite;
+
         // initialize.
+        this.xs = [];
         this.xr = (
           ) => {
 

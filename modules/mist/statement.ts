@@ -80,7 +80,7 @@ namespace Mist {
     /**
     * @param {} listener
     */
-    each(listener: (element: HTMLElement) => void) {
+    each(listener: (element: Element) => void) {
 
       this.elements().forEach(listener);
     }
@@ -89,14 +89,14 @@ namespace Mist {
     * @return {}
     * @summary mapped
     */
-    elements(): HTMLElement[] {
+    elements(): Element[] {
 
-      var response: HTMLElement[];
+      var response: Element[];
 
       var s = this.statement;
 
       // mapped.
-      if (s instanceof HTMLElement) {
+      if (s instanceof Element) {
         // [] response.
         response = [s];
       } else if (s instanceof Statement) {
@@ -104,7 +104,33 @@ namespace Mist {
         response = s.elements();
       } else {
         // [] response.
-        response = [].map.call(document.querySelectorAll(s), (element: HTMLElement) => element);
+        response = [].map.call(document.querySelectorAll(s), (element: Element) => element);
+      }
+
+      // mapped response.
+      return response;
+    }
+
+    /**
+    * @return {}
+    * @summary mapped
+    */
+    first(): Element {
+
+      var response: Element;
+
+      var s = this.statement;
+
+      // mapped.
+      if (s instanceof Element) {
+        // a response.
+        response = s;
+      } else if (s instanceof Statement) {
+        // a response.
+        response = s.first();
+      } else {
+        // a response.
+        response = document.querySelector(s);
       }
 
       // mapped response.
@@ -143,7 +169,7 @@ namespace Mist {
       var s = this.statement;
 
       // mapped.
-      if (s instanceof HTMLElement) {
+      if (s instanceof Element) {
         // [] response.
         response = ser(s);
       } else if (s instanceof Statement) {

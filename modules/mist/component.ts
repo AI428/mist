@@ -14,11 +14,8 @@ namespace Mist {
     * @return {}
     */
     static create<T>(
-
       modular: any,
-
       ...o: any[]
-
       ): T {
 
       var m = ser([modular]);

@@ -1,13 +1,13 @@
-/// <reference path='mist/component.ts' />
-/// <reference path='mist/statement.ts' />
-
-/*!
+/**
  * @copyright AI428
  * @description for scoped style in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.4.2
+ * @version 0.4.3
  */
+
+/// <reference path='mist/component.ts' />
+/// <reference path='mist/statement.ts' />
 
 /**
  * @param {} statement

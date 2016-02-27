@@ -111,8 +111,6 @@ namespace Mist {
               ) > 0
             ) {
 
-            // re response.
-
             requestAnimationFrame(composer);
           }
         })();

@@ -158,7 +158,7 @@ namespace Mist {
     * @param {} css
     * @return {}
     */
-    set(css: CSSStyleDeclaration): Promise {
+    set(css: any): Promise {
 
       return this.value.compose(
 

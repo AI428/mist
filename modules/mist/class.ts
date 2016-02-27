@@ -33,6 +33,7 @@ namespace Mist {
           var response: string[][] = [];
 
           // mat response.
+
           for (let name in o) {
 
             let k = o[name];
@@ -50,7 +51,6 @@ namespace Mist {
               var m = e.classList;
               var n: string[];
 
-              // patch response.
               !(n = response[ADD]) || m.add.apply(m, n);
               !(n = response[REMOVE]) || m.remove.apply(m, n);
               !(n = response[TOGGLE]) || n.forEach(
