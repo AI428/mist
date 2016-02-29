@@ -46,6 +46,7 @@ namespace Mist {
 
       this.obss[name] || (this.obss[name] = []);
       this.obss[name].push(listener);
+
       // lasting response.
       this.ready(name);
     }

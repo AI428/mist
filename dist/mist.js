@@ -30,7 +30,7 @@ var Mist;
         };
         Component.responses = {};
         return Component;
-    }());
+    })();
     Mist.Component = Component;
     /**
     * @access private
@@ -271,7 +271,7 @@ var Mist;
             }
         };
         return Promise;
-    }());
+    })();
     Mist.Promise = Promise;
 })(Mist || (Mist = {}));
 /// <reference path='promise.ts'/>
@@ -333,8 +333,8 @@ var Mist;
         * @static
         */
         Frame.tx = function () {
-            // begin response.
             var _this = this;
+            // begin response.
             this.txd || (function () {
                 _this.txd = true;
                 var s = _this;
@@ -355,7 +355,7 @@ var Mist;
         };
         Frame.txs = [];
         return Frame;
-    }());
+    })();
     Mist.Frame = Frame;
 })(Mist || (Mist = {}));
 /// <reference path='frame.ts'/>
@@ -426,7 +426,7 @@ var Mist;
             });
         };
         return Value;
-    }(Mist.Promise));
+    })(Mist.Promise);
     Mist.Value = Value;
 })(Mist || (Mist = {}));
 /// <reference path='frame.ts'/>
@@ -546,7 +546,7 @@ var Mist;
             });
         };
         return Class;
-    }());
+    })();
     Mist.Class = Class;
 })(Mist || (Mist = {}));
 /**
@@ -659,7 +659,7 @@ var Mist;
             });
         };
         return Emitter;
-    }());
+    })();
     Mist.Emitter = Emitter;
 })(Mist || (Mist = {}));
 /// <reference path='emitter.ts'/>
@@ -694,7 +694,7 @@ var Mist;
             this.name = name;
         }
         return Emission;
-    }(Mist.Promise));
+    })(Mist.Promise);
     Mist.Emission = Emission;
 })(Mist || (Mist = {}));
 /// <reference path='frame.ts' />
@@ -832,7 +832,7 @@ var Mist;
             return this.e;
         };
         return Style;
-    }());
+    })();
     Mist.Style = Style;
     /**
     * @access private
@@ -939,7 +939,7 @@ var Mist;
                 this.set(t, s, x, y, v);
             };
             return Detail;
-        }());
+        })();
         Recognizer.Detail = Detail;
     })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
 })(Mist || (Mist = {}));
@@ -1060,7 +1060,7 @@ var Mist;
             */
             Pan.upper = 10;
             return Pan;
-        }());
+        })();
         Recognizer.Pan = Pan;
         /**
         * @access private
@@ -1124,7 +1124,7 @@ var Mist;
             */
             Swipe.mpms = 0.65;
             return Swipe;
-        }());
+        })();
         Recognizer.Swipe = Swipe;
     })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
 })(Mist || (Mist = {}));
@@ -1260,7 +1260,7 @@ var Mist;
             return response;
         };
         return Statement;
-    }());
+    })();
     Mist.Statement = Statement;
     /**
     * @access private

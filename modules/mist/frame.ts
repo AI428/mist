@@ -83,7 +83,6 @@ namespace Mist {
     private static tx() {
 
       // begin response.
-
       this.txd || (() => {
         this.txd = true;
 
@@ -104,7 +103,6 @@ namespace Mist {
           }
 
           // end response.
-
           if (s.txd =
             s.txs.push.apply(
               s.txs, o

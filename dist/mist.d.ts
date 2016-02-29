@@ -10,7 +10,7 @@ declare namespace Mist {
         * @param {} o
         * @return {}
         */
-        static create<T>(modular: any, ...o: any[]): T;
+        static create<T>(modular: Function, ...o: any[]): T;
     }
 }
 declare namespace Mist {
@@ -165,6 +165,11 @@ interface Element {
     * @return {}
     */
     closest: (selector: string) => Element;
+    /**
+    * @param {} selector
+    * @return {}
+    */
+    matches: (selector: string) => boolean;
     /**
     * @param {} selector
     * @return {}

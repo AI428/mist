@@ -54,9 +54,7 @@ namespace Mist {
               !(n = response[ADD]) || m.add.apply(m, n);
               !(n = response[REMOVE]) || m.remove.apply(m, n);
               !(n = response[TOGGLE]) || n.forEach(
-
                 function(name) {
-
                   m.toggle(name);
                 });
             });

@@ -48,7 +48,6 @@ namespace Mist {
           s.emitter.emit('panend', new Detail(e, s.txv));
 
           // end response.
-
           s.txd = false;
           s.txv = e;
         }
@@ -70,7 +69,6 @@ namespace Mist {
           s.emitter.emit('panenter', new Detail(e));
 
           // begin response.
-
           s.txd = true;
           s.txv = e;
         }
@@ -93,7 +91,6 @@ namespace Mist {
             s.emitter.emit('panleave', new Detail(e, s.txv));
 
             // end response.
-
             s.txd = false;
             s.txv = e;
           }
@@ -150,7 +147,6 @@ namespace Mist {
           s.emitter.emit('panstart', new Detail(e));
 
           // begin response.
-
           s.txd = true;
           s.txv = e;
         }
