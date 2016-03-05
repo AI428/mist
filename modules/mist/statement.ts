@@ -138,6 +138,32 @@ namespace Mist {
     }
 
     /**
+    * @return {}
+    * @summary mapped
+    */
+    last(): Element {
+
+      var response: Element;
+
+      var s = this.statement;
+
+      // mapped.
+      if (s instanceof Element) {
+        // a response.
+        response = s;
+      } else if (s instanceof Statement) {
+        // a response.
+        response = s.last();
+      } else {
+        // a response.
+        response = document.querySelector(s.match(/[^,]*$/).concat('last-child').join(':'));
+      }
+
+      // mapped response.
+      return response;
+    }
+
+    /**
     * @param {} name
     * @return {}
     */
