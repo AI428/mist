@@ -79,19 +79,45 @@ declare namespace Mist {
     * @summary queuer
     */
     class Frame {
-        static txd: boolean;
-        static txs: (() => boolean)[];
+        /**
+        * @access public
+        * @static
+        * @summary milliseconds per frame
+        */
+        static mspf: number;
+        /**
+        * @access public
+        * @static
+        * @summary timestamp
+        */
+        static times: number;
+        /**
+        * @access private
+        * @static
+        */
+        private static txd;
+        private static txs;
         /**
         * @param {} responsor
         * @param {} delay
         */
         static at(responsor: () => void, delay?: number): void;
         /**
+        * @param {} frames
+        * @summary frames per second
+        */
+        static fps(frames: number): void;
+        /**
         * @param {} responsor
         * @param {} delay
         * @return {}
         */
         static on(responsor: () => any, delay?: number): Promise;
+        /**
+        * @access private
+        * @static
+        */
+        private static request(responsor);
         /**
         * @access private
         * @static

@@ -8,8 +8,26 @@ namespace Mist {
   */
   export class Frame {
 
-    static txd: boolean;
-    static txs: (() => boolean)[] = [];
+    /**
+    * @access public
+    * @static
+    * @summary milliseconds per frame
+    */
+    static mspf: number = 1000 / 120;
+
+    /**
+    * @access public
+    * @static
+    * @summary timestamp
+    */
+    static times: number = 0;
+
+    /**
+    * @access private
+    * @static
+    */
+    private static txd: boolean;
+    private static txs: (() => boolean)[] = [];
 
     /**
     * @param {} responsor
@@ -34,6 +52,15 @@ namespace Mist {
         });
 
       this.tx();
+    }
+
+    /**
+    * @param {} frames
+    * @summary frames per second
+    */
+    static fps(frames: number) {
+
+      this.mspf = 1000 / frames;
     }
 
     /**
@@ -80,6 +107,27 @@ namespace Mist {
     * @access private
     * @static
     */
+    private static request(responsor: FrameRequestCallback) {
+
+      var s = this;
+      var t = Date.now();
+
+      if (t - s.times > s.mspf) {
+
+        s.times = t;
+
+      } else {
+        // skip response.
+        responsor = s.request.bind(s, responsor);
+      }
+
+      requestAnimationFrame(responsor);
+    }
+
+    /**
+    * @access private
+    * @static
+    */
     private static tx() {
 
       this.txd || (() => {
@@ -106,7 +154,7 @@ namespace Mist {
               s.txs, o) > 0
             ) {
 
-            requestAnimationFrame(composer);
+            s.request(composer);
           }
         })();
       })();

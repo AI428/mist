@@ -302,6 +302,13 @@ var Mist;
             this.tx();
         };
         /**
+        * @param {} frames
+        * @summary frames per second
+        */
+        Frame.fps = function (frames) {
+            this.mspf = 1000 / frames;
+        };
+        /**
         * @param {} responsor
         * @param {} delay
         * @return {}
@@ -332,6 +339,22 @@ var Mist;
         * @access private
         * @static
         */
+        Frame.request = function (responsor) {
+            var s = this;
+            var t = Date.now();
+            if (t - s.times > s.mspf) {
+                s.times = t;
+            }
+            else {
+                // skip response.
+                responsor = s.request.bind(s, responsor);
+            }
+            requestAnimationFrame(responsor);
+        };
+        /**
+        * @access private
+        * @static
+        */
         Frame.tx = function () {
             var _this = this;
             this.txd || (function () {
@@ -346,11 +369,23 @@ var Mist;
                     }
                     if (s.txd =
                         s.txs.push.apply(s.txs, o) > 0) {
-                        requestAnimationFrame(composer);
+                        s.request(composer);
                     }
                 })();
             })();
         };
+        /**
+        * @access public
+        * @static
+        * @summary milliseconds per frame
+        */
+        Frame.mspf = 1000 / 120;
+        /**
+        * @access public
+        * @static
+        * @summary timestamp
+        */
+        Frame.times = 0;
         Frame.txs = [];
         return Frame;
     }());
