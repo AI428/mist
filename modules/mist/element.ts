@@ -14,12 +14,6 @@ interface Element {
   * @param {} selector
   * @return {}
   */
-  matches: (selector: string) => boolean;
-
-  /**
-  * @param {} selector
-  * @return {}
-  */
   mozMatchesSelector: (selector: string) => boolean;
 }
 
@@ -52,7 +46,7 @@ interface Element {
       s = s.parentElement;
     }
 
-    // ref response.
+    // {} response.
     return s;
   };
 

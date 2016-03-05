@@ -82,7 +82,6 @@ namespace Mist {
     */
     private static tx() {
 
-      // begin response.
       this.txd || (() => {
         this.txd = true;
 
@@ -102,11 +101,9 @@ namespace Mist {
             responsor() || o.push(responsor);
           }
 
-          // end response.
           if (s.txd =
             s.txs.push.apply(
-              s.txs, o
-              ) > 0
+              s.txs, o) > 0
             ) {
 
             requestAnimationFrame(composer);

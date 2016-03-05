@@ -9,7 +9,6 @@ var dist_dir = 'dist';
 var dist_min_ext = '.min.js';
 var dist_name = 'mist.js';
 var name = 'modules/mist.ts';
-var ver = 'ES5';
 
 g.task('declare',
 
@@ -42,7 +41,7 @@ g.task('default',
       // tcs response.
       noImplicitAny: true,
       out: dist_name,
-      target: ver
+      target: 'ES5'
 
     })).pipe(n).pipe(u({
 

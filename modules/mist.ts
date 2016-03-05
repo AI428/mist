@@ -1,6 +1,6 @@
 /**
  * @copyright AI428
- * @description for scoped style in JS
+ * @description Reactive CSS Framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  * @version 0.4.3

@@ -9,6 +9,7 @@ namespace Mist {
 
     /**
     * @class Swipe
+    * @namespace Recognizer
     */
     export class Swipe {
 

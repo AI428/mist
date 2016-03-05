@@ -7,6 +7,7 @@ namespace Mist {
 
   /**
   * @class Style
+  * @summary commands
   */
   export class Style {
 
@@ -31,7 +32,7 @@ namespace Mist {
               var response: string[] = [];
 
               // format response.
-              for (var name in p) {
+              for (let name in p) {
                 response.push(hycase(name) + ':' + p[name]);
               }
 
@@ -46,6 +47,19 @@ namespace Mist {
           // inner response.
           this.create().innerHTML = response.join('');
         });
+    }
+
+    /**
+    * @return {}
+    * @summary conv
+    */
+    static rem(): number {
+
+      var e = document.body;
+      var s = getComputedStyle(e);
+
+      // conv response.
+      return parseInt(s.fontSize, 10);
     }
 
     /**
