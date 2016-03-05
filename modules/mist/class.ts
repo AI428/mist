@@ -10,10 +10,15 @@ namespace Mist {
   const REMOVE
     : number = 2;
   const TOGGLE
+    : number = 3;
+  const NEXT
     : number = 4;
+  const PREVIOUS
+    : number = 5;
 
   /**
   * @class Class
+  * @summary commands
   */
   export class Class {
 
@@ -30,33 +35,133 @@ namespace Mist {
 
         function(o) {
 
-          var response: string[][] = [];
+          // initialize.
 
-          // mat response.
+          var response: string[][] = [];
 
           for (let name in o) {
 
-            let k = o[name];
+            var i = o[name];
 
-            response[k] || (response[k] = []);
-            response[k].push(name);
+            // format response.
+
+            response[i] || (response[i] = []);
+            response[i].push(name);
+
+            // reposit.
 
             delete o[name];
           }
+
+          var queues: Function[] = [];
 
           statement.each(
 
             function(e) {
 
-              var m = e.classList;
-              var n: string[];
+              var classes = e.classList;
 
-              !(n = response[ADD]) || m.add.apply(m, n);
-              !(n = response[REMOVE]) || m.remove.apply(m, n);
-              !(n = response[TOGGLE]) || n.forEach(
-                function(name) {
-                  m.toggle(name);
+              response.map(
+
+                function(names, i) {
+
+                  switch (i) {
+
+                    case ADD:
+
+                      // bulk response.
+
+                      classes.add.apply(classes, names);
+
+                      break;
+                    case REMOVE:
+
+                      // bulk response.
+
+                      classes.remove.apply(classes, names);
+
+                      break;
+                    case TOGGLE:
+
+                      names.forEach(
+
+                        function(name) {
+
+                          classes.toggle(name);
+                        });
+
+                      break;
+                    case NEXT:
+
+                      var o = (e.nextElementSibling || statement.first()).classList;
+
+                      // filt response.
+
+                      names = names.filter(
+
+                        function(name) {
+
+                          var r = classes.contains(name);
+                          if (r) classes.remove(name);
+
+                          // is response.
+
+                          return r;
+                        });
+
+                      if (names.length) {
+
+                        queues.push(
+
+                          function() {
+
+                            // lazy response.
+
+                            o.add.apply(o, names);
+                          });
+                      }
+
+                      break;
+                    case PREVIOUS:
+
+                      var o = (e.previousElementSibling || statement.last()).classList;
+
+                      // filt response.
+
+                      names = names.filter(
+
+                        function(name) {
+
+                          var r = classes.contains(name);
+                          if (r) classes.remove(name);
+
+                          // is response.
+
+                          return r;
+                        });
+
+                      if (names.length) {
+
+                        queues.push(
+
+                          function() {
+
+                            // lazy response.
+
+                            o.add.apply(o, names);
+                          });
+                      }
+
+                      break;
+                  }
                 });
+            });
+
+          queues.forEach(
+
+            function(responsor) {
+
+              responsor();
             });
         });
     }
@@ -76,9 +181,10 @@ namespace Mist {
 
             names.forEach(
 
+              // composer.
               function(name) {
 
-                // composer.
+                // tagged response.
                 o[name] = ADD;
               });
 
@@ -98,6 +204,54 @@ namespace Mist {
 
     /**
     * @param {} names
+    * @return {}
+    */
+    next(names: string[]): Promise {
+
+      return this.value.compose(
+
+        function(o) {
+
+          names.forEach(
+
+            // composer.
+            function(name) {
+
+              // tagged response.
+              o[name] = NEXT;
+            });
+
+          // {} response.
+          return o;
+        });
+    }
+
+    /**
+    * @param {} names
+    * @return {}
+    */
+    prev(names: string[]): Promise {
+
+      return this.value.compose(
+
+        function(o) {
+
+          names.forEach(
+
+            // composer.
+            function(name) {
+
+              // tagged response.
+              o[name] = PREVIOUS;
+            });
+
+          // {} response.
+          return o;
+        });
+    }
+
+    /**
+    * @param {} names
     * @param {} dur
     * @return {}
     */
@@ -111,9 +265,10 @@ namespace Mist {
 
             names.forEach(
 
+              // composer.
               function(name) {
 
-                // composer.
+                // tagged response.
                 o[name] = REMOVE;
               });
 
@@ -141,9 +296,9 @@ namespace Mist {
 
         function(o) {
 
-          // composer.
           names.forEach(
 
+            // composer.
             function(name) {
 
               switch (o[name]) {
