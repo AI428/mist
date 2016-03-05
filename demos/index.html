@@ -1,57 +1,74 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <title></title>
-    <meta charset='UTF-8'>
-    <meta name='apple-mobile-web-app-capable' content='yes'>
-    <meta name='apple-mobile-web-app-status-bar-style' content='black'>
-    <meta name='description' content=''>
-    <meta name='mobile-web-app-capable' content='yes'>
-    <meta name='MobileOptimized' content='320'>
-    <meta name='viewport' content='maximum-scale=1.0,width=device-width'>
-    <!---->
-    <link href='normalize.css' rel='stylesheet'>
-    <!---->
-    <script src='../dist/mist.min.js'></script>
-  </head>
+<head>
+  <title></title>
+  <meta charset='UTF-8'>
+  <meta name='apple-mobile-web-app-capable' content='yes'>
+  <meta name='apple-mobile-web-app-status-bar-style' content='black'>
+  <meta name='description' content=''>
+  <meta name='mobile-web-app-capable' content='yes'>
+  <meta name='MobileOptimized' content='320'>
+  <meta name='viewport' content='maximum-scale=1.0,width=device-width'>
+  <!---->
+  <link href='css/normalize.css' rel='stylesheet'>
+  <link href='css/skeleton.css' rel='stylesheet'>
+  <!---->
+  <script src='../dist/mist.min.js'></script>
+  <!---->
+  <style>
+    body {
+      bottom: 0;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  </style>
+</head>
 
-  <body>
-    <main></main>
-    <script>
-      /** common stateament */
+<body>
+  <main></main>
+  <script>
+    /** scoped statemet */
 
-      var screens = mist('body, html');
+    var statement = mist('main');
 
-      screens.style.set({height: '100%'});
+    statement.style.set({
 
-      /** scoped statemet */
+      boxShadow: '0 1px 4px gray',
+      height: '2em',
+      left: '50%',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translate3d(-50%,-50%,0)',
+      transition: 'all .2s',
+      width: '2em'
+    });
 
-      var statement = mist('main');
+    /** reactive css */
 
-      statement.style.set({
+    var body = mist('body');
 
-        boxShadow: '0 1px 4px gray',
-        height: '2em',
-        left: '50%',
-        position: 'absolute',
-        top: '50%',
-        transform: 'translate3d(-50%,-50%,0)',
-        transition: 'all .2s',
-        width: '2em'
-      });
+    statement.style.add({
 
-      statement.style.add({
+      left: body.on('panstart').when(
 
-        left: screens.on('panend').when(function (response) {
+        function(response) {
+
+          // left css response.
           return `${response.client.x}px`;
         }),
 
-        top: screens.on('panend').when(function (response) {
+      top: body.on('panend').when(
+
+        function(response) {
+
+          // top css response.
           return `${response.client.y}px`;
         })
-      });
-    </script>
-  </body>
+    });
+  </script>
+</body>
 
 </html>
