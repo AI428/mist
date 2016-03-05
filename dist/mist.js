@@ -30,7 +30,7 @@ var Mist;
         };
         Component.responses = {};
         return Component;
-    })();
+    }());
     Mist.Component = Component;
     /**
     * @access private
@@ -271,7 +271,7 @@ var Mist;
             }
         };
         return Promise;
-    })();
+    }());
     Mist.Promise = Promise;
 })(Mist || (Mist = {}));
 /// <reference path='promise.ts'/>
@@ -334,7 +334,6 @@ var Mist;
         */
         Frame.tx = function () {
             var _this = this;
-            // begin response.
             this.txd || (function () {
                 _this.txd = true;
                 var s = _this;
@@ -345,7 +344,6 @@ var Mist;
                     while (responsor = s.txs.pop()) {
                         responsor() || o.push(responsor);
                     }
-                    // end response.
                     if (s.txd =
                         s.txs.push.apply(s.txs, o) > 0) {
                         requestAnimationFrame(composer);
@@ -355,7 +353,7 @@ var Mist;
         };
         Frame.txs = [];
         return Frame;
-    })();
+    }());
     Mist.Frame = Frame;
 })(Mist || (Mist = {}));
 /// <reference path='frame.ts'/>
@@ -426,7 +424,7 @@ var Mist;
             });
         };
         return Value;
-    })(Mist.Promise);
+    }(Mist.Promise));
     Mist.Value = Value;
 })(Mist || (Mist = {}));
 /// <reference path='frame.ts'/>
@@ -437,9 +435,12 @@ var Mist;
 (function (Mist) {
     var ADD = 1;
     var REMOVE = 2;
-    var TOGGLE = 4;
+    var TOGGLE = 3;
+    var NEXT = 4;
+    var PREVIOUS = 5;
     /**
     * @class Class
+    * @summary commands
     */
     var Class = (function () {
         /**
@@ -450,22 +451,73 @@ var Mist;
             this.statement = statement;
             this.value = new Mist.Value({});
             this.value.when(function (o) {
+                // initialize.
                 var response = [];
-                // mat response.
                 for (var name_1 in o) {
-                    var k = o[name_1];
-                    response[k] || (response[k] = []);
-                    response[k].push(name_1);
+                    var i = o[name_1];
+                    // format response.
+                    response[i] || (response[i] = []);
+                    response[i].push(name_1);
+                    // reposit.
                     delete o[name_1];
                 }
+                var queues = [];
                 statement.each(function (e) {
-                    var m = e.classList;
-                    var n;
-                    !(n = response[ADD]) || m.add.apply(m, n);
-                    !(n = response[REMOVE]) || m.remove.apply(m, n);
-                    !(n = response[TOGGLE]) || n.forEach(function (name) {
-                        m.toggle(name);
+                    var classes = e.classList;
+                    response.map(function (names, i) {
+                        switch (i) {
+                            case ADD:
+                                // bulk response.
+                                classes.add.apply(classes, names);
+                                break;
+                            case REMOVE:
+                                // bulk response.
+                                classes.remove.apply(classes, names);
+                                break;
+                            case TOGGLE:
+                                names.forEach(function (name) {
+                                    classes.toggle(name);
+                                });
+                                break;
+                            case NEXT:
+                                var o = (e.nextElementSibling || statement.first()).classList;
+                                // filt response.
+                                names = names.filter(function (name) {
+                                    var r = classes.contains(name);
+                                    if (r)
+                                        classes.remove(name);
+                                    // is response.
+                                    return r;
+                                });
+                                if (names.length) {
+                                    queues.push(function () {
+                                        // lazy response.
+                                        o.add.apply(o, names);
+                                    });
+                                }
+                                break;
+                            case PREVIOUS:
+                                var o = (e.previousElementSibling || statement.last()).classList;
+                                // filt response.
+                                names = names.filter(function (name) {
+                                    var r = classes.contains(name);
+                                    if (r)
+                                        classes.remove(name);
+                                    // is response.
+                                    return r;
+                                });
+                                if (names.length) {
+                                    queues.push(function () {
+                                        // lazy response.
+                                        o.add.apply(o, names);
+                                    });
+                                }
+                                break;
+                        }
                     });
+                });
+                queues.forEach(function (responsor) {
+                    responsor();
                 });
             });
         }
@@ -479,8 +531,10 @@ var Mist;
             if (dur === void 0) { dur = 0; }
             return new Mist.Promise(function (responsor) {
                 var r = _this.value.compose(function (o) {
-                    names.forEach(function (name) {
-                        // composer.
+                    names.forEach(
+                    // composer.
+                    function (name) {
+                        // tagged response.
                         o[name] = ADD;
                     });
                     // {} response.
@@ -494,6 +548,38 @@ var Mist;
         };
         /**
         * @param {} names
+        * @return {}
+        */
+        Class.prototype.next = function (names) {
+            return this.value.compose(function (o) {
+                names.forEach(
+                // composer.
+                function (name) {
+                    // tagged response.
+                    o[name] = NEXT;
+                });
+                // {} response.
+                return o;
+            });
+        };
+        /**
+        * @param {} names
+        * @return {}
+        */
+        Class.prototype.prev = function (names) {
+            return this.value.compose(function (o) {
+                names.forEach(
+                // composer.
+                function (name) {
+                    // tagged response.
+                    o[name] = PREVIOUS;
+                });
+                // {} response.
+                return o;
+            });
+        };
+        /**
+        * @param {} names
         * @param {} dur
         * @return {}
         */
@@ -502,8 +588,10 @@ var Mist;
             if (dur === void 0) { dur = 0; }
             return new Mist.Promise(function (responsor) {
                 var r = _this.value.compose(function (o) {
-                    names.forEach(function (name) {
-                        // composer.
+                    names.forEach(
+                    // composer.
+                    function (name) {
+                        // tagged response.
                         o[name] = REMOVE;
                     });
                     // {} response.
@@ -521,8 +609,9 @@ var Mist;
         */
         Class.prototype.toggle = function (names) {
             return this.value.compose(function (o) {
+                names.forEach(
                 // composer.
-                names.forEach(function (name) {
+                function (name) {
                     switch (o[name]) {
                         case ADD:
                             // tagged response.
@@ -546,7 +635,7 @@ var Mist;
             });
         };
         return Class;
-    })();
+    }());
     Mist.Class = Class;
 })(Mist || (Mist = {}));
 /**
@@ -572,7 +661,7 @@ var Mist;
                     break;
                 s = s.parentElement;
             }
-            // ref response.
+            // {} response.
             return s;
         };
 })(Element.prototype);
@@ -659,7 +748,7 @@ var Mist;
             });
         };
         return Emitter;
-    })();
+    }());
     Mist.Emitter = Emitter;
 })(Mist || (Mist = {}));
 /// <reference path='emitter.ts'/>
@@ -694,7 +783,7 @@ var Mist;
             this.name = name;
         }
         return Emission;
-    })(Mist.Promise);
+    }(Mist.Promise));
     Mist.Emission = Emission;
 })(Mist || (Mist = {}));
 /// <reference path='frame.ts' />
@@ -705,6 +794,7 @@ var Mist;
 (function (Mist) {
     /**
     * @class Style
+    * @summary commands
     */
     var Style = (function () {
         /**
@@ -719,8 +809,8 @@ var Mist;
                 var response = o.map(function (p) {
                     var response = [];
                     // format response.
-                    for (var name in p) {
-                        response.push(hycase(name) + ':' + p[name]);
+                    for (var name_2 in p) {
+                        response.push(hycase(name_2) + ':' + p[name_2]);
                     }
                     // a response.
                     return statement.selector()
@@ -732,6 +822,16 @@ var Mist;
                 _this.create().innerHTML = response.join('');
             });
         }
+        /**
+        * @return {}
+        * @summary conv
+        */
+        Style.rem = function () {
+            var e = document.body;
+            var s = getComputedStyle(e);
+            // conv response.
+            return parseInt(s.fontSize, 10);
+        };
         /**
         * @param {} css
         * @param {} dur
@@ -746,8 +846,8 @@ var Mist;
                     // initialize.
                     var response = dur > 0 ? {} : o[0];
                     // composer.
-                    for (var name_2 in css) {
-                        if (css[name_2] instanceof Mist.Promise) {
+                    for (var name_3 in css) {
+                        if (css[name_3] instanceof Mist.Promise) {
                             function composer(name, v) {
                                 // initialize.
                                 var response = {};
@@ -756,11 +856,11 @@ var Mist;
                                 s.add(response, dur);
                             }
                             // lazy response.
-                            css[name_2].when(composer.bind(s, name_2));
+                            css[name_3].when(composer.bind(s, name_3));
                         }
                         else {
                             // passthru.
-                            response[name_2] = css[name_2];
+                            response[name_3] = css[name_3];
                         }
                     }
                     // dur response.
@@ -794,8 +894,8 @@ var Mist;
             var response = {};
             this.value.composite.forEach(function (css) {
                 // composer.
-                for (var name_3 in css) {
-                    response[name_3] = css[name_3];
+                for (var name_4 in css) {
+                    response[name_4] = css[name_4];
                 }
             });
             // {} response.
@@ -810,8 +910,8 @@ var Mist;
                 // initialize.
                 var response = [{}];
                 // composer.
-                for (var name_4 in css) {
-                    response[0][name_4] = css[name_4];
+                for (var name_5 in css) {
+                    response[0][name_5] = css[name_5];
                 }
                 // [] response.
                 return response;
@@ -832,7 +932,7 @@ var Mist;
             return this.e;
         };
         return Style;
-    })();
+    }());
     Mist.Style = Style;
     /**
     * @access private
@@ -939,7 +1039,7 @@ var Mist;
                 this.set(t, s, x, y, v);
             };
             return Detail;
-        })();
+        }());
         Recognizer.Detail = Detail;
     })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
 })(Mist || (Mist = {}));
@@ -973,7 +1073,9 @@ var Mist;
             Pan.prototype.end = function () {
                 var s = this;
                 function responsor(e) {
-                    s.emitter.emit('panend', new Recognizer.Detail(e, s.txv));
+                    var r = new Recognizer.Detail(e, s.txv);
+                    s.emitter.emit('pan', r);
+                    s.emitter.emit('panend', r);
                     // end response.
                     s.txd = false;
                     s.txv = e;
@@ -988,7 +1090,9 @@ var Mist;
             Pan.prototype.enter = function () {
                 var s = this;
                 function responsor(e) {
-                    s.emitter.emit('panenter', new Recognizer.Detail(e));
+                    var r = new Recognizer.Detail(e, s.txv);
+                    s.emitter.emit('pan', r);
+                    s.emitter.emit('panenter', r);
                     // begin response.
                     s.txd = true;
                     s.txv = e;
@@ -1003,7 +1107,9 @@ var Mist;
                 var s = this;
                 function responsor(e) {
                     if (s.txd) {
-                        s.emitter.emit('panleave', new Recognizer.Detail(e, s.txv));
+                        var r = new Recognizer.Detail(e, s.txv);
+                        s.emitter.emit('pan', r);
+                        s.emitter.emit('panleave', r);
                         // end response.
                         s.txd = false;
                         s.txv = e;
@@ -1022,6 +1128,7 @@ var Mist;
                         var r = new Recognizer.Detail(e, s.txv);
                         // filt response.
                         if (Pan.upper < r.vector) {
+                            s.emitter.emit('pan', r);
                             s.emitter.emit('panmove', r);
                             // dir response.
                             if (r.move.x < 0)
@@ -1045,7 +1152,9 @@ var Mist;
             Pan.prototype.start = function () {
                 var s = this;
                 function responsor(e) {
-                    s.emitter.emit('panstart', new Recognizer.Detail(e));
+                    var r = new Recognizer.Detail(e);
+                    s.emitter.emit('pan', r);
+                    s.emitter.emit('panstart', r);
                     // begin response.
                     s.txd = true;
                     s.txv = e;
@@ -1060,7 +1169,7 @@ var Mist;
             */
             Pan.upper = 10;
             return Pan;
-        })();
+        }());
         Recognizer.Pan = Pan;
         /**
         * @access private
@@ -1082,6 +1191,7 @@ var Mist;
     (function (Recognizer) {
         /**
         * @class Swipe
+        * @namespace Recognizer
         */
         var Swipe = (function () {
             /**
@@ -1124,7 +1234,7 @@ var Mist;
             */
             Swipe.mpms = 0.65;
             return Swipe;
-        })();
+        }());
         Recognizer.Swipe = Swipe;
     })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
 })(Mist || (Mist = {}));
@@ -1221,6 +1331,29 @@ var Mist;
             return response;
         };
         /**
+        * @return {}
+        * @summary mapped
+        */
+        Statement.prototype.last = function () {
+            var response;
+            var s = this.statement;
+            // mapped.
+            if (s instanceof Element) {
+                // a response.
+                response = s;
+            }
+            else if (s instanceof Statement) {
+                // a response.
+                response = s.last();
+            }
+            else {
+                // a response.
+                response = document.querySelector(s.match(/[^,]*$/).concat('last-child').join(':'));
+            }
+            // mapped response.
+            return response;
+        };
+        /**
         * @param {} name
         * @return {}
         */
@@ -1260,7 +1393,7 @@ var Mist;
             return response;
         };
         return Statement;
-    })();
+    }());
     Mist.Statement = Statement;
     /**
     * @access private
@@ -1295,7 +1428,7 @@ var Mist;
 })(Mist || (Mist = {}));
 /**
  * @copyright AI428
- * @description for scoped style in JS
+ * @description Reactive CSS Framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  * @version 0.4.3

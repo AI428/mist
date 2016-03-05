@@ -127,6 +127,7 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Class
+    * @summary commands
     */
     class Class {
         private statement;
@@ -142,6 +143,16 @@ declare namespace Mist {
         * @return {}
         */
         add(names: string[], dur?: number): Promise;
+        /**
+        * @param {} names
+        * @return {}
+        */
+        next(names: string[]): Promise;
+        /**
+        * @param {} names
+        * @return {}
+        */
+        prev(names: string[]): Promise;
         /**
         * @param {} names
         * @param {} dur
@@ -165,11 +176,6 @@ interface Element {
     * @return {}
     */
     closest: (selector: string) => Element;
-    /**
-    * @param {} selector
-    * @return {}
-    */
-    matches: (selector: string) => boolean;
     /**
     * @param {} selector
     * @return {}
@@ -236,6 +242,7 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Style
+    * @summary commands
     */
     class Style {
         private statement;
@@ -246,6 +253,11 @@ declare namespace Mist {
         * @param {} statement
         */
         constructor(statement: Statement);
+        /**
+        * @return {}
+        * @summary conv
+        */
+        static rem(): number;
         /**
         * @param {} css
         * @param {} dur
@@ -404,6 +416,7 @@ declare namespace Mist {
     namespace Recognizer {
         /**
         * @class Swipe
+        * @namespace Recognizer
         */
         class Swipe {
             private emitter;
@@ -469,6 +482,11 @@ declare namespace Mist {
         */
         first(): Element;
         /**
+        * @return {}
+        * @summary mapped
+        */
+        last(): Element;
+        /**
         * @param {} name
         * @return {}
         */
@@ -487,7 +505,7 @@ declare namespace Mist {
 }
 /**
  * @copyright AI428
- * @description for scoped style in JS
+ * @description Reactive CSS Framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  * @version 0.4.3
