@@ -45,9 +45,13 @@ namespace Mist {
 
         function responsor(e: any) {
 
-          s.emitter.emit('panend', new Detail(e, s.txv));
+          var r = new Detail(e, s.txv);
+
+          s.emitter.emit('pan', r);
+          s.emitter.emit('panend', r);
 
           // end response.
+
           s.txd = false;
           s.txv = e;
         }
@@ -66,9 +70,13 @@ namespace Mist {
 
         function responsor(e: any) {
 
-          s.emitter.emit('panenter', new Detail(e));
+          var r = new Detail(e, s.txv);
+
+          s.emitter.emit('pan', r);
+          s.emitter.emit('panenter', r);
 
           // begin response.
+
           s.txd = true;
           s.txv = e;
         }
@@ -88,9 +96,13 @@ namespace Mist {
 
           if (s.txd) {
 
-            s.emitter.emit('panleave', new Detail(e, s.txv));
+            var r = new Detail(e, s.txv);
+
+            s.emitter.emit('pan', r);
+            s.emitter.emit('panleave', r);
 
             // end response.
+
             s.txd = false;
             s.txv = e;
           }
@@ -117,6 +129,7 @@ namespace Mist {
 
             if (Pan.upper < r.vector) {
 
+              s.emitter.emit('pan', r);
               s.emitter.emit('panmove', r);
 
               // dir response.
@@ -144,9 +157,13 @@ namespace Mist {
 
         function responsor(e: any) {
 
-          s.emitter.emit('panstart', new Detail(e));
+          var r = new Detail(e);
+
+          s.emitter.emit('pan', r);
+          s.emitter.emit('panstart', r);
 
           // begin response.
+
           s.txd = true;
           s.txv = e;
         }
