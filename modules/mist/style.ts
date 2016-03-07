@@ -77,36 +77,7 @@ namespace Mist {
           function(o) {
 
             // initialize.
-            var response = dur > 0 ? {} : o[0];
-
-            // composer.
-            for (let name in css) {
-
-              if (css[name] instanceof Promise) {
-
-                function composer(
-
-                  name: string,
-                  v: string
-                  ) {
-
-                  // initialize.
-                  var response: any = {};
-
-                  response[name] = v;
-
-                  // no response.
-                  s.add(response, dur);
-                }
-
-                // lazy response.
-                css[name].when(composer.bind(s, name));
-
-              } else {
-                // passthru.
-                response[name] = css[name];
-              }
-            }
+            var response = s.composer(css, dur, dur > 0 ? {} : o[0]);
 
             // dur response.
             if (dur > 0) {
@@ -132,17 +103,72 @@ namespace Mist {
 
                 }, dur);
 
-              // [] response.
+              // connect.
               r.then(responsor);
             }
 
-            // {} response.
+            // [] response.
             return o;
           });
 
         // passthru.
         dur > 0 || r.then(responsor);
       });
+    }
+
+    /**
+    * @param {} key
+    * @param {} responsor
+    * @return {}
+    */
+    bind(key: string, responsor: Promise): Promise {
+
+      var e = new RegExp('.*?\\/\\*+\\s*(.*?)\\{\\s*(' + key + '\\S*)\\s*\\}(.*?)\\s*\\*+\\/');
+
+      var s = this;
+      var r = responsor.when(
+
+        function(v) {
+
+          // bind response.
+          eval('var _' + key + '=v;');
+
+          return s.value.compose(
+
+            function(o) {
+
+              o.forEach(
+
+                function(p: CSSStyleDeclaration) {
+
+                  // composer.
+                  for (let name in p) {
+
+                    p[name] = p[name].replace(e,
+
+                      function(
+                        _
+                        : string,
+                        $1
+                        : string,
+                        $2
+                        : string,
+                        $3
+                        : string
+                        ) {
+
+                        return [$1, eval('_' + $2), $3, '/*', $1, '{', $2, '}', $3, '*/'].join('');
+                      });
+                  }
+                });
+
+              // [] response.
+              return o;
+            });
+        });
+
+      // passthru.
+      return r;
     }
 
     /**
@@ -174,22 +200,57 @@ namespace Mist {
     */
     set(css: any): Promise {
 
-      return this.value.compose(
+      var s = this;
+      var r = s.value.compose(
 
         function() {
 
-          // initialize.
-          var response: any = [{}];
+          // [] response.
+          return [s.composer(css)];
+        });
 
-          // composer.
-          for (let name in css) {
+      // passthru.
+      return r;
+    }
 
-            response[0][name] = css[name];
+    /**
+    * @access private
+    */
+    private composer(css: any, dur: number = 0, response: any = {}) {
+
+      var s = this;
+
+      // composer.
+      for (let name in css) {
+
+        if (css[name] instanceof Promise) {
+
+          function composer(
+            name
+            : string,
+            v
+            : string
+            ) {
+
+            var response: any = {};
+
+            response[name] = v;
+
+            // reset response.
+            s.add(response, dur);
           }
 
-          // [] response.
-          return response;
-        });
+          // lazy response.
+          css[name].when(composer.bind(s, name));
+
+        } else {
+          // passthru.
+          response[name] = css[name];
+        }
+      }
+
+      // {} response.
+      return response;
     }
 
     /**

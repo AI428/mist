@@ -342,6 +342,7 @@ var Mist;
         Frame.request = function (responsor) {
             var s = this;
             var t = Date.now();
+            // filt response.
             if (t - s.times > s.mspf) {
                 s.times = t;
             }
@@ -367,8 +368,8 @@ var Mist;
                     while (responsor = s.txs.pop()) {
                         responsor() || o.push(responsor);
                     }
-                    if (s.txd =
-                        s.txs.push.apply(s.txs, o) > 0) {
+                    if (s.txd
+                        = s.txs.push.apply(s.txs, o) > 0) {
                         s.request(composer);
                     }
                 })();
@@ -879,25 +880,7 @@ var Mist;
                 var s = _this;
                 var r = s.value.compose(function (o) {
                     // initialize.
-                    var response = dur > 0 ? {} : o[0];
-                    // composer.
-                    for (var name_3 in css) {
-                        if (css[name_3] instanceof Mist.Promise) {
-                            function composer(name, v) {
-                                // initialize.
-                                var response = {};
-                                response[name] = v;
-                                // no response.
-                                s.add(response, dur);
-                            }
-                            // lazy response.
-                            css[name_3].when(composer.bind(s, name_3));
-                        }
-                        else {
-                            // passthru.
-                            response[name_3] = css[name_3];
-                        }
-                    }
+                    var response = s.composer(css, dur, dur > 0 ? {} : o[0]);
                     // dur response.
                     if (dur > 0) {
                         o.push(response);
@@ -911,15 +894,42 @@ var Mist;
                                 return o;
                             });
                         }, dur);
-                        // [] response.
+                        // connect.
                         r.then(responsor);
                     }
-                    // {} response.
+                    // [] response.
                     return o;
                 });
                 // passthru.
                 dur > 0 || r.then(responsor);
             });
+        };
+        /**
+        * @param {} key
+        * @param {} responsor
+        * @return {}
+        */
+        Style.prototype.bind = function (key, responsor) {
+            var e = new RegExp('.*?\\/\\*+\\s*(.*?)\\{\\s*(' + key + '\\S*)\\s*\\}(.*?)\\s*\\*+\\/');
+            var s = this;
+            var r = responsor.when(function (v) {
+                // bind response.
+                eval('var _' + key + '=v;');
+                return s.value.compose(function (o) {
+                    o.forEach(function (p) {
+                        // composer.
+                        for (var name_3 in p) {
+                            p[name_3] = p[name_3].replace(e, function (_, $1, $2, $3) {
+                                return [$1, eval('_' + $2), $3, '/*', $1, '{', $2, '}', $3, '*/'].join('');
+                            });
+                        }
+                    });
+                    // [] response.
+                    return o;
+                });
+            });
+            // passthru.
+            return r;
         };
         /**
         * @return {}
@@ -941,16 +951,40 @@ var Mist;
         * @return {}
         */
         Style.prototype.set = function (css) {
-            return this.value.compose(function () {
-                // initialize.
-                var response = [{}];
-                // composer.
-                for (var name_5 in css) {
-                    response[0][name_5] = css[name_5];
-                }
+            var s = this;
+            var r = s.value.compose(function () {
                 // [] response.
-                return response;
+                return [s.composer(css)];
             });
+            // passthru.
+            return r;
+        };
+        /**
+        * @access private
+        */
+        Style.prototype.composer = function (css, dur, response) {
+            if (dur === void 0) { dur = 0; }
+            if (response === void 0) { response = {}; }
+            var s = this;
+            // composer.
+            for (var name_5 in css) {
+                if (css[name_5] instanceof Mist.Promise) {
+                    function composer(name, v) {
+                        var response = {};
+                        response[name] = v;
+                        // reset response.
+                        s.add(response, dur);
+                    }
+                    // lazy response.
+                    css[name_5].when(composer.bind(s, name_5));
+                }
+                else {
+                    // passthru.
+                    response[name_5] = css[name_5];
+                }
+            }
+            // {} response.
+            return response;
         };
         /**
         * @access private

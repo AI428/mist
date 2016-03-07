@@ -38,36 +38,15 @@
 
       boxShadow: '0 1px 4px gray',
       height: '2em',
-      left: '50%',
+      left: '50% /* { response.client.x }px */',
       position: 'absolute',
-      top: '50%',
+      top: '50% /* { response.client.y }px */',
       transform: 'translate3d(-50%,-50%,0)',
       transition: 'all .2s',
       width: '2em'
     });
 
-    /** reactive css */
-
-    var body = mist('body');
-
-    statement.style.add({
-
-      left: body.on('panstart').when(
-
-        function(response) {
-
-          // left css response.
-          return `${response.client.x}px`;
-        }),
-
-      top: body.on('panend').when(
-
-        function(response) {
-
-          // top css response.
-          return `${response.client.y}px`;
-        })
-    });
+    statement.style.bind('response', mist('body').on('panend'));
   </script>
 </body>
 
