@@ -112,6 +112,7 @@ namespace Mist {
       var s = this;
       var t = Date.now();
 
+      // filt response.
       if (t - s.times > s.mspf) {
 
         s.times = t;
@@ -149,9 +150,11 @@ namespace Mist {
             responsor() || o.push(responsor);
           }
 
-          if (s.txd =
-            s.txs.push.apply(
-              s.txs, o) > 0
+          if (s.txd
+            = s.txs.push.apply(
+              s.txs,
+              o
+              ) > 0
             ) {
 
             s.request(composer);

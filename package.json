@@ -3,7 +3,7 @@
   "bugs": {
     "url": "https://github.com/AI428/mist/issues"
   },
-  "description": "Reactive CSS Framework",
+  "description": "Reactive CSS framework",
   "devDependencies": {
     "gulp": "~3.9.1",
     "gulp-rename": "~1.2.2",
