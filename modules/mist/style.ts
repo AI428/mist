@@ -117,13 +117,13 @@ namespace Mist {
     }
 
     /**
-    * @param {} key
+    * @param {} name
     * @param {} responsor
     * @return {}
     */
-    bind(key: string, responsor: Promise): Promise {
+    bind(name: string, responsor: Promise): Promise {
 
-      var e = new RegExp('.*?\\/\\*+\\s*(.*?)\\{\\s*(' + key + '\\S*)\\s*\\}(.*?)\\s*\\*+\\/');
+      var e = new RegExp('.*?\\/\\*\\**\\s*(.*?)\\{\\s*(' + name + '\\S*)\\s*\\}(.*?)\\s*\\**\\*\\/');
 
       var s = this;
       var r = responsor.when(
@@ -131,39 +131,41 @@ namespace Mist {
         function(v) {
 
           // bind response.
-          eval('var _' + key + '=v;');
+          eval('var $$' + name + '=v');
 
           return s.value.compose(
 
             function(o) {
-
-              o.forEach(
+              return o.map(
 
                 function(p: CSSStyleDeclaration) {
 
                   // composer.
                   for (let name in p) {
 
-                    p[name] = p[name].replace(e,
+                    function composer(
+                      match
+                      : string,
+                      p
+                      : string,
+                      v
+                      : string,
+                      s
+                      : string
+                      ) {
 
-                      function(
-                        _
-                        : string,
-                        $1
-                        : string,
-                        $2
-                        : string,
-                        $3
-                        : string
-                        ) {
+                      var r = eval('$$' + v);
 
-                        return [$1, eval('_' + $2), $3, '/*', $1, '{', $2, '}', $3, '*/'].join('');
-                      });
+                      return `${p}${r}${s}/*${p}{${v}}${s}*/`;
+                    };
+
+                    // a response.
+                    p[name] = p[name].replace(e, composer);
                   }
-                });
 
-              // [] response.
-              return o;
+                  // {} response.
+                  return p;
+                });
             });
         });
 

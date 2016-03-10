@@ -32,12 +32,8 @@ namespace Mist {
 
         this.composite = composite;
 
-        // initialize.
         this.xs = [];
-        this.xr = (
-          ) => {
-
-          // begin response.
+        this.xr = () => {
           this.xd || (() => {
             this.xd = true;
 
@@ -62,7 +58,7 @@ namespace Mist {
                 responsor(this.composite);
               }
 
-              // end response.
+              // end.
               this.xd = false;
             });
           })();
@@ -86,7 +82,7 @@ namespace Mist {
             // a response.
             this.composite = composer(this.composite);
 
-            // patch response.
+            // queues.
             this.xs.push(responsor);
             this.xr();
           });
