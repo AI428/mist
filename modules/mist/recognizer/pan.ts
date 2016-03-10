@@ -1,5 +1,6 @@
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
+/// <reference path='../statement.ts'/>
 
 /// <reference path='detail.ts'/>
 
@@ -30,8 +31,6 @@ namespace Mist {
       constructor(private emitter: Emitter) {
 
         this.end();
-        this.enter();
-        this.leave();
         this.move();
         this.start();
       }
@@ -56,60 +55,8 @@ namespace Mist {
           s.txv = e;
         }
 
-        new Emission(s.emitter, 'mouseup').when(responsor);
-        new Emission(s.emitter, 'touchcancel').when(responsor);
+        new Emission(Component.create<Emitter>(Emitter, '*'), 'mouseup').when(responsor);
         new Emission(s.emitter, 'touchend').when(prevent).when(responsor);
-      }
-
-      /**
-      * @access private
-      */
-      private enter() {
-
-        var s = this;
-
-        function responsor(e: any) {
-
-          var r = new Detail(e, s.txv);
-
-          s.emitter.emit('pan', r);
-          s.emitter.emit('panenter', r);
-
-          // begin response.
-
-          s.txd = true;
-          s.txv = e;
-        }
-
-        new Emission(s.emitter, 'mouseenter').when(responsor);
-        new Emission(s.emitter, 'touchenter').when(prevent).when(responsor);
-      }
-
-      /**
-      * @access private
-      */
-      private leave() {
-
-        var s = this;
-
-        function responsor(e: any) {
-
-          if (s.txd) {
-
-            var r = new Detail(e, s.txv);
-
-            s.emitter.emit('pan', r);
-            s.emitter.emit('panleave', r);
-
-            // end response.
-
-            s.txd = false;
-            s.txv = e;
-          }
-        }
-
-        new Emission(s.emitter, 'mouseout').when(responsor);
-        new Emission(s.emitter, 'touchleave').when(prevent).when(responsor);
       }
 
       /**
@@ -125,21 +72,29 @@ namespace Mist {
 
             var r = new Detail(e, s.txv);
 
-            // filt response.
+            // left mouseover.
 
-            if (Pan.upper < r.vector) {
+            var x = r.client.x;
+            var y = r.client.y;
 
-              s.emitter.emit('pan', r);
-              s.emitter.emit('panmove', r);
+            if (document.elementFromPoint(x, y) == r.src.target) {
 
-              // dir response.
+              // filt response.
 
-              if (r.move.x < 0) s.emitter.emit('panleft', r);
-              if (r.move.x > 0) s.emitter.emit('panright', r);
-              if (r.move.y < 0) s.emitter.emit('panup', r);
-              if (r.move.y > 0) s.emitter.emit('pandown', r);
+              if (Pan.upper < r.vector) {
 
-              s.txv = e;
+                s.emitter.emit('pan', r);
+                s.emitter.emit('panmove', r);
+
+                // dir response.
+
+                if (r.move.x < 0) s.emitter.emit('panleft', r);
+                if (r.move.x > 0) s.emitter.emit('panright', r);
+                if (r.move.y < 0) s.emitter.emit('panup', r);
+                if (r.move.y > 0) s.emitter.emit('pandown', r);
+
+                s.txv = e;
+              }
             }
           }
         }
