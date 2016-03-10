@@ -35,7 +35,7 @@ namespace Mist {
     */
     static at(responsor: () => void, delay: number = 0) {
 
-      // patch response.
+      // queues.
       this.txs.push(
 
         function() {
@@ -76,7 +76,7 @@ namespace Mist {
         erred
         ) => {
 
-        // patch response.
+        // queues.
         this.txs.push(
 
           function() {
@@ -150,12 +150,9 @@ namespace Mist {
             responsor() || o.push(responsor);
           }
 
-          if (s.txd
-            = s.txs.push.apply(
-              s.txs,
-              o
-              ) > 0
-            ) {
+          if (s.txd =
+            s.txs.push.apply(
+              s.txs, o) > 0) {
 
             s.request(composer);
           }

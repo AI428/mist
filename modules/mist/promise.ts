@@ -78,7 +78,7 @@ namespace Mist {
 
             function(commit, i) {
 
-              commit.then(composer);
+              commit.when(composer);
 
               // bind response.
               p = i;
@@ -103,7 +103,7 @@ namespace Mist {
           // initialize.
           commits.forEach(function(commit) {
 
-            commit.then(
+            commit.when(
 
               function(response: any) {
 
@@ -236,14 +236,13 @@ namespace Mist {
     */
     private erred(response: any) {
 
-      // begin response.
       if (!this.txd) {
 
         var m = this.err;
 
         if (m) {
 
-          // end response.
+          // end.
           this.txd = true;
 
           // fail response.
@@ -274,14 +273,13 @@ namespace Mist {
     */
     private succeed(response: any) {
 
-      // begin response.
       if (!this.txd) {
 
         var m = this.success;
 
         if (m) {
 
-          // end response.
+          // end.
           this.txd = true;
 
           // commit response.

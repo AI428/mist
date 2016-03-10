@@ -21,23 +21,26 @@ interface Element {
 * @class Element
 * @method Element.matches
 */
-(function(p: Element) {
+(function() {
 
-  p.matches = p.matches
-  || p.mozMatchesSelector
-  || p.msMatchesSelector
-  || p.webkitMatchesSelector;
+  var o = Element.prototype;
 
-})(Element.prototype);
+  o.matches = o.matches
+  || o.mozMatchesSelector
+  || o.msMatchesSelector
+  || o.webkitMatchesSelector;
+
+})();
 
 /**
 * @class Element
 * @method Element.closest
 */
-(function(p: Element) {
+(function() {
 
-  p.closest =
-  p.closest || function(selector: string) {
+  var o = Element.prototype;
+
+  o.closest = o.closest || function(selector: string) {
 
     var s = this;
 
@@ -49,5 +52,4 @@ interface Element {
     // {} response.
     return s;
   };
-
-})(Element.prototype);
+})();

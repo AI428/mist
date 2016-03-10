@@ -1,6 +1,6 @@
 /**
  * @copyright AI428
- * @description Reactive CSS Framework
+ * @description Reactive CSS framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  * @version 0.4.3

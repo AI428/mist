@@ -20,7 +20,6 @@ g.task('declare',
 
     g.src(name).pipe(t({
 
-      // tsc response.
       declaration: true,
       out: dist_name
 
@@ -38,7 +37,6 @@ g.task('default',
 
     g.src(name).pipe(t({
 
-      // tcs response.
       noImplicitAny: true,
       out: dist_name,
       target: 'ES5'
