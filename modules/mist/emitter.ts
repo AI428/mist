@@ -16,7 +16,19 @@ namespace Mist {
     * @constructor
     * @param {} statement
     */
-    constructor(private statement: Statement) {
+    constructor(statement: Statement);
+
+    /**
+    * @constructor
+    * @param {} statement
+    */
+    constructor(statement: string);
+
+    /**
+    * @constructor
+    * @param {} statement
+    */
+    constructor(private statement: any) {
     }
 
     /**
@@ -94,13 +106,35 @@ namespace Mist {
         o[name] = (e: Event) => {
           var element = e.target;
           if (element instanceof Element) {
-            if (element.closest(this.statement.selector())) {
+            if (element.closest(this.selector())) {
               this.emit(name, e instanceof CustomEvent ?
                 e.detail :
                 e);
             }
           }
         });
+    }
+
+    /**
+    * @access private
+    */
+    private selector() {
+
+      var response: string;
+
+      var s = this.statement;
+
+      // mapped.
+      if (s instanceof Statement) {
+        // a response.
+        response = s.selector();
+      } else {
+        // a response.
+        response = s;
+      }
+
+      // mapped response.
+      return response;
     }
   }
 }
