@@ -223,6 +223,11 @@ declare namespace Mist {
         */
         constructor(statement: Statement);
         /**
+        * @constructor
+        * @param {} statement
+        */
+        constructor(statement: string);
+        /**
         * @param {} name
         * @param {} options
         * @return {}
@@ -247,6 +252,10 @@ declare namespace Mist {
         * @access private
         */
         private ready(name);
+        /**
+        * @access private
+        */
+        private selector();
     }
 }
 declare namespace Mist {
@@ -291,6 +300,12 @@ declare namespace Mist {
         */
         add(css: any, dur?: number): Promise;
         /**
+        * @param {} name
+        * @param {} responsor
+        * @return {}
+        */
+        bind(name: string, responsor: Promise): Promise;
+        /**
         * @return {}
         * @summary scoped
         */
@@ -300,6 +315,10 @@ declare namespace Mist {
         * @return {}
         */
         set(css: any): Promise;
+        /**
+        * @access private
+        */
+        private composer(css, dur?, response?);
         /**
         * @access private
         */
@@ -313,8 +332,8 @@ declare namespace Mist {
         * @namespace Recognizer
         */
         class Detail {
-            private src;
-            private prev;
+            src: any;
+            prev: any;
             /**
             * @access public
             */
@@ -329,6 +348,10 @@ declare namespace Mist {
                 x: number;
                 y: number;
             };
+            /**
+            * @access public
+            */
+            mpms: number;
             /**
             * @access public
             */
@@ -347,10 +370,6 @@ declare namespace Mist {
                 x: number;
                 y: number;
             };
-            /**
-            * @access public
-            */
-            mpms: number;
             /**
             * @access public
             */
@@ -419,14 +438,6 @@ declare namespace Mist {
             * @access private
             */
             private end();
-            /**
-            * @access private
-            */
-            private enter();
-            /**
-            * @access private
-            */
-            private leave();
             /**
             * @access private
             */
@@ -531,7 +542,7 @@ declare namespace Mist {
 }
 /**
  * @copyright AI428
- * @description Reactive CSS Framework
+ * @description Reactive CSS framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  * @version 0.4.3

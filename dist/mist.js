@@ -95,7 +95,7 @@ var Mist;
                     }
                 }
                 commits.map(function (commit, i) {
-                    commit.then(composer);
+                    commit.when(composer);
                     // bind response.
                     p = i;
                 });
@@ -109,7 +109,7 @@ var Mist;
             return new Promise(function (succeed, erred) {
                 // initialize.
                 commits.forEach(function (commit) {
-                    commit.then(function (response) {
+                    commit.when(function (response) {
                         try {
                             // commit response.
                             succeed(response);
@@ -206,11 +206,10 @@ var Mist;
         */
         Promise.prototype.erred = function (response) {
             var _this = this;
-            // begin response.
             if (!this.txd) {
                 var m = this.err;
                 if (m) {
-                    // end response.
+                    // end.
                     this.txd = true;
                     // fail response.
                     if (response instanceof Promise) {
@@ -236,11 +235,10 @@ var Mist;
         */
         Promise.prototype.succeed = function (response) {
             var _this = this;
-            // begin response.
             if (!this.txd) {
                 var m = this.success;
                 if (m) {
-                    // end response.
+                    // end.
                     this.txd = true;
                     // commit response.
                     if (response instanceof Promise) {
@@ -290,7 +288,7 @@ var Mist;
         */
         Frame.at = function (responsor, delay) {
             if (delay === void 0) { delay = 0; }
-            // patch response.
+            // queues.
             this.txs.push(function () {
                 var r = 0 > delay--;
                 if (r) {
@@ -317,7 +315,7 @@ var Mist;
             var _this = this;
             if (delay === void 0) { delay = 0; }
             return new Mist.Promise(function (succeed, erred) {
-                // patch response.
+                // queues.
                 _this.txs.push(function () {
                     var r = 0 > delay--;
                     if (r) {
@@ -368,8 +366,8 @@ var Mist;
                     while (responsor = s.txs.pop()) {
                         responsor() || o.push(responsor);
                     }
-                    if (s.txd
-                        = s.txs.push.apply(s.txs, o) > 0) {
+                    if (s.txd =
+                        s.txs.push.apply(s.txs, o) > 0) {
                         s.request(composer);
                     }
                 })();
@@ -415,10 +413,8 @@ var Mist;
             var _this = this;
             _super.call(this, function (succeed, erred) {
                 _this.composite = composite;
-                // initialize.
                 _this.xs = [];
                 _this.xr = function () {
-                    // begin response.
                     _this.xd || (function () {
                         _this.xd = true;
                         // ser response.
@@ -435,7 +431,7 @@ var Mist;
                             while (responsor = _this.xs.pop()) {
                                 responsor(_this.composite);
                             }
-                            // end response.
+                            // end.
                             _this.xd = false;
                         });
                     })();
@@ -453,7 +449,7 @@ var Mist;
                 Mist.Frame.at(function () {
                     // a response.
                     _this.composite = composer(_this.composite);
-                    // patch response.
+                    // queues.
                     _this.xs.push(responsor);
                     _this.xr();
                 });
@@ -678,29 +674,30 @@ var Mist;
 * @class Element
 * @method Element.matches
 */
-(function (p) {
-    p.matches = p.matches
-        || p.mozMatchesSelector
-        || p.msMatchesSelector
-        || p.webkitMatchesSelector;
-})(Element.prototype);
+(function () {
+    var o = Element.prototype;
+    o.matches = o.matches
+        || o.mozMatchesSelector
+        || o.msMatchesSelector
+        || o.webkitMatchesSelector;
+})();
 /**
 * @class Element
 * @method Element.closest
 */
-(function (p) {
-    p.closest =
-        p.closest || function (selector) {
-            var s = this;
-            while (s) {
-                if (s.matches(selector))
-                    break;
-                s = s.parentElement;
-            }
-            // {} response.
-            return s;
-        };
-})(Element.prototype);
+(function () {
+    var o = Element.prototype;
+    o.closest = o.closest || function (selector) {
+        var s = this;
+        while (s) {
+            if (s.matches(selector))
+                break;
+            s = s.parentElement;
+        }
+        // {} response.
+        return s;
+    };
+})();
 /// <reference path='element.ts'/>
 /// <reference path='statement.ts'/>
 var Mist;
@@ -775,13 +772,31 @@ var Mist;
             o[name] || document.addEventListener(name, o[name] = function (e) {
                 var element = e.target;
                 if (element instanceof Element) {
-                    if (element.closest(_this.statement.selector())) {
+                    if (element.closest(_this.selector())) {
                         _this.emit(name, e instanceof CustomEvent ?
                             e.detail :
                             e);
                     }
                 }
             });
+        };
+        /**
+        * @access private
+        */
+        Emitter.prototype.selector = function () {
+            var response;
+            var s = this.statement;
+            // mapped.
+            if (s instanceof Mist.Statement) {
+                // a response.
+                response = s.selector();
+            }
+            else {
+                // a response.
+                response = s;
+            }
+            // mapped response.
+            return response;
         };
         return Emitter;
     }());
@@ -905,27 +920,31 @@ var Mist;
             });
         };
         /**
-        * @param {} key
+        * @param {} name
         * @param {} responsor
         * @return {}
         */
-        Style.prototype.bind = function (key, responsor) {
-            var e = new RegExp('.*?\\/\\*+\\s*(.*?)\\{\\s*(' + key + '\\S*)\\s*\\}(.*?)\\s*\\*+\\/');
+        Style.prototype.bind = function (name, responsor) {
+            var e = new RegExp('.*?\\/\\*\\**\\s*(.*?)\\{\\s*(' + name + '\\S*)\\s*\\}(.*?)\\s*\\**\\*\\/');
             var s = this;
             var r = responsor.when(function (v) {
                 // bind response.
-                eval('var _' + key + '=v;');
+                eval('var $$' + name + '=v');
                 return s.value.compose(function (o) {
-                    o.forEach(function (p) {
+                    return o.map(function (p) {
                         // composer.
                         for (var name_3 in p) {
-                            p[name_3] = p[name_3].replace(e, function (_, $1, $2, $3) {
-                                return [$1, eval('_' + $2), $3, '/*', $1, '{', $2, '}', $3, '*/'].join('');
-                            });
+                            function composer(match, p, v, s) {
+                                var r = eval('$$' + v);
+                                return "" + p + r + s + "/*" + p + "{" + v + "}" + s + "*/";
+                            }
+                            ;
+                            // a response.
+                            p[name_3] = p[name_3].replace(e, composer);
                         }
+                        // {} response.
+                        return p;
                     });
-                    // [] response.
-                    return o;
                 });
             });
             // passthru.
@@ -1114,6 +1133,7 @@ var Mist;
 })(Mist || (Mist = {}));
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
+/// <reference path='../statement.ts'/>
 /// <reference path='detail.ts'/>
 var Mist;
 (function (Mist) {
@@ -1131,8 +1151,6 @@ var Mist;
             function Pan(emitter) {
                 this.emitter = emitter;
                 this.end();
-                this.enter();
-                this.leave();
                 this.move();
                 this.start();
             }
@@ -1149,43 +1167,8 @@ var Mist;
                     s.txd = false;
                     s.txv = e;
                 }
-                new Mist.Emission(s.emitter, 'mouseup').when(responsor);
-                new Mist.Emission(s.emitter, 'touchcancel').when(responsor);
+                new Mist.Emission(Mist.Component.create(Mist.Emitter, '*'), 'mouseup').when(responsor);
                 new Mist.Emission(s.emitter, 'touchend').when(prevent).when(responsor);
-            };
-            /**
-            * @access private
-            */
-            Pan.prototype.enter = function () {
-                var s = this;
-                function responsor(e) {
-                    var r = new Recognizer.Detail(e, s.txv);
-                    s.emitter.emit('pan', r);
-                    s.emitter.emit('panenter', r);
-                    // begin response.
-                    s.txd = true;
-                    s.txv = e;
-                }
-                new Mist.Emission(s.emitter, 'mouseenter').when(responsor);
-                new Mist.Emission(s.emitter, 'touchenter').when(prevent).when(responsor);
-            };
-            /**
-            * @access private
-            */
-            Pan.prototype.leave = function () {
-                var s = this;
-                function responsor(e) {
-                    if (s.txd) {
-                        var r = new Recognizer.Detail(e, s.txv);
-                        s.emitter.emit('pan', r);
-                        s.emitter.emit('panleave', r);
-                        // end response.
-                        s.txd = false;
-                        s.txv = e;
-                    }
-                }
-                new Mist.Emission(s.emitter, 'mouseout').when(responsor);
-                new Mist.Emission(s.emitter, 'touchleave').when(prevent).when(responsor);
             };
             /**
             * @access private
@@ -1195,20 +1178,25 @@ var Mist;
                 function responsor(e) {
                     if (s.txd) {
                         var r = new Recognizer.Detail(e, s.txv);
-                        // filt response.
-                        if (Pan.upper < r.vector) {
-                            s.emitter.emit('pan', r);
-                            s.emitter.emit('panmove', r);
-                            // dir response.
-                            if (r.move.x < 0)
-                                s.emitter.emit('panleft', r);
-                            if (r.move.x > 0)
-                                s.emitter.emit('panright', r);
-                            if (r.move.y < 0)
-                                s.emitter.emit('panup', r);
-                            if (r.move.y > 0)
-                                s.emitter.emit('pandown', r);
-                            s.txv = e;
+                        // left mouseover.
+                        var x = r.client.x;
+                        var y = r.client.y;
+                        if (document.elementFromPoint(x, y) == r.src.target) {
+                            // filt response.
+                            if (Pan.upper < r.vector) {
+                                s.emitter.emit('pan', r);
+                                s.emitter.emit('panmove', r);
+                                // dir response.
+                                if (r.move.x < 0)
+                                    s.emitter.emit('panleft', r);
+                                if (r.move.x > 0)
+                                    s.emitter.emit('panright', r);
+                                if (r.move.y < 0)
+                                    s.emitter.emit('panup', r);
+                                if (r.move.y > 0)
+                                    s.emitter.emit('pandown', r);
+                                s.txv = e;
+                            }
                         }
                     }
                 }
@@ -1497,7 +1485,7 @@ var Mist;
 })(Mist || (Mist = {}));
 /**
  * @copyright AI428
- * @description Reactive CSS Framework
+ * @description Reactive CSS framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  * @version 0.4.3
