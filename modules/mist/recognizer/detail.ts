@@ -21,6 +21,11 @@ namespace Mist {
       /**
       * @access public
       */
+      mpms: number;
+
+      /**
+      * @access public
+      */
       page: { x: number, y: number } = { x: 0, y: 0 };
 
       /**
@@ -32,11 +37,6 @@ namespace Mist {
       * @access public
       */
       screen: { x: number, y: number } = { x: 0, y: 0 };
-
-      /**
-      * @access public
-      */
-      mpms: number;
 
       /**
       * @access public
@@ -86,9 +86,9 @@ namespace Mist {
       */
       constructor(
 
-        private src
+        public src
         : any,
-        private prev?
+        public prev?
         : any
         ) {
 
