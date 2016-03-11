@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <meta charset='UTF-8'>
+  <meta name='apple-mobile-web-app-capable' content='yes'>
+  <meta name='apple-mobile-web-app-status-bar-style' content='black'>
+  <meta name='description' content=''>
+  <meta name='mobile-web-app-capable' content='yes'>
+  <meta name='MobileOptimized' content='320'>
+  <meta name='viewport' content='maximum-scale=1.0,width=device-width'>
+  <!---->
+  <link href='https://fonts.googleapis.com/css?family=Kalam' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family=Homenaje' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family=VT323' rel='stylesheet'>
+  <!---->
+  <link href='demos/css/normalize.css' rel='stylesheet'>
+  <link href='demos/css/skeleton.css' rel='stylesheet'>
+  <!---->
+  <script src='dist/mist.min.js'></script>
+  <!---->
+  <style>
+    body {
+      margin: 0 auto;
+      max-width: 960px;
+      padding: 0 1em;
+    }
+
+    footer {
+      font-family: 'Pontano Sans';
+      font-size: 0.618em;
+    }
+
+    footer,
+    header {
+      padding: 8em 0;
+      text-align: center;
+    }
+
+    h1,
+    h2 {
+      font-family: 'Homenaje';
+    }
+
+    header > h3 {
+      color: #444;
+      font-family: 'Kalam';
+      text-shadow: 0 0 2px #888;
+    }
+
+    #mover,
+    #timer {
+      border: 1px solid #ddd;
+      height: 16em;
+      position: relative;
+    }
+
+    #mover > div {
+      background: #444;
+      border-radius: 50%;
+      height: 2em;
+      position: absolute;
+      transform: translate3d(-50%, -50%, 0);
+      transition: all .1s;
+      width: 2em;
+    }
+
+    #timer > div {
+      color: #444;
+      font-family: 'VT323';
+      font-size: 4em;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate3d(-50%, -50%, 0);
+      transition: all .1s;
+    }
+
+    .row {
+      margin-bottom: 8em;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>MIST</h1>
+    <h3>Reactive CSS framework.<br>This is a solution for the development of CSS library.</h3>
+  </header>
+  <main>
+    <section class='row'>
+      <div class='one-half column'>
+        <h2>Homing Element</h2>
+        <p>It's easy that element move to center with css. However, in the case of homing What about? It requires a complex JavaScript to soon. This framework completes between that.</p>
+      </div>
+      <div id='mover' class='one-half column'>
+        <div></div>
+      </div>
+    </section>
+    <section class='row'>
+      <div class='one-half column'>
+        <h2>Digital Timer</h2>
+        <p>To develop a timer, large-scale library, such as angular and react is not required. With MIST, you can develop only without CSS changes that defile the DOM.</p>
+      </div>
+      <div id='timer' class='one-half column'>
+        <div></div>
+      </div>
+    </section>
+    <section>
+      <p>
+        <a class='button' href='//github.com/AI428/mist'>DOCS</a>
+        <a class='button' href='//github.com/AI428/mist/releases'>DOWNLOAD</a>
+      </p>
+    </section>
+  </main>
+  <footer>
+    <p>
+      <i>In code, liberate all.</i>
+      <br>&copy; AI428
+    </p>
+  </footer>
+  <script>
+    /*
+     * homing element.
+     */
+    (function() {
+
+      var statement = mist('#mover');
+
+      var div = statement.concat(' > div');
+
+      var css = {
+
+        left: '50% /* { response.x }px */',
+        top: '50% /* { response.y }px */'
+      };
+
+      div.style.set(css);
+
+      div.style.bind('response', statement.on('panmove').when(
+
+        function(e) {
+
+          var r = statement.first().getBoundingClientRect();
+
+          return {
+
+            x: e.client.x - r.left,
+            y: e.client.y - r.top
+          };
+        }));
+
+      statement.on('panend').when(
+
+        function() {
+
+          div.style.add(css);
+        });
+    })();
+
+    /*
+     * digital timer.
+     */
+    (function() {
+
+      var value = new Mist.Value('');
+
+      function timer() {
+
+        var d = new Date();
+
+        // format response.
+
+        value.compose(
+
+          function() {
+
+            return '"' +
+              ('00' + d.getHours()).slice(-2) + ':' +
+              ('00' + d.getMinutes()).slice(-2) + ':' +
+              ('00' + d.getSeconds()).slice(-2) + '"';
+          });
+
+        setTimeout(timer, 1000);
+      }
+
+      timer();
+
+      var statement = mist('#timer > div::before');
+
+      statement.style.add({
+        content: value
+      });
+    })();
+  </script>
+</body>
+
+</html>

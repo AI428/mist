@@ -8,6 +8,9 @@ namespace Mist {
   */
   export class Frame {
 
+    private static txg: boolean;
+    private static txs: (() => boolean)[] = [];
+
     /**
     * @access public
     * @static
@@ -21,13 +24,6 @@ namespace Mist {
     * @summary timestamp
     */
     static times: number = 0;
-
-    /**
-    * @access private
-    * @static
-    */
-    private static txd: boolean;
-    private static txs: (() => boolean)[] = [];
 
     /**
     * @param {} responsor
@@ -131,8 +127,8 @@ namespace Mist {
     */
     private static tx() {
 
-      this.txd || (() => {
-        this.txd = true;
+      this.txg || (() => {
+        this.txg = true;
 
         var s = this;
 
@@ -150,7 +146,7 @@ namespace Mist {
             responsor() || o.push(responsor);
           }
 
-          if (s.txd =
+          if (s.txg =
             s.txs.push.apply(
               s.txs, o) > 0) {
 

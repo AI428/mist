@@ -9,7 +9,7 @@ namespace Mist {
   */
   export class Value extends Promise {
 
-    private xd: boolean;
+    private xg: boolean;
     private xr: () => void;
     private xs: ((response: any) => void)[];
 
@@ -33,9 +33,11 @@ namespace Mist {
         this.composite = composite;
 
         this.xs = [];
-        this.xr = () => {
-          this.xd || (() => {
-            this.xd = true;
+        this.xr = (
+          ) => {
+
+          this.xg || (() => {
+            this.xg = true;
 
             // ser response.
             Frame.at(() => {
@@ -59,7 +61,7 @@ namespace Mist {
               }
 
               // end.
-              this.xd = false;
+              this.xg = false;
             });
           })();
         }

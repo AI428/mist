@@ -149,7 +149,7 @@ var Mist;
         */
         Promise.prototype.resume = function () {
             // initialize.
-            this.txd = null;
+            this.txg = null;
             this.txr = null;
         };
         /**
@@ -206,11 +206,11 @@ var Mist;
         */
         Promise.prototype.erred = function (response) {
             var _this = this;
-            if (!this.txd) {
+            if (!this.txg) {
                 var m = this.err;
                 if (m) {
                     // end.
-                    this.txd = true;
+                    this.txg = true;
                     // fail response.
                     if (response instanceof Promise) {
                         // lazy response
@@ -235,11 +235,11 @@ var Mist;
         */
         Promise.prototype.succeed = function (response) {
             var _this = this;
-            if (!this.txd) {
+            if (!this.txg) {
                 var m = this.success;
                 if (m) {
                     // end.
-                    this.txd = true;
+                    this.txg = true;
                     // commit response.
                     if (response instanceof Promise) {
                         // lazy response
@@ -356,8 +356,8 @@ var Mist;
         */
         Frame.tx = function () {
             var _this = this;
-            this.txd || (function () {
-                _this.txd = true;
+            this.txg || (function () {
+                _this.txg = true;
                 var s = _this;
                 (function composer() {
                     // initialize.
@@ -366,13 +366,14 @@ var Mist;
                     while (responsor = s.txs.pop()) {
                         responsor() || o.push(responsor);
                     }
-                    if (s.txd =
+                    if (s.txg =
                         s.txs.push.apply(s.txs, o) > 0) {
                         s.request(composer);
                     }
                 })();
             })();
         };
+        Frame.txs = [];
         /**
         * @access public
         * @static
@@ -385,7 +386,6 @@ var Mist;
         * @summary timestamp
         */
         Frame.times = 0;
-        Frame.txs = [];
         return Frame;
     }());
     Mist.Frame = Frame;
@@ -415,8 +415,8 @@ var Mist;
                 _this.composite = composite;
                 _this.xs = [];
                 _this.xr = function () {
-                    _this.xd || (function () {
-                        _this.xd = true;
+                    _this.xg || (function () {
+                        _this.xg = true;
                         // ser response.
                         Mist.Frame.at(function () {
                             var responsor;
@@ -432,7 +432,7 @@ var Mist;
                                 responsor(_this.composite);
                             }
                             // end.
-                            _this.xd = false;
+                            _this.xg = false;
                         });
                     })();
                 };

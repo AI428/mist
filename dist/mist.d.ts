@@ -21,7 +21,7 @@ declare namespace Mist {
     class Promise {
         private err;
         private success;
-        private txd;
+        private txg;
         private txr;
         /**
         * @constructor
@@ -79,6 +79,8 @@ declare namespace Mist {
     * @summary queuer
     */
     class Frame {
+        private static txg;
+        private static txs;
         /**
         * @access public
         * @static
@@ -91,12 +93,6 @@ declare namespace Mist {
         * @summary timestamp
         */
         static times: number;
-        /**
-        * @access private
-        * @static
-        */
-        private static txd;
-        private static txs;
         /**
         * @param {} responsor
         * @param {} delay
@@ -131,7 +127,7 @@ declare namespace Mist {
     * @extends Promise
     */
     class Value extends Promise {
-        private xd;
+        private xg;
         private xr;
         private xs;
         /**

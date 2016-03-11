@@ -8,7 +8,7 @@ namespace Mist {
 
     private err: (response: any) => any;
     private success: (response: any) => any;
-    private txd: boolean;
+    private txg: boolean;
     private txr: () => void;
 
     /**
@@ -158,7 +158,7 @@ namespace Mist {
     resume() {
 
       // initialize.
-      this.txd = null;
+      this.txg = null;
       this.txr = null;
     }
 
@@ -236,14 +236,14 @@ namespace Mist {
     */
     private erred(response: any) {
 
-      if (!this.txd) {
+      if (!this.txg) {
 
         var m = this.err;
 
         if (m) {
 
           // end.
-          this.txd = true;
+          this.txg = true;
 
           // fail response.
           if (response instanceof Promise) {
@@ -273,14 +273,14 @@ namespace Mist {
     */
     private succeed(response: any) {
 
-      if (!this.txd) {
+      if (!this.txg) {
 
         var m = this.success;
 
         if (m) {
 
           // end.
-          this.txd = true;
+          this.txg = true;
 
           // commit response.
           if (response instanceof Promise) {
