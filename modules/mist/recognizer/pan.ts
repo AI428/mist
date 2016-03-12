@@ -14,15 +14,7 @@ namespace Mist {
     */
     export class Pan {
 
-      private txd: boolean;
-      private txv: any;
-
-      /**
-      * @access public
-      * @static
-      * @summary for error
-      */
-      static upper: number = 10;
+      private txg: boolean;
 
       /**
       * @constructor
@@ -44,15 +36,14 @@ namespace Mist {
 
         function responsor(e: any) {
 
-          var r = new Detail(e, s.txv);
+          var r = new Detail(e);
 
           s.emitter.emit('pan', r);
           s.emitter.emit('panend', r);
 
           // end response.
 
-          s.txd = false;
-          s.txv = e;
+          s.txg = false;
         }
 
         new Emission(Component.create<Emitter>(Emitter, '*'), 'mouseup').when(responsor);
@@ -68,34 +59,21 @@ namespace Mist {
 
         function responsor(e: any) {
 
-          if (s.txd) {
+          if (s.txg) {
 
-            var r = new Detail(e, s.txv);
-
-            // left mouseover.
-
-            var x = r.client.x;
-            var y = r.client.y;
-
-            // if (document.elementFromPoint(x, y) == r.src.target) {
+            var r = new Detail(e);
 
             // filt response.
 
-            if (Pan.upper < r.vector) {
+            s.emitter.emit('pan', r);
+            s.emitter.emit('panmove', r);
 
-              s.emitter.emit('pan', r);
-              s.emitter.emit('panmove', r);
+            // dir response.
 
-              // dir response.
-
-              if (r.move.x < 0) s.emitter.emit('panleft', r);
-              if (r.move.x > 0) s.emitter.emit('panright', r);
-              if (r.move.y < 0) s.emitter.emit('panup', r);
-              if (r.move.y > 0) s.emitter.emit('pandown', r);
-
-              s.txv = e;
-            }
-            // }
+            if (r.move.x < 0) s.emitter.emit('panleft', r);
+            if (r.move.x > 0) s.emitter.emit('panright', r);
+            if (r.move.y < 0) s.emitter.emit('panup', r);
+            if (r.move.y > 0) s.emitter.emit('pandown', r);
           }
         }
 
@@ -119,8 +97,7 @@ namespace Mist {
 
           // begin response.
 
-          s.txd = true;
-          s.txv = e;
+          s.txg = true;
         }
 
         new Emission(s.emitter, 'mousedown').when(responsor);
