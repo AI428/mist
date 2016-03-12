@@ -79,22 +79,22 @@ namespace Mist {
 
             // if (document.elementFromPoint(x, y) == r.src.target) {
 
-              // filt response.
+            // filt response.
 
-              if (Pan.upper < r.vector) {
+            if (Pan.upper < r.vector) {
 
-                s.emitter.emit('pan', r);
-                s.emitter.emit('panmove', r);
+              s.emitter.emit('pan', r);
+              s.emitter.emit('panmove', r);
 
-                // dir response.
+              // dir response.
 
-                if (r.move.x < 0) s.emitter.emit('panleft', r);
-                if (r.move.x > 0) s.emitter.emit('panright', r);
-                if (r.move.y < 0) s.emitter.emit('panup', r);
-                if (r.move.y > 0) s.emitter.emit('pandown', r);
+              if (r.move.x < 0) s.emitter.emit('panleft', r);
+              if (r.move.x > 0) s.emitter.emit('panright', r);
+              if (r.move.y < 0) s.emitter.emit('panup', r);
+              if (r.move.y > 0) s.emitter.emit('pandown', r);
 
-                s.txv = e;
-              }
+              s.txv = e;
+            }
             // }
           }
         }
