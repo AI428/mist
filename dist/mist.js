@@ -1044,12 +1044,10 @@ var Mist;
         var Detail = (function () {
             /**
             * @constructor
-            * @param {} src
-            * @param {} prev?
+            * @param {} e
             */
-            function Detail(src, prev) {
-                this.src = src;
-                this.prev = prev;
+            function Detail(e) {
+                this.e = e;
                 /**
                 * @access public
                 */
@@ -1062,73 +1060,77 @@ var Mist;
                 * @access public
                 */
                 this.page = { x: 0, y: 0 };
-                /**
-                * @access public
-                */
-                this.screen = { x: 0, y: 0 };
                 // mapped.
-                if (src instanceof MouseEvent) {
+                if (e instanceof MouseEvent) {
                     // no response.
-                    this.mouse(src, prev);
+                    this.mouse(e);
                 }
-                else if (src instanceof TouchEvent) {
+                else if (e instanceof TouchEvent) {
                     // no response.
-                    this.touch(src, prev);
+                    this.touch(e);
                 }
+                // record.
+                session(this);
             }
             /**
-            * @param {} src
-            * @param {} prev
+            * @access private
             */
-            Detail.prototype.mouse = function (src, prev) {
-                var f = prev;
-                var t = src;
+            Detail.prototype.mouse = function (e) {
+                var o = e;
+                var p = session();
                 // passed milliseconds.
-                var s = prev ? src.timeStamp - prev.timeStamp : 0;
-                var x = prev ? t.pageX - f.pageX : 0;
-                var y = prev ? t.pageY - f.pageY : 0;
-                var v = Math.sqrt(x * x + y * y);
+                var s = p ? e.timeStamp - p.e.timeStamp : 0;
+                // move response.
+                var x = p ? o.pageX - p.page.x : 0;
+                var y = p ? o.pageY - p.page.y : 0;
                 // initialize.
-                this.set(t, s, x, y, v);
+                this.set(o, s, x, y);
             };
             /**
-            * @param {} t
+            * @param {} o
             * @param {} s
             * @param {} x
             * @param {} y
-            * @param {} v
             */
-            Detail.prototype.set = function (t, s, x, y, v) {
-                this.client.x = t.clientX;
-                this.client.y = t.clientY;
+            Detail.prototype.set = function (o, s, x, y) {
+                this.client.x = o.clientX;
+                this.client.y = o.clientY;
                 this.move.x = x;
                 this.move.y = y;
-                this.mpms = s ? v / s : 0;
-                this.page.x = t.pageX;
-                this.page.y = t.pageY;
+                this.mpms = s ? (x * x + y * y) / s : 0;
+                this.page.x = o.pageX;
+                this.page.y = o.pageY;
                 this.passed = s;
-                this.screen.x = t.screenX;
-                this.screen.y = t.screenY;
-                this.vector = v;
             };
             /**
-            * @param {} src
-            * @param {} prev
+            * @access private
             */
-            Detail.prototype.touch = function (src, prev) {
-                var f = prev ? prev.changedTouches[0] : null;
-                var t = src.changedTouches[0];
+            Detail.prototype.touch = function (e) {
+                var o = e.changedTouches[0];
+                var p = session();
                 // passed milliseconds.
-                var s = prev ? src.timeStamp - prev.timeStamp : 0;
-                var x = prev ? t.pageX - f.pageX : 0;
-                var y = prev ? t.pageY - f.pageY : 0;
-                var v = Math.sqrt(x * x + y * y);
+                var s = p ? e.timeStamp - p.e.timeStamp : 0;
+                // move response.
+                var x = p ? o.pageX - p.page.x : 0;
+                var y = p ? o.pageY - p.page.y : 0;
                 // initialize.
-                this.set(t, s, x, y, v);
+                this.set(o, s, x, y);
             };
             return Detail;
         }());
         Recognizer.Detail = Detail;
+        /**
+        * @access private
+        * @static
+        */
+        var sessions;
+        /**
+        * @access private
+        * @static
+        */
+        function session(v) {
+            return v ? (sessions = v) : sessions;
+        }
     })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
 })(Mist || (Mist = {}));
 /// <reference path='../emission.ts'/>
@@ -1160,12 +1162,11 @@ var Mist;
             Pan.prototype.end = function () {
                 var s = this;
                 function responsor(e) {
-                    var r = new Recognizer.Detail(e, s.txv);
+                    var r = new Recognizer.Detail(e);
                     s.emitter.emit('pan', r);
                     s.emitter.emit('panend', r);
                     // end response.
-                    s.txd = false;
-                    s.txv = e;
+                    s.txg = false;
                 }
                 new Mist.Emission(Mist.Component.create(Mist.Emitter, '*'), 'mouseup').when(responsor);
                 new Mist.Emission(s.emitter, 'touchend').when(prevent).when(responsor);
@@ -1176,27 +1177,20 @@ var Mist;
             Pan.prototype.move = function () {
                 var s = this;
                 function responsor(e) {
-                    if (s.txd) {
-                        var r = new Recognizer.Detail(e, s.txv);
-                        // left mouseover.
-                        var x = r.client.x;
-                        var y = r.client.y;
-                        // if (document.elementFromPoint(x, y) == r.src.target) {
+                    if (s.txg) {
+                        var r = new Recognizer.Detail(e);
                         // filt response.
-                        if (Pan.upper < r.vector) {
-                            s.emitter.emit('pan', r);
-                            s.emitter.emit('panmove', r);
-                            // dir response.
-                            if (r.move.x < 0)
-                                s.emitter.emit('panleft', r);
-                            if (r.move.x > 0)
-                                s.emitter.emit('panright', r);
-                            if (r.move.y < 0)
-                                s.emitter.emit('panup', r);
-                            if (r.move.y > 0)
-                                s.emitter.emit('pandown', r);
-                            s.txv = e;
-                        }
+                        s.emitter.emit('pan', r);
+                        s.emitter.emit('panmove', r);
+                        // dir response.
+                        if (r.move.x < 0)
+                            s.emitter.emit('panleft', r);
+                        if (r.move.x > 0)
+                            s.emitter.emit('panright', r);
+                        if (r.move.y < 0)
+                            s.emitter.emit('panup', r);
+                        if (r.move.y > 0)
+                            s.emitter.emit('pandown', r);
                     }
                 }
                 new Mist.Emission(s.emitter, 'mousemove').when(responsor);
@@ -1212,18 +1206,11 @@ var Mist;
                     s.emitter.emit('pan', r);
                     s.emitter.emit('panstart', r);
                     // begin response.
-                    s.txd = true;
-                    s.txv = e;
+                    s.txg = true;
                 }
                 new Mist.Emission(s.emitter, 'mousedown').when(responsor);
                 new Mist.Emission(s.emitter, 'touchstart').when(prevent).when(responsor);
             };
-            /**
-            * @access public
-            * @static
-            * @summary for error
-            */
-            Pan.upper = 10;
             return Pan;
         }());
         Recognizer.Pan = Pan;
@@ -1257,14 +1244,14 @@ var Mist;
             function Swipe(emitter) {
                 this.emitter = emitter;
                 new Mist.Emission(emitter, 'panend').when(function (response) {
-                    var s = Swipe.mpms / Math.SQRT2;
+                    var s = Swipe.mpms / 2;
                     var v = Swipe.mpms;
                     // filt response.
                     if (v < response.mpms) {
                         emitter.emit('swipe', response);
                         // filt response.
-                        if (s < Math.sqrt((response.move.x *
-                            response.move.x)) / response.passed) {
+                        if (s < (response.move.x *
+                            response.move.x) / response.passed) {
                             // dir response.
                             if (response.move.x < 0)
                                 emitter.emit('swipeleft', response);
@@ -1272,8 +1259,8 @@ var Mist;
                                 emitter.emit('swiperight', response);
                         }
                         // filt response.
-                        if (s < Math.sqrt((response.move.y *
-                            response.move.y)) / response.passed) {
+                        if (s < (response.move.y *
+                            response.move.y) / response.passed) {
                             // dir response.
                             if (response.move.y < 0)
                                 emitter.emit('swipeup', response);
@@ -1288,7 +1275,7 @@ var Mist;
             * @static
             * @summary move per milliseconds
             */
-            Swipe.mpms = 0.65;
+            Swipe.mpms = 24;
             return Swipe;
         }());
         Recognizer.Swipe = Swipe;

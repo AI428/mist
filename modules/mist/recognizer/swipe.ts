@@ -18,7 +18,7 @@ namespace Mist {
       * @static
       * @summary move per milliseconds
       */
-      static mpms: number = 0.65;
+      static mpms: number = 24;
 
       /**
       * @constructor
@@ -30,7 +30,7 @@ namespace Mist {
 
           function(response: Detail) {
 
-            var s = Swipe.mpms / Math.SQRT2;
+            var s = Swipe.mpms / 2;
             var v = Swipe.mpms;
 
             // filt response.
@@ -41,12 +41,12 @@ namespace Mist {
 
               // filt response.
 
-              if (s < Math.sqrt((
+              if (s < (
 
                 response.move.x *
                 response.move.x
 
-                )) / response.passed) {
+                ) / response.passed) {
 
                 // dir response.
 
@@ -56,12 +56,12 @@ namespace Mist {
 
               // filt response.
 
-              if (s < Math.sqrt((
+              if (s < (
 
                 response.move.y *
                 response.move.y
 
-                )) / response.passed) {
+                ) / response.passed) {
 
                 // dir response.
 

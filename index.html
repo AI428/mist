@@ -50,32 +50,33 @@
       text-shadow: 0 0 2px #888;
     }
 
-    #mover,
+    #homing,
     #timer {
       border: 1px solid #ddd;
       height: 16em;
+      overflow: hidden;
       position: relative;
     }
 
-    #mover > div {
-      background: #444;
-      border-radius: 50%;
-      height: 2em;
-      position: absolute;
-      transform: translate3d(-50%, -50%, 0);
-      transition: all .1s;
-      width: 2em;
-    }
-
+    #homing > div,
     #timer > div {
-      color: #444;
-      font-family: 'VT323';
-      font-size: 4em;
       left: 50%;
       position: absolute;
       top: 50%;
       transform: translate3d(-50%, -50%, 0);
       transition: all .1s;
+    }
+
+    #homing > div {
+      background: #444;
+      border-radius: 50%;
+      height: 2em;
+      width: 2em;
+    }
+
+    #timer > div {
+      font-family: 'VT323';
+      font-size: 4em;
     }
 
     .row {
@@ -96,7 +97,7 @@
         <h2>Homing Element</h2>
         <p>It's easy that element move to center with css. However, in the case of homing What about? It requires a complex JavaScript to soon. This framework completes between that.</p>
       </div>
-      <div id='mover' class='one-half column'>
+      <div id='homing' class='one-half column'>
         <div></div>
       </div>
     </section>
@@ -124,45 +125,39 @@
   </footer>
   <script>
     /*
-     * homing element.
+     * homing
      */
     (function() {
 
-      var statement = mist('#mover');
+      var statement = mist('#homing');
 
-      var div = statement.concat(' > div');
+      var d = statement.concat(' > div');
 
-      var css = {
+      d.style.set({
 
-        left: '50% /* { response.x }px */',
-        top: '50% /* { response.y }px */'
-      };
+        transform: statement.on('panmove').when(
 
-      div.style.set(css);
+          function(response) {
 
-      div.style.bind('response', statement.on('panmove').when(
+            var r = response.e.target.getBoundingClientRect();
 
-        function(e) {
+            var x = response.client.x - r.left - (r.width / 2);
+            var y = response.client.y - r.top - (r.height / 2);
 
-          var r = statement.first().getBoundingClientRect();
-
-          return {
-
-            x: e.client.x - r.left,
-            y: e.client.y - r.top
-          };
-        }));
+            return 'translate3d(' + x + 'px,' + y + 'px,0)';
+          })
+      });
 
       statement.on('panend').when(
 
         function() {
 
-          div.style.add(css);
+          d.style.set({});
         });
     })();
 
     /*
-     * digital timer.
+     * timer.
      */
     (function() {
 
@@ -181,7 +176,8 @@
             return '"' +
               ('00' + d.getHours()).slice(-2) + ':' +
               ('00' + d.getMinutes()).slice(-2) + ':' +
-              ('00' + d.getSeconds()).slice(-2) + '"';
+              ('00' + d.getSeconds()).slice(-2) +
+              '"';
           });
 
         setTimeout(timer, 1000);

@@ -34,166 +34,116 @@ namespace Mist {
       passed: number;
 
       /**
-      * @access public
+      * @constructor
+      * @param {} e
       */
-      screen: { x: number, y: number } = { x: 0, y: 0 };
-
-      /**
-      * @access public
-      */
-      vector: number;
+      constructor(e: MouseEvent);
 
       /**
       * @constructor
-      * @param {} src
-      * @param {} prev?
+      * @param {} e
       */
-      constructor(
-        src
-        : MouseEvent,
-        prev?
-        : MouseEvent
-        );
+      constructor(e: TouchEvent);
 
       /**
       * @constructor
-      * @param {} src
-      * @param {} prev?
+      * @param {} e
       */
-      constructor(
-        src
-        : TouchEvent,
-        prev?
-        : TouchEvent
-        );
-
-      /**
-      * @constructor
-      * @param {} src
-      * @param {} prev?
-      */
-      constructor(
-        src
-        : Event,
-        prev?
-        : Event
-        );
-
-      /**
-      * @constructor
-      * @param {} src
-      * @param {} prev?
-      */
-      constructor(
-
-        public src
-        : any,
-        public prev?
-        : any
-        ) {
+      constructor(public e: any) {
 
         // mapped.
-        if (src instanceof MouseEvent) {
+        if (e instanceof MouseEvent) {
           // no response.
-          this.mouse(src, prev);
-        } else if (src instanceof TouchEvent) {
+          this.mouse(e);
+        } else if (e instanceof TouchEvent) {
           // no response.
-          this.touch(src, prev);
+          this.touch(e);
         }
+
+        // record.
+        session(this);
       }
 
       /**
-      * @param {} src
-      * @param {} prev
+      * @access private
       */
-      private mouse(
+      private mouse(e: MouseEvent) {
 
-        src
-        : MouseEvent,
-        prev?
-        : MouseEvent
-        ) {
-
-        var f = prev;
-        var t = src;
+        var o = e;
+        var p = session();
 
         // passed milliseconds.
+        var s = p ? e.timeStamp - p.e.timeStamp : 0;
 
-        var s = prev ? src.timeStamp - prev.timeStamp : 0;
-
-        var x = prev ? t.pageX - f.pageX : 0;
-        var y = prev ? t.pageY - f.pageY : 0;
-
-        var v = Math.sqrt(x * x + y * y);
+        // move response.
+        var x = p ? o.pageX - p.page.x : 0;
+        var y = p ? o.pageY - p.page.y : 0;
 
         // initialize.
-
-        this.set(t, s, x, y, v);
+        this.set(o, s, x, y);
       }
 
       /**
-      * @param {} t
+      * @param {} o
       * @param {} s
       * @param {} x
       * @param {} y
-      * @param {} v
       */
       private set(
 
-        t: any,
+        o: any,
         s: number,
         x: number,
-        y: number,
-        v: number
+        y: number
         ) {
 
-        this.client.x = t.clientX;
-        this.client.y = t.clientY;
+        this.client.x = o.clientX;
+        this.client.y = o.clientY;
 
         this.move.x = x;
         this.move.y = y;
 
-        this.mpms = s ? v / s : 0;
+        this.mpms = s ? (x * x + y * y) / s : 0;
 
-        this.page.x = t.pageX;
-        this.page.y = t.pageY;
+        this.page.x = o.pageX;
+        this.page.y = o.pageY;
 
         this.passed = s;
-
-        this.screen.x = t.screenX;
-        this.screen.y = t.screenY;
-
-        this.vector = v;
       }
 
       /**
-      * @param {} src
-      * @param {} prev
+      * @access private
       */
-      private touch(
+      private touch(e: TouchEvent) {
 
-        src
-        : TouchEvent,
-        prev?
-        : TouchEvent
-        ) {
-
-        var f = prev ? prev.changedTouches[0] : null;
-        var t = src.changedTouches[0];
+        var o = e.changedTouches[0];
+        var p = session();
 
         // passed milliseconds.
+        var s = p ? e.timeStamp - p.e.timeStamp : 0;
 
-        var s = prev ? src.timeStamp - prev.timeStamp : 0;
-
-        var x = prev ? t.pageX - f.pageX : 0;
-        var y = prev ? t.pageY - f.pageY : 0;
-
-        var v = Math.sqrt(x * x + y * y);
+        // move response.
+        var x = p ? o.pageX - p.page.x : 0;
+        var y = p ? o.pageY - p.page.y : 0;
 
         // initialize.
-
-        this.set(t, s, x, y, v);
+        this.set(o, s, x, y);
       }
+    }
+
+    /**
+    * @access private
+    * @static
+    */
+    var sessions: any;
+
+    /**
+    * @access private
+    * @static
+    */
+    function session(v?: any) {
+
+      return v ? (sessions = v) : sessions;
     }
   }
 }
