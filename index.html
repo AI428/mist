@@ -87,7 +87,8 @@
 <body>
   <header>
     <h1>MIST</h1>
-    <h3>Reactive CSS framework.<br>This is a solution for the development of CSS library.</h3>
+    <h3>Reactive CSS framework.
+      <br>This is a solution for the development of CSS library.</h3>
   </header>
   <main>
     <section class='row'>
@@ -139,7 +140,7 @@
 
       div.style.set(css);
 
-      div.style.bind('response', statement.on('panmove').when(
+      div.style.bind('response', statement.on('panstart').when(
 
         function(e) {
 

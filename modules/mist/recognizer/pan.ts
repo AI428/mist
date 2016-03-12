@@ -77,7 +77,7 @@ namespace Mist {
             var x = r.client.x;
             var y = r.client.y;
 
-            if (document.elementFromPoint(x, y) == r.src.target) {
+            // if (document.elementFromPoint(x, y) == r.src.target) {
 
               // filt response.
 
@@ -95,7 +95,7 @@ namespace Mist {
 
                 s.txv = e;
               }
-            }
+            // }
           }
         }
 
