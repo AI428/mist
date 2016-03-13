@@ -11,18 +11,13 @@ namespace Mist {
 
     private xg: boolean;
     private xr: () => void;
-    private xs: ((response: any) => void)[];
-
-    /**
-    * @access public
-    */
-    composite: any;
+    private xs: ((response: any) => void)[] = [];
 
     /**
     * @constructor
     * @param {} composite
     */
-    constructor(composite: any) {
+    constructor(public composite?: any) {
 
       super((
 
@@ -30,12 +25,7 @@ namespace Mist {
         erred
         ) => {
 
-        this.composite = composite;
-
-        this.xs = [];
-        this.xr = (
-          ) => {
-
+        this.xr = () => {
           this.xg || (() => {
             this.xg = true;
 

@@ -125,7 +125,7 @@
   </footer>
   <script>
     /*
-     * homing
+     * homing statement.
      */
     (function() {
 
@@ -144,7 +144,7 @@
             var x = response.client.x - r.left - (r.width / 2);
             var y = response.client.y - r.top - (r.height / 2);
 
-            return 'translate3d(' + x + 'px,' + y + 'px,0)';
+            return 'translate3d(-50%,-50%,0) translate3d(' + x + 'px,' + y + 'px,0)';
           })
       });
 
@@ -157,21 +157,21 @@
     })();
 
     /*
-     * timer.
+     * timer statement.
      */
     (function() {
 
-      var value = new Mist.Value('');
+      var value = new Mist.Value();
 
       function timer() {
 
         var d = new Date();
 
-        // format response.
-
         value.compose(
 
           function() {
+
+            // format response.
 
             return '"' +
               ('00' + d.getHours()).slice(-2) + ':' +
@@ -188,6 +188,7 @@
       var statement = mist('#timer > div::before');
 
       statement.style.add({
+
         content: value
       });
     })();
