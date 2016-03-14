@@ -13,11 +13,11 @@ var Mist;
         * @return {}
         */
         Component.create = function (modular) {
-            // ser response.
             var o = [];
             for (var _i = 1; _i < arguments.length; _i++) {
                 o[_i - 1] = arguments[_i];
             }
+            // ser response.
             var m = ser([modular]);
             var n = ser(o);
             // initialize.
@@ -301,13 +301,6 @@ var Mist;
             this.tx();
         };
         /**
-        * @param {} frames
-        * @summary frames per second
-        */
-        Frame.fps = function (frames) {
-            this.mspf = 1000 / frames;
-        };
-        /**
         * @param {} responsor
         * @param {} delay
         * @return {}
@@ -338,7 +331,7 @@ var Mist;
         * @access private
         * @static
         */
-        Frame.request = function (responsor) {
+        Frame.enter = function (responsor) {
             var s = this;
             var t = Date.now();
             // filt response.
@@ -346,8 +339,8 @@ var Mist;
                 s.times = t;
             }
             else {
-                // skip response.
-                responsor = s.request.bind(s, responsor);
+                // no response.
+                responsor = s.enter.bind(s, responsor);
             }
             requestAnimationFrame(responsor);
         };
@@ -364,12 +357,12 @@ var Mist;
                     // initialize.
                     var o = [];
                     var responsor;
-                    while (responsor = s.txs.pop()) {
+                    while (responsor = s.txs.shift()) {
                         responsor() || o.push(responsor);
                     }
                     if (s.txg =
                         s.txs.push.apply(s.txs, o) > 0) {
-                        s.request(composer);
+                        s.enter(composer);
                     }
                 })();
             })();
@@ -380,7 +373,7 @@ var Mist;
         * @static
         * @summary milliseconds per frame
         */
-        Frame.mspf = 1000 / 120;
+        Frame.mspf = 1000 / 60;
         /**
         * @access public
         * @static
@@ -427,7 +420,7 @@ var Mist;
                                 // fail response.
                                 erred(e);
                             }
-                            while (responsor = _this.xs.pop()) {
+                            while (responsor = _this.xs.shift()) {
                                 responsor(_this.composite);
                             }
                             // end.
@@ -1445,7 +1438,7 @@ var Mist;
  * @description Reactive CSS framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.4.3
+ * @version 0.4.6
  */
 /// <reference path='mist/component.ts' />
 /// <reference path='mist/statement.ts' />

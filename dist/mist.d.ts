@@ -10,7 +10,7 @@ declare namespace Mist {
         * @param {} o
         * @return {}
         */
-        static create<T>(modular: Function, ...o: any[]): T;
+        static create<T>(modular: any, ...o: any[]): T;
     }
 }
 declare namespace Mist {
@@ -99,11 +99,6 @@ declare namespace Mist {
         */
         static at(responsor: () => void, delay?: number): void;
         /**
-        * @param {} frames
-        * @summary frames per second
-        */
-        static fps(frames: number): void;
-        /**
         * @param {} responsor
         * @param {} delay
         * @return {}
@@ -113,7 +108,7 @@ declare namespace Mist {
         * @access private
         * @static
         */
-        private static request(responsor);
+        private static enter(responsor);
         /**
         * @access private
         * @static
@@ -502,7 +497,7 @@ declare namespace Mist {
  * @description Reactive CSS framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.4.3
+ * @version 0.4.6
  */
 /**
  * @param {} statement

@@ -3,7 +3,7 @@
  * @description Reactive CSS framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.4.3
+ * @version 0.4.6
  */
 
 /// <reference path='mist/component.ts' />
