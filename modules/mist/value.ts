@@ -46,7 +46,7 @@ namespace Mist {
 
               while (
 
-                responsor = this.xs.pop()) {
+                responsor = this.xs.shift()) {
                 responsor(this.composite);
               }
 
