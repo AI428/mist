@@ -13,19 +13,21 @@ namespace Mist {
     * @param {} o
     * @return {}
     */
-    static create<T>(modular: Function, ...o: any[]): T {
+    static create<T>(
+      modular
+      : any,
+      ...o
+      : any[]
+      ): T {
 
       // ser response.
-
       var m = ser([modular]);
       var n = ser(o);
 
       // initialize.
-
       this.responses[m] || (this.responses[m] = {});
 
       // inher response.
-
       if (!this.responses[m][n]) {
         this.responses[m][n] = new (
           modular.bind.apply(
@@ -36,7 +38,6 @@ namespace Mist {
       }
 
       // lasting response.
-
       return this.responses[m][n];
     }
   }
