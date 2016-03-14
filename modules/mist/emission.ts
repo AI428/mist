@@ -19,11 +19,11 @@ namespace Mist {
       private emitter: Emitter,
       private name: string) {
 
-      super((
+      super(function(
 
         succeed,
         erred
-        ) => {
+        ) {
 
         emitter.add(name, function(response) {
 

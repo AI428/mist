@@ -60,7 +60,6 @@ namespace Mist {
           this.touch(e);
         }
 
-        // record.
         session(this);
       }
 
@@ -70,6 +69,8 @@ namespace Mist {
       private mouse(e: MouseEvent) {
 
         var o = e;
+
+        // rec response.
         var p = session();
 
         // passed milliseconds.
@@ -103,6 +104,7 @@ namespace Mist {
         this.move.x = x;
         this.move.y = y;
 
+        // move per milliseconds.
         this.mpms = s ? (x * x + y * y) / s : 0;
 
         this.page.x = o.pageX;
@@ -117,6 +119,8 @@ namespace Mist {
       private touch(e: TouchEvent) {
 
         var o = e.changedTouches[0];
+
+        // rec response.
         var p = session();
 
         // passed milliseconds.

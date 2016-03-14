@@ -10,7 +10,7 @@ declare namespace Mist {
         * @param {} o
         * @return {}
         */
-        static create<T>(modular: Function, ...o: any[]): T;
+        static create<T>(modular: any, ...o: any[]): T;
     }
 }
 declare namespace Mist {
@@ -99,11 +99,6 @@ declare namespace Mist {
         */
         static at(responsor: () => void, delay?: number): void;
         /**
-        * @param {} frames
-        * @summary frames per second
-        */
-        static fps(frames: number): void;
-        /**
         * @param {} responsor
         * @param {} delay
         * @return {}
@@ -113,7 +108,7 @@ declare namespace Mist {
         * @access private
         * @static
         */
-        private static request(responsor);
+        private static enter(responsor);
         /**
         * @access private
         * @static
@@ -127,18 +122,15 @@ declare namespace Mist {
     * @extends Promise
     */
     class Value extends Promise {
+        composite: any;
         private xg;
         private xr;
         private xs;
         /**
-        * @access public
-        */
-        composite: any;
-        /**
         * @constructor
         * @param {} composite
         */
-        constructor(composite: any);
+        constructor(composite?: any);
         /**
         * @param {} composer
         * @return {}
@@ -296,12 +288,6 @@ declare namespace Mist {
         */
         add(css: any, dur?: number): Promise;
         /**
-        * @param {} name
-        * @param {} responsor
-        * @return {}
-        */
-        bind(name: string, responsor: Promise): Promise;
-        /**
         * @return {}
         * @summary scoped
         */
@@ -328,8 +314,7 @@ declare namespace Mist {
         * @namespace Recognizer
         */
         class Detail {
-            src: any;
-            prev: any;
+            e: any;
             /**
             * @access public
             */
@@ -360,52 +345,30 @@ declare namespace Mist {
             */
             passed: number;
             /**
-            * @access public
+            * @constructor
+            * @param {} e
             */
-            screen: {
-                x: number;
-                y: number;
-            };
-            /**
-            * @access public
-            */
-            vector: number;
+            constructor(e: MouseEvent);
             /**
             * @constructor
-            * @param {} src
-            * @param {} prev?
+            * @param {} e
             */
-            constructor(src: MouseEvent, prev?: MouseEvent);
+            constructor(e: TouchEvent);
             /**
-            * @constructor
-            * @param {} src
-            * @param {} prev?
+            * @access private
             */
-            constructor(src: TouchEvent, prev?: TouchEvent);
+            private mouse(e);
             /**
-            * @constructor
-            * @param {} src
-            * @param {} prev?
-            */
-            constructor(src: Event, prev?: Event);
-            /**
-            * @param {} src
-            * @param {} prev
-            */
-            private mouse(src, prev?);
-            /**
-            * @param {} t
+            * @param {} o
             * @param {} s
             * @param {} x
             * @param {} y
-            * @param {} v
             */
-            private set(t, s, x, y, v);
+            private set(o, s, x, y);
             /**
-            * @param {} src
-            * @param {} prev
+            * @access private
             */
-            private touch(src, prev?);
+            private touch(e);
         }
     }
 }
@@ -417,14 +380,7 @@ declare namespace Mist {
         */
         class Pan {
             private emitter;
-            private txd;
-            private txv;
-            /**
-            * @access public
-            * @static
-            * @summary for error
-            */
-            static upper: number;
+            private txg;
             /**
             * @constructor
             * @param {} emitter
@@ -541,7 +497,7 @@ declare namespace Mist {
  * @description Reactive CSS framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.4.3
+ * @version 0.4.6
  */
 /**
  * @param {} statement

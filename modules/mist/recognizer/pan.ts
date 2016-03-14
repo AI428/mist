@@ -63,8 +63,6 @@ namespace Mist {
 
             var r = new Detail(e);
 
-            // filt response.
-
             s.emitter.emit('pan', r);
             s.emitter.emit('panmove', r);
 

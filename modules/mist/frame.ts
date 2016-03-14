@@ -16,7 +16,7 @@ namespace Mist {
     * @static
     * @summary milliseconds per frame
     */
-    static mspf: number = 1000 / 120;
+    static mspf: number = 1000 / 60;
 
     /**
     * @access public
@@ -48,15 +48,6 @@ namespace Mist {
         });
 
       this.tx();
-    }
-
-    /**
-    * @param {} frames
-    * @summary frames per second
-    */
-    static fps(frames: number) {
-
-      this.mspf = 1000 / frames;
     }
 
     /**
@@ -103,19 +94,21 @@ namespace Mist {
     * @access private
     * @static
     */
-    private static request(responsor: FrameRequestCallback) {
+    private static enter(responsor: FrameRequestCallback) {
 
       var s = this;
       var t = Date.now();
 
       // filt response.
+
       if (t - s.times > s.mspf) {
 
         s.times = t;
 
       } else {
-        // skip response.
-        responsor = s.request.bind(s, responsor);
+        // no response.
+
+        responsor = s.enter.bind(s, responsor);
       }
 
       requestAnimationFrame(responsor);
@@ -142,7 +135,7 @@ namespace Mist {
 
           while (
 
-            responsor = s.txs.pop()) {
+            responsor = s.txs.shift()) {
             responsor() || o.push(responsor);
           }
 
@@ -150,7 +143,7 @@ namespace Mist {
             s.txs.push.apply(
               s.txs, o) > 0) {
 
-            s.request(composer);
+            s.enter(composer);
           }
         })();
       })();

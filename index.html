@@ -125,30 +125,30 @@
   </footer>
   <script>
     /*
-     * homing
+     * homing statement.
      */
     (function() {
 
-      var statement = mist('#homing');
+      var homing = mist('#homing');
 
-      var d = statement.concat(' > div');
+      var d = homing.concat(' > div');
 
       d.style.set({
 
-        transform: statement.on('panmove').when(
+        transform: homing.on('panmove').when(
 
           function(response) {
 
-            var r = response.e.target.getBoundingClientRect();
+            var r = homing.first().getBoundingClientRect();
 
             var x = response.client.x - r.left - (r.width / 2);
             var y = response.client.y - r.top - (r.height / 2);
 
-            return 'translate3d(' + x + 'px,' + y + 'px,0)';
+            return 'translate3d(-50%, -50%, 0) translate3d(' + x + 'px,' + y + 'px,0)';
           })
       });
 
-      statement.on('panend').when(
+      homing.on('panend').when(
 
         function() {
 
@@ -157,21 +157,21 @@
     })();
 
     /*
-     * timer.
+     * timer statement.
      */
     (function() {
 
-      var value = new Mist.Value('');
+      var value = new Mist.Value();
 
-      function timer() {
+      (function responsor() {
 
         var d = new Date();
-
-        // format response.
 
         value.compose(
 
           function() {
+
+            // format response.
 
             return '"' +
               ('00' + d.getHours()).slice(-2) + ':' +
@@ -180,14 +180,13 @@
               '"';
           });
 
-        setTimeout(timer, 1000);
-      }
+        setTimeout(responsor, 1000);
+      })();
 
-      timer();
+      var timer = mist('#timer > div::before');
 
-      var statement = mist('#timer > div::before');
+      timer.style.set({
 
-      statement.style.add({
         content: value
       });
     })();

@@ -117,63 +117,6 @@ namespace Mist {
     }
 
     /**
-    * @param {} name
-    * @param {} responsor
-    * @return {}
-    */
-    bind(name: string, responsor: Promise): Promise {
-
-      var e = new RegExp('.*?\\/\\*\\**\\s*(.*?)\\{\\s*(' + name + '\\S*)\\s*\\}(.*?)\\s*\\**\\*\\/');
-
-      var s = this;
-      var r = responsor.when(
-
-        function(v) {
-
-          // bind response.
-          eval('var $$' + name + '=v');
-
-          return s.value.compose(
-
-            function(o) {
-              return o.map(
-
-                function(p: CSSStyleDeclaration) {
-
-                  // composer.
-                  for (let name in p) {
-
-                    function composer(
-                      match
-                      : string,
-                      p
-                      : string,
-                      v
-                      : string,
-                      s
-                      : string
-                      ) {
-
-                      var r = eval('$$' + v);
-
-                      return `${p}${r}${s}/*${p}{${v}}${s}*/`;
-                    };
-
-                    // a response.
-                    p[name] = p[name].replace(e, composer);
-                  }
-
-                  // {} response.
-                  return p;
-                });
-            });
-        });
-
-      // passthru.
-      return r;
-    }
-
-    /**
     * @return {}
     * @summary scoped
     */
