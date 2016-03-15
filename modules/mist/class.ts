@@ -1,3 +1,6 @@
+/// <reference path='wrapper/pulser.ts' />
+/// <reference path='wrapper/timer.ts' />
+
 /// <reference path='frame.ts'/>
 /// <reference path='promise.ts'/>
 /// <reference path='statement.ts'/>
@@ -7,18 +10,21 @@ namespace Mist {
 
   const ADD
     : number = 1;
+
   const REMOVE
     : number = 2;
+
   const TOGGLE
     : number = 3;
+
   const NEXT
     : number = 4;
+
   const PREVIOUS
     : number = 5;
 
   /**
   * @class Class
-  * @summary commands
   */
   export class Class {
 
@@ -34,8 +40,6 @@ namespace Mist {
       this.value.when(
 
         function(o) {
-
-          // initialize.
 
           var response: string[][] = [];
 
@@ -168,129 +172,80 @@ namespace Mist {
 
     /**
     * @param {} names
-    * @param {} dur
-    * @return {}
     */
-    add(names: string[], dur: number = 0): Promise {
+    add(...names: string[]): Promise {
 
-      return new Promise((responsor) => {
+      return this.value.compose((o) => {
 
-        var r = this.value.compose(
+        // {} response.
 
-          function(o) {
-
-            names.forEach(
-
-              // composer.
-              function(name) {
-
-                // tagged response.
-                o[name] = ADD;
-              });
-
-            // {} response.
-            return o;
-          });
-
-        // dur response.
-        dur > 0 ? Frame.on(
-          this.remove.bind(
-            this, names), dur).then(responsor) :
-
-          // passthru.
-          r.then(responsor);
+        return this.compose(names, ADD, o);
       });
     }
 
     /**
     * @param {} names
-    * @return {}
     */
-    next(names: string[]): Promise {
+    next(...names: string[]): Promise {
 
-      return this.value.compose(
+      return this.value.compose((o) => {
 
-        function(o) {
+        // {} response.
 
-          names.forEach(
-
-            // composer.
-            function(name) {
-
-              // tagged response.
-              o[name] = NEXT;
-            });
-
-          // {} response.
-          return o;
-        });
-    }
-
-    /**
-    * @param {} names
-    * @return {}
-    */
-    prev(names: string[]): Promise {
-
-      return this.value.compose(
-
-        function(o) {
-
-          names.forEach(
-
-            // composer.
-            function(name) {
-
-              // tagged response.
-              o[name] = PREVIOUS;
-            });
-
-          // {} response.
-          return o;
-        });
-    }
-
-    /**
-    * @param {} names
-    * @param {} dur
-    * @return {}
-    */
-    remove(names: string[], dur: number = 0): Promise {
-
-      return new Promise((responsor) => {
-
-        var r = this.value.compose(
-
-          function(o) {
-
-            names.forEach(
-
-              // composer.
-              function(name) {
-
-                // tagged response.
-                o[name] = REMOVE;
-              });
-
-            // {} response.
-            return o;
-          });
-
-        // dur response.
-        dur > 0 ? Frame.on(
-          this.add.bind(
-            this, names), dur).then(responsor) :
-
-          // passthru.
-          r.then(responsor);
+        return this.compose(names, NEXT, o);
       });
     }
 
     /**
     * @param {} names
-    * @return {}
     */
-    toggle(names: string[]): Promise {
+    prev(...names: string[]): Promise {
+
+      return this.value.compose((o) => {
+
+        // {} response.
+
+        return this.compose(names, PREVIOUS, o);
+      });
+    }
+
+    /**
+    * @param {} dur
+    */
+    pulse(dur: number): Wrapper.Pulser {
+
+      // wrapper response.
+
+      return new Wrapper.Pulser(this, dur);
+    }
+
+    /**
+    * @param {} names
+    */
+    remove(...names: string[]): Promise {
+
+      return this.value.compose((o) => {
+
+        // {} response.
+
+        return this.compose(names, REMOVE, o);
+      });
+    }
+
+    /**
+    * @param {} dur
+    */
+    time(dur: number): Wrapper.Timer {
+
+      // wrapper response.
+
+      return new Wrapper.Timer(this, dur);
+    }
+
+    /**
+    * @param {} names
+    */
+    toggle(...names: string[]): Promise {
 
       return this.value.compose(
 
@@ -305,25 +260,25 @@ namespace Mist {
 
                 case ADD:
 
-                  // tagged response.
+                  // re response.
                   o[name] = REMOVE;
 
                   break;
                 case REMOVE:
 
-                  // tagged response.
+                  // re response.
                   o[name] = ADD;
 
                   break;
                 case TOGGLE:
 
-                  // tagged response.
+                  // re response.
                   delete o[name];
 
                   break;
                 default:
 
-                  // tagged response.
+                  // re response.
                   o[name] = TOGGLE;
               }
             });
@@ -331,6 +286,23 @@ namespace Mist {
           // {} response.
           return o;
         });
+    }
+
+    /**
+    * @param {} names
+    * @param {} command
+    */
+    private compose(names: string[], command: number, response: any = {}) {
+
+      names.forEach(
+
+        function(name) {
+
+          response[name] = command;
+        });
+
+      // {} response.
+      return response;
     }
   }
 }
