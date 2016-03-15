@@ -5,7 +5,7 @@ namespace Mist {
 
   /**
   * @class Value
-  * @extends Promise
+  * @summary composer
   */
   export class Value extends Promise {
 
@@ -50,7 +50,6 @@ namespace Mist {
                 responsor(this.composite);
               }
 
-              // end.
               this.xg = false;
             });
           })();
@@ -60,7 +59,6 @@ namespace Mist {
 
     /**
     * @param {} composer
-    * @return {}
     */
     compose(composer: (composite: any) => any): Promise {
 

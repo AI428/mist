@@ -11,12 +11,12 @@ namespace Mist {
       /**
       * @access public
       */
-      client: { x: number, y: number } = { x: 0, y: 0 };
+      client: { x: number, y: number };
 
       /**
       * @access public
       */
-      move: { x: number, y: number } = { x: 0, y: 0 };
+      move: { x: number, y: number };
 
       /**
       * @access public
@@ -26,7 +26,7 @@ namespace Mist {
       /**
       * @access public
       */
-      page: { x: number, y: number } = { x: 0, y: 0 };
+      page: { x: number, y: number };
 
       /**
       * @access public
@@ -51,16 +51,18 @@ namespace Mist {
       */
       constructor(public e: any) {
 
+        var s = this;
+
         // mapped.
         if (e instanceof MouseEvent) {
           // no response.
-          this.mouse(e);
+          s.mouse(e);
         } else if (e instanceof TouchEvent) {
           // no response.
-          this.touch(e);
+          s.touch(e);
         }
 
-        session(this);
+        session(s);
       }
 
       /**
@@ -68,49 +70,46 @@ namespace Mist {
       */
       private mouse(e: MouseEvent) {
 
-        var o = e;
+        var p = e;
 
         // rec response.
-        var p = session();
+
+        var s = session();
 
         // passed milliseconds.
-        var s = p ? e.timeStamp - p.e.timeStamp : 0;
+
+        var passed = s ? e.timeStamp - s.e.timeStamp : 0;
 
         // move response.
-        var x = p ? o.pageX - p.page.x : 0;
-        var y = p ? o.pageY - p.page.y : 0;
+
+        var x = s ? p.pageX - s.page.x : 0;
+        var y = s ? p.pageY - s.page.y : 0;
 
         // initialize.
-        this.set(o, s, x, y);
+
+        this.set(p, passed, x, y);
       }
 
       /**
-      * @param {} o
-      * @param {} s
-      * @param {} x
-      * @param {} y
+      * @access private
       */
       private set(
 
-        o: any,
-        s: number,
+        p: any,
+        passed: number,
         x: number,
         y: number
         ) {
 
-        this.client.x = o.clientX;
-        this.client.y = o.clientY;
+        this.client = { x: p.clientX, y: p.clientY };
 
-        this.move.x = x;
-        this.move.y = y;
+        this.move = { x: x, y: y };
 
-        // move per milliseconds.
-        this.mpms = s ? (x * x + y * y) / s : 0;
+        this.mpms = passed ? (x * x + y * y) / passed : 0;
 
-        this.page.x = o.pageX;
-        this.page.y = o.pageY;
+        this.page = { x: p.pageX, y: p.pageY };
 
-        this.passed = s;
+        this.passed = passed;
       }
 
       /**
@@ -118,20 +117,24 @@ namespace Mist {
       */
       private touch(e: TouchEvent) {
 
-        var o = e.changedTouches[0];
+        var p = e.changedTouches[0];
 
         // rec response.
-        var p = session();
+
+        var s = session();
 
         // passed milliseconds.
-        var s = p ? e.timeStamp - p.e.timeStamp : 0;
+
+        var passed = s ? e.timeStamp - s.e.timeStamp : 0;
 
         // move response.
-        var x = p ? o.pageX - p.page.x : 0;
-        var y = p ? o.pageY - p.page.y : 0;
+
+        var x = s ? p.pageX - s.page.x : 0;
+        var y = s ? p.pageY - s.page.y : 0;
 
         // initialize.
-        this.set(o, s, x, y);
+
+        this.set(p, passed, x, y);
       }
     }
 

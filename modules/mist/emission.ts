@@ -5,7 +5,6 @@ namespace Mist {
 
   /**
   * @class Emission
-  * @extends Promise
   */
   export class Emission extends Promise {
 

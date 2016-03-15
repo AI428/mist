@@ -6,13 +6,11 @@ interface Element {
 
   /**
   * @param {} selector
-  * @return {}
   */
   closest: (selector: string) => Element;
 
   /**
   * @param {} selector
-  * @return {}
   */
   mozMatchesSelector: (selector: string) => boolean;
 }
