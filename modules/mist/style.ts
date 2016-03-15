@@ -1,3 +1,6 @@
+/// <reference path='wrapper/pulser.ts' />
+/// <reference path='wrapper/timer.ts' />
+
 /// <reference path='frame.ts' />
 /// <reference path='promise.ts' />
 /// <reference path='statement.ts' />
@@ -7,7 +10,6 @@ namespace Mist {
 
   /**
   * @class Style
-  * @summary commands
   */
   export class Style {
 
@@ -20,37 +22,28 @@ namespace Mist {
     */
     constructor(private statement: Statement) {
 
-      this.value = new Value([{}]);
+      this.value = new Value({});
       this.value.when(
 
-        (o: CSSStyleDeclaration[]) => {
+        (o) => {
 
-          var response = o.map(
+          var response: string[] = [];
 
-            function(p) {
-
-              var response: string[] = [];
-
-              // format response.
-              for (let name in p) {
-                response.push(hycase(name) + ':' + p[name]);
-              }
-
-              // a response.
-              return statement.selector()
-                + '{'
-                + response.join(';')
-                + '}'
-                ;
-            });
+          // format response.
+          for (let name in o) {
+            response.push(hycase(name) + ':' + o[name]);
+          }
 
           // inner response.
-          this.create().innerHTML = response.join('');
+          this.create().innerHTML = statement.selector()
+          + '{'
+          + response.join(';')
+          + '}'
+          ;
         });
     }
 
     /**
-    * @return {}
     * @summary conv
     */
     static rem(): number {
@@ -64,111 +57,81 @@ namespace Mist {
 
     /**
     * @param {} css
-    * @param {} dur
-    * @return {}
     */
-    add(css: any, dur: number = 0): Promise {
+    add(css: any): Promise {
 
-      return new Promise((responsor) => {
+      return this.value.compose((o) => {
 
-        var s = this;
-        var r = s.value.compose(
+        // {} response.
 
-          function(o) {
-
-            // initialize.
-            var response = s.composer(css, dur, dur > 0 ? {} : o[0]);
-
-            // dur response.
-            if (dur > 0) {
-
-              o.push(response);
-
-              // lazy response.
-              var r = Frame.on(
-
-                function() {
-
-                  return s.value.compose(
-
-                    function(o) {
-
-                      // composer.
-                      var i = o.indexOf(response);
-                      i < 0 || o.splice(i, 1);
-
-                      // [] response.
-                      return o;
-                    });
-
-                }, dur);
-
-              // connect.
-              r.then(responsor);
-            }
-
-            // [] response.
-            return o;
-          });
-
-        // passthru.
-        dur > 0 || r.then(responsor);
+        return this.compose(css, o);
       });
     }
 
     /**
-    * @return {}
     * @summary scoped
     */
     get(): any {
 
       var response: any = {};
 
-      this.value.composite.forEach(
+      var s = this;
 
-        function(css: CSSStyleDeclaration) {
-
-          // composer.
-          for (let name in css) {
-
-            response[name] = css[name];
-          }
-        });
+      // composer.
+      for (let name in s.value.composite) {
+        response[name] = s.value.composite[name];
+      }
 
       // {} response.
       return response;
     }
 
     /**
+    * @param {} dur
+    */
+    pulse(dur: number): Wrapper.Pulser {
+
+      // wrapper response.
+
+      return new Wrapper.Pulser(this, dur);
+    }
+
+    /**
     * @param {} css
-    * @return {}
     */
     set(css: any): Promise {
 
-      var s = this;
-      var r = s.value.compose(
+      return this.value.compose(() => {
 
-        function() {
+        // {} response.
 
-          // [] response.
-          return [s.composer(css)];
-        });
+        return this.compose(css);
+      });
+    }
 
-      // passthru.
-      return r;
+    /**
+    * @param {} dur
+    */
+    time(dur: number): Wrapper.Timer {
+
+      // wrapper response.
+
+      return new Wrapper.Timer(this, dur);
     }
 
     /**
     * @access private
     */
-    private composer(css: any, dur: number = 0, response: any = {}) {
+    private compose(css: any, response: any = {}) {
 
       var s = this;
 
       // composer.
       for (let name in css) {
 
-        if (css[name] instanceof Promise) {
+        var p = css[name];
+
+        if (p instanceof Promise) {
 
           function composer(
             name
@@ -181,16 +144,22 @@ namespace Mist {
 
             response[name] = v;
 
-            // reset response.
-            s.add(response, dur);
+            // reposite.
+            s.add(response);
           }
 
           // lazy response.
-          css[name].when(composer.bind(s, name));
+          p.when(composer.bind(s, name));
+
+        } else if (p instanceof Function) {
+
+          // a response.
+          response[name] = p();
 
         } else {
+
           // passthru.
-          response[name] = css[name];
+          response[name] = p;
         }
       }
 
