@@ -131,9 +131,9 @@
 
       var homing = mist('#homing');
 
-      var d = homing.concat(' > div');
+      var statement = homing.concat(' > div');
 
-      d.style.set({
+      statement.style.set({
 
         transform: homing.on('panmove').when(
 
@@ -144,7 +144,7 @@
             var x = response.client.x - r.left - (r.width / 2);
             var y = response.client.y - r.top - (r.height / 2);
 
-            return 'translate3d(-50%, -50%, 0) translate3d(' + x + 'px,' + y + 'px,0)';
+            return 'translate3d(-50%,-50%,0) translate3d(' + x + 'px,' + y + 'px,0)';
           })
       });
 
@@ -152,7 +152,7 @@
 
         function() {
 
-          d.style.set({});
+          statement.style.set({});
         });
     })();
 
@@ -161,33 +161,23 @@
      */
     (function() {
 
-      var value = new Mist.Value();
 
-      (function responsor() {
+      var statement = mist('#timer > div::before');
 
-        var d = new Date();
+      statement.style.pulse(1000).set({
 
-        value.compose(
+        content: function() {
 
-          function() {
+          var d = new Date();
 
-            // format response.
+          // format response.
 
-            return '"' +
-              ('00' + d.getHours()).slice(-2) + ':' +
-              ('00' + d.getMinutes()).slice(-2) + ':' +
-              ('00' + d.getSeconds()).slice(-2) +
-              '"';
-          });
-
-        setTimeout(responsor, 1000);
-      })();
-
-      var timer = mist('#timer > div::before');
-
-      timer.style.set({
-
-        content: value
+          return '"' +
+            ('00' + d.getHours()).slice(-2) + ':' +
+            ('00' + d.getMinutes()).slice(-2) + ':' +
+            ('00' + d.getSeconds()).slice(-2) +
+            '"';
+        }
       });
     })();
   </script>
