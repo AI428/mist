@@ -12,26 +12,11 @@ namespace Mist {
     private static txs: (() => boolean)[] = [];
 
     /**
-    * @access public
-    * @static
-    * @summary milliseconds per frame
-    */
-    static mspf: number = 1000 / 60;
-
-    /**
-    * @access public
-    * @static
-    * @summary timestamp
-    */
-    static times: number = 0;
-
-    /**
     * @param {} responsor
     * @param {} delay
     */
     static at(responsor: () => void, delay: number = 0) {
 
-      // queues.
       this.txs.push(
 
         function() {
@@ -53,7 +38,6 @@ namespace Mist {
     /**
     * @param {} responsor
     * @param {} delay
-    * @return {}
     */
     static on(responsor: () => any, delay: number = 0): Promise {
 
@@ -63,7 +47,6 @@ namespace Mist {
         erred
         ) => {
 
-        // queues.
         this.txs.push(
 
           function() {
@@ -94,30 +77,6 @@ namespace Mist {
     * @access private
     * @static
     */
-    private static enter(responsor: FrameRequestCallback) {
-
-      var s = this;
-      var t = Date.now();
-
-      // filt response.
-
-      if (t - s.times > s.mspf) {
-
-        s.times = t;
-
-      } else {
-        // no response.
-
-        responsor = s.enter.bind(s, responsor);
-      }
-
-      requestAnimationFrame(responsor);
-    }
-
-    /**
-    * @access private
-    * @static
-    */
     private static tx() {
 
       this.txg || (() => {
@@ -140,10 +99,10 @@ namespace Mist {
           }
 
           if (s.txg =
-            s.txs.push.apply(
-              s.txs, o) > 0) {
+            !!s.txs.push.apply(
+              s.txs, o)) {
 
-            s.enter(composer);
+            requestAnimationFrame(composer);
           }
         })();
       })();
