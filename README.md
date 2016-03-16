@@ -45,6 +45,7 @@ So, try red flashes the element to use this class. The following code will flash
 mist('any selector').class.pulse(1000).toggle('redden');
 ```
 
+### Remove this
 You can also remove.
 
 ```js
