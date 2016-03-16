@@ -12,38 +12,42 @@ In order to control the CSS, Do you use such heavy weight library of Angular and
 
 Download the latest version. After only load.
 
+
 ```html
 <script src=mist.min.js></script>
 ```
+
 
 ### Define CSS class
 
 Any of the selector, or the element style define. The following code is a class that red elements when you click.
 
-```js
-mist('*').on('click').then(function() {
 
-  mist('.redden').style.set({ background: 'red' });
-});
+```js
+mist('*').on('click').then(function() { mist('.redden').style.set({ background: 'red' }); });
 ```
 
+
 Add this class to any selector.
+
 
 ```js
 mist('any selector').class.add('redden');
 ```
 
+
 Try blink red. The following code will blink at a second intervals.
+
 
 ```js
 mist('any selector').class.pulse(1000).toggle('redden');
 ```
 
+
 The style, in addition to the string, you can pass a function or Mist.Promise.
 
-Function is evaluated just to adapt the style. Mist.Promise in the return value, such as mist.on function, is thenable module, is evaluated each time the callback function is called.
+Function is evaluated just to adapt the style. Mist.Promise in the return value, such as mist.on function, is thenable module, is evaluated each time the callback function is called.The code that red elements when you click is rewritten as follows.
 
-The code that red elements when you click is rewritten as follows.
 
 ```js
 mist('.redden').style.set({
