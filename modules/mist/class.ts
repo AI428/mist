@@ -260,25 +260,25 @@ namespace Mist {
 
                 case ADD:
 
-                  // re response.
+                  // ! response.
                   o[name] = REMOVE;
 
                   break;
                 case REMOVE:
 
-                  // re response.
+                  // ! response.
                   o[name] = ADD;
 
                   break;
                 case TOGGLE:
 
-                  // re response.
+                  // remove.
                   delete o[name];
 
                   break;
                 default:
 
-                  // re response.
+                  // passthru.
                   o[name] = TOGGLE;
               }
             });

@@ -144,7 +144,7 @@ namespace Mist {
 
             response[name] = v;
 
-            // reposite.
+            // reposit.
             s.add(response);
           }
 
