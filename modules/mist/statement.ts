@@ -1,11 +1,11 @@
+/// <reference path='recognizer/pan.ts' />
+/// <reference path='recognizer/swipe.ts' />
+
 /// <reference path='class.ts' />
 /// <reference path='component.ts' />
 /// <reference path='emission.ts' />
 /// <reference path='emitter.ts' />
 /// <reference path='style.ts' />
-
-/// <reference path='recognizer/pan.ts' />
-/// <reference path='recognizer/swipe.ts' />
 
 namespace Mist {
 
@@ -59,7 +59,6 @@ namespace Mist {
 
     /**
     * @param {} selector
-    * @return {}
     */
     concat(selector: string): Statement {
 
@@ -86,7 +85,6 @@ namespace Mist {
     }
 
     /**
-    * @return {}
     * @summary mapped
     */
     elements(): Element[] {
@@ -112,7 +110,6 @@ namespace Mist {
     }
 
     /**
-    * @return {}
     * @summary mapped
     */
     first(): Element {
@@ -138,7 +135,6 @@ namespace Mist {
     }
 
     /**
-    * @return {}
     * @summary mapped
     */
     last(): Element {
@@ -165,7 +161,6 @@ namespace Mist {
 
     /**
     * @param {} name
-    * @return {}
     */
     on(name: string): Emission {
 
@@ -175,7 +170,6 @@ namespace Mist {
 
     /**
     * @param {} name
-    * @return {}
     */
     once(name: string): Emission {
 
@@ -185,7 +179,6 @@ namespace Mist {
     }
 
     /**
-    * @return {}
     * @summary mapped
     */
     selector(): string {

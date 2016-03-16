@@ -8,9 +8,74 @@ declare namespace Mist {
         /**
         * @param {} modular
         * @param {} o
-        * @return {}
         */
         static create<T>(modular: any, ...o: any[]): T;
+    }
+}
+declare namespace Mist {
+    namespace Wrapper {
+        /**
+        * @class Voker
+        * @namespace Wrapper
+        */
+        class Voker {
+            private component;
+            /**
+            * @constructor
+            * @param {} component
+            */
+            constructor(component: any);
+            /**
+            * @param {} composer
+            * @param {} o
+            * @summary for override
+            */
+            compose$(composer: any, o: any[]): any;
+        }
+    }
+}
+declare namespace Mist {
+    namespace Wrapper {
+        /**
+        * @class Pulser
+        * @namespace Wrapper
+        */
+        class Pulser extends Voker {
+            dur: number;
+            /**
+            * @constructor
+            * @param {} component
+            * @param {} dur
+            */
+            constructor(component: any, dur?: number);
+            /**
+            * @param {} composer
+            * @param {} o
+            */
+            compose$(composer: any, o: any[]): Promise;
+        }
+    }
+}
+declare namespace Mist {
+    namespace Wrapper {
+        /**
+        * @class Timer
+        * @namespace Wrapper
+        */
+        class Timer extends Voker {
+            dur: number;
+            /**
+            * @constructor
+            * @param {} component
+            * @param {} dur
+            */
+            constructor(component: any, dur?: number);
+            /**
+            * @param {} composer
+            * @param {} o
+            */
+            compose$(composer: any, o: any[]): Promise;
+        }
     }
 }
 declare namespace Mist {
@@ -30,17 +95,14 @@ declare namespace Mist {
         constructor(process: (succeed: (response: any) => void, erred: (response: any) => void) => void);
         /**
         * @param {} commits
-        * @return {}
         */
         static all(commits: Promise[]): Promise;
         /**
         * @param {} commits
-        * @return {}
         */
         static race(commits: Promise[]): Promise;
         /**
         * @param {} err
-        * @return {}
         */
         catch(err: (response: any) => any): Promise;
         /**
@@ -50,13 +112,11 @@ declare namespace Mist {
         /**
         * @param {} success
         * @param {} err
-        * @return {}
         */
         then(success: (response: any) => any, err?: (response: any) => any): Promise;
         /**
         * @param {} success
         * @param {} err
-        * @return {}
         */
         when(success: (response: any) => any, err?: (response: any) => any): Promise;
         /**
@@ -82,18 +142,6 @@ declare namespace Mist {
         private static txg;
         private static txs;
         /**
-        * @access public
-        * @static
-        * @summary milliseconds per frame
-        */
-        static mspf: number;
-        /**
-        * @access public
-        * @static
-        * @summary timestamp
-        */
-        static times: number;
-        /**
         * @param {} responsor
         * @param {} delay
         */
@@ -101,14 +149,8 @@ declare namespace Mist {
         /**
         * @param {} responsor
         * @param {} delay
-        * @return {}
         */
         static on(responsor: () => any, delay?: number): Promise;
-        /**
-        * @access private
-        * @static
-        */
-        private static enter(responsor);
         /**
         * @access private
         * @static
@@ -119,7 +161,7 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Value
-    * @extends Promise
+    * @summary composer
     */
     class Value extends Promise {
         composite: any;
@@ -133,7 +175,6 @@ declare namespace Mist {
         constructor(composite?: any);
         /**
         * @param {} composer
-        * @return {}
         */
         compose(composer: (composite: any) => any): Promise;
     }
@@ -141,7 +182,6 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Class
-    * @summary commands
     */
     class Class {
         private statement;
@@ -153,31 +193,37 @@ declare namespace Mist {
         constructor(statement: Statement);
         /**
         * @param {} names
+        */
+        add(...names: string[]): Promise;
+        /**
+        * @param {} names
+        */
+        next(...names: string[]): Promise;
+        /**
+        * @param {} names
+        */
+        prev(...names: string[]): Promise;
+        /**
         * @param {} dur
-        * @return {}
         */
-        add(names: string[], dur?: number): Promise;
+        pulse(dur: number): Wrapper.Pulser;
         /**
         * @param {} names
-        * @return {}
         */
-        next(names: string[]): Promise;
+        remove(...names: string[]): Promise;
         /**
-        * @param {} names
-        * @return {}
-        */
-        prev(names: string[]): Promise;
-        /**
-        * @param {} names
         * @param {} dur
-        * @return {}
         */
-        remove(names: string[], dur?: number): Promise;
+        time(dur: number): Wrapper.Timer;
         /**
         * @param {} names
-        * @return {}
         */
-        toggle(names: string[]): Promise;
+        toggle(...names: string[]): Promise;
+        /**
+        * @param {} names
+        * @param {} command
+        */
+        private compose(names, command, response?);
     }
 }
 /**
@@ -187,12 +233,10 @@ declare namespace Mist {
 interface Element {
     /**
     * @param {} selector
-    * @return {}
     */
     closest: (selector: string) => Element;
     /**
     * @param {} selector
-    * @return {}
     */
     mozMatchesSelector: (selector: string) => boolean;
 }
@@ -249,7 +293,6 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Emission
-    * @extends Promise
     */
     class Emission extends Promise {
         private emitter;
@@ -265,7 +308,6 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Style
-    * @summary commands
     */
     class Style {
         private statement;
@@ -277,30 +319,33 @@ declare namespace Mist {
         */
         constructor(statement: Statement);
         /**
-        * @return {}
         * @summary conv
         */
         static rem(): number;
         /**
         * @param {} css
-        * @param {} dur
-        * @return {}
         */
-        add(css: any, dur?: number): Promise;
+        add(css: any): Promise;
         /**
-        * @return {}
         * @summary scoped
         */
         get(): any;
         /**
+        * @param {} dur
+        */
+        pulse(dur: number): Wrapper.Pulser;
+        /**
         * @param {} css
-        * @return {}
         */
         set(css: any): Promise;
         /**
+        * @param {} dur
+        */
+        time(dur: number): Wrapper.Timer;
+        /**
         * @access private
         */
-        private composer(css, dur?, response?);
+        private compose(css, response?);
         /**
         * @access private
         */
@@ -359,12 +404,9 @@ declare namespace Mist {
             */
             private mouse(e);
             /**
-            * @param {} o
-            * @param {} s
-            * @param {} x
-            * @param {} y
+            * @access private
             */
-            private set(o, s, x, y);
+            private set(p, passed, x, y);
             /**
             * @access private
             */
@@ -453,7 +495,6 @@ declare namespace Mist {
         constructor(statement: string);
         /**
         * @param {} selector
-        * @return {}
         */
         concat(selector: string): Statement;
         /**
@@ -461,32 +502,26 @@ declare namespace Mist {
         */
         each(listener: (element: Element) => void): void;
         /**
-        * @return {}
         * @summary mapped
         */
         elements(): Element[];
         /**
-        * @return {}
         * @summary mapped
         */
         first(): Element;
         /**
-        * @return {}
         * @summary mapped
         */
         last(): Element;
         /**
         * @param {} name
-        * @return {}
         */
         on(name: string): Emission;
         /**
         * @param {} name
-        * @return {}
         */
         once(name: string): Emission;
         /**
-        * @return {}
         * @summary mapped
         */
         selector(): string;
@@ -497,7 +532,7 @@ declare namespace Mist {
  * @description Reactive CSS framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.4.6
+ * @version 0.5.0
  */
 /**
  * @param {} statement

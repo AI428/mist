@@ -10,14 +10,13 @@ var Mist;
         /**
         * @param {} modular
         * @param {} o
-        * @return {}
         */
         Component.create = function (modular) {
+            // ser response.
             var o = [];
             for (var _i = 1; _i < arguments.length; _i++) {
                 o[_i - 1] = arguments[_i];
             }
-            // ser response.
             var m = ser([modular]);
             var n = ser(o);
             // initialize.
@@ -54,6 +53,152 @@ var Mist;
 })(Mist || (Mist = {}));
 var Mist;
 (function (Mist) {
+    var Wrapper;
+    (function (Wrapper) {
+        /**
+        * @class Voker
+        * @namespace Wrapper
+        */
+        var Voker = (function () {
+            /**
+            * @constructor
+            * @param {} component
+            */
+            function Voker(component) {
+                this.component = component;
+                var s = this;
+                var _loop_1 = function(name_1) {
+                    if (component[name_1] instanceof Function) {
+                        // lazy response.
+                        function composer() {
+                            var o = [];
+                            for (var _i = 0; _i < arguments.length; _i++) {
+                                o[_i - 0] = arguments[_i];
+                            }
+                            return s.compose$(component[name_1].bind(component), o);
+                        }
+                        // {} response.
+                        s[name_1] = composer;
+                    }
+                };
+                for (var name_1 in component) {
+                    _loop_1(name_1);
+                }
+            }
+            /**
+            * @param {} composer
+            * @param {} o
+            * @summary for override
+            */
+            Voker.prototype.compose$ = function (composer, o) {
+                return composer.apply(composer, o);
+            };
+            return Voker;
+        }());
+        Wrapper.Voker = Voker;
+    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
+})(Mist || (Mist = {}));
+/// <reference path='voker.ts'/>
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Mist;
+(function (Mist) {
+    var Wrapper;
+    (function (Wrapper) {
+        /**
+        * @class Pulser
+        * @namespace Wrapper
+        */
+        var Pulser = (function (_super) {
+            __extends(Pulser, _super);
+            /**
+            * @constructor
+            * @param {} component
+            * @param {} dur
+            */
+            function Pulser(component, dur) {
+                if (dur === void 0) { dur = 0; }
+                _super.call(this, component);
+                this.dur = dur;
+            }
+            /**
+            * @param {} composer
+            * @param {} o
+            */
+            Pulser.prototype.compose$ = function (composer, o) {
+                var s = this;
+                return new Mist.Promise(function (succeed, erred) {
+                    (function responsor() {
+                        try {
+                            // commit response.
+                            succeed(composer.apply(composer, o));
+                            // lazy response.
+                            !s.dur || setTimeout(responsor, s.dur);
+                        }
+                        catch (e) {
+                            // fail response.
+                            erred(e);
+                        }
+                    })();
+                });
+            };
+            return Pulser;
+        }(Wrapper.Voker));
+        Wrapper.Pulser = Pulser;
+    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
+})(Mist || (Mist = {}));
+/// <reference path='voker.ts'/>
+var Mist;
+(function (Mist) {
+    var Wrapper;
+    (function (Wrapper) {
+        /**
+        * @class Timer
+        * @namespace Wrapper
+        */
+        var Timer = (function (_super) {
+            __extends(Timer, _super);
+            /**
+            * @constructor
+            * @param {} component
+            * @param {} dur
+            */
+            function Timer(component, dur) {
+                if (dur === void 0) { dur = 0; }
+                _super.call(this, component);
+                this.dur = dur;
+            }
+            /**
+            * @param {} composer
+            * @param {} o
+            */
+            Timer.prototype.compose$ = function (composer, o) {
+                var s = this;
+                return new Mist.Promise(function (succeed, erred) {
+                    function responsor() {
+                        try {
+                            // commit response.
+                            succeed(composer.apply(composer, o));
+                        }
+                        catch (e) {
+                            // fail response.
+                            erred(e);
+                        }
+                    }
+                    // lazy response.
+                    !s.dur || setTimeout(responsor, s.dur);
+                });
+            };
+            return Timer;
+        }(Wrapper.Voker));
+        Wrapper.Timer = Timer;
+    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
+})(Mist || (Mist = {}));
+var Mist;
+(function (Mist) {
     /**
     * @class Promise
     * @summary thenable
@@ -74,7 +219,6 @@ var Mist;
         }
         /**
         * @param {} commits
-        * @return {}
         */
         Promise.all = function (commits) {
             return new Promise(function (succeed, erred) {
@@ -104,7 +248,6 @@ var Mist;
         };
         /**
         * @param {} commits
-        * @return {}
         */
         Promise.race = function (commits) {
             return new Promise(function (succeed, erred) {
@@ -125,7 +268,6 @@ var Mist;
         };
         /**
         * @param {} err
-        * @return {}
         */
         Promise.prototype.catch = function (err) {
             var _this = this;
@@ -156,7 +298,6 @@ var Mist;
         /**
         * @param {} success
         * @param {} err
-        * @return {}
         */
         Promise.prototype.then = function (success, err) {
             var _this = this;
@@ -181,7 +322,6 @@ var Mist;
         /**
         * @param {} success
         * @param {} err
-        * @return {}
         */
         Promise.prototype.when = function (success, err) {
             var _this = this;
@@ -210,7 +350,6 @@ var Mist;
             if (!this.txg) {
                 var m = this.err;
                 if (m) {
-                    // end.
                     this.txg = true;
                     // fail response.
                     if (response instanceof Promise) {
@@ -230,6 +369,7 @@ var Mist;
                     };
                 }
             }
+            console.log(response);
         };
         /**
         * @access private
@@ -239,7 +379,6 @@ var Mist;
             if (!this.txg) {
                 var m = this.success;
                 if (m) {
-                    // end.
                     this.txg = true;
                     // commit response.
                     if (response instanceof Promise) {
@@ -289,7 +428,6 @@ var Mist;
         */
         Frame.at = function (responsor, delay) {
             if (delay === void 0) { delay = 0; }
-            // queues.
             this.txs.push(function () {
                 var r = 0 > delay--;
                 if (r) {
@@ -303,13 +441,11 @@ var Mist;
         /**
         * @param {} responsor
         * @param {} delay
-        * @return {}
         */
         Frame.on = function (responsor, delay) {
             var _this = this;
             if (delay === void 0) { delay = 0; }
             return new Mist.Promise(function (succeed, erred) {
-                // queues.
                 _this.txs.push(function () {
                     var r = 0 > delay--;
                     if (r) {
@@ -331,23 +467,6 @@ var Mist;
         * @access private
         * @static
         */
-        Frame.enter = function (responsor) {
-            var s = this;
-            var t = Date.now();
-            // filt response.
-            if (t - s.times > s.mspf) {
-                s.times = t;
-            }
-            else {
-                // no response.
-                responsor = s.enter.bind(s, responsor);
-            }
-            requestAnimationFrame(responsor);
-        };
-        /**
-        * @access private
-        * @static
-        */
         Frame.tx = function () {
             var _this = this;
             this.txg || (function () {
@@ -361,41 +480,24 @@ var Mist;
                         responsor() || o.push(responsor);
                     }
                     if (s.txg =
-                        s.txs.push.apply(s.txs, o) > 0) {
-                        s.enter(composer);
+                        !!s.txs.push.apply(s.txs, o)) {
+                        requestAnimationFrame(composer);
                     }
                 })();
             })();
         };
         Frame.txs = [];
-        /**
-        * @access public
-        * @static
-        * @summary milliseconds per frame
-        */
-        Frame.mspf = 1000 / 60;
-        /**
-        * @access public
-        * @static
-        * @summary timestamp
-        */
-        Frame.times = 0;
         return Frame;
     }());
     Mist.Frame = Frame;
 })(Mist || (Mist = {}));
 /// <reference path='frame.ts'/>
 /// <reference path='promise.ts'/>
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var Mist;
 (function (Mist) {
     /**
     * @class Value
-    * @extends Promise
+    * @summary composer
     */
     var Value = (function (_super) {
         __extends(Value, _super);
@@ -423,7 +525,6 @@ var Mist;
                             while (responsor = _this.xs.shift()) {
                                 responsor(_this.composite);
                             }
-                            // end.
                             _this.xg = false;
                         });
                     })();
@@ -434,7 +535,6 @@ var Mist;
         }
         /**
         * @param {} composer
-        * @return {}
         */
         Value.prototype.compose = function (composer) {
             var _this = this;
@@ -453,6 +553,8 @@ var Mist;
     }(Mist.Promise));
     Mist.Value = Value;
 })(Mist || (Mist = {}));
+/// <reference path='wrapper/pulser.ts' />
+/// <reference path='wrapper/timer.ts' />
 /// <reference path='frame.ts'/>
 /// <reference path='promise.ts'/>
 /// <reference path='statement.ts'/>
@@ -466,7 +568,6 @@ var Mist;
     var PREVIOUS = 5;
     /**
     * @class Class
-    * @summary commands
     */
     var Class = (function () {
         /**
@@ -477,15 +578,14 @@ var Mist;
             this.statement = statement;
             this.value = new Mist.Value({});
             this.value.when(function (o) {
-                // initialize.
                 var response = [];
-                for (var name_1 in o) {
-                    var i = o[name_1];
+                for (var name_2 in o) {
+                    var i = o[name_2];
                     // format response.
                     response[i] || (response[i] = []);
-                    response[i].push(name_1);
+                    response[i].push(name_2);
                     // reposit.
-                    delete o[name_1];
+                    delete o[name_2];
                 }
                 var queues = [];
                 statement.each(function (e) {
@@ -549,116 +649,119 @@ var Mist;
         }
         /**
         * @param {} names
-        * @param {} dur
-        * @return {}
         */
-        Class.prototype.add = function (names, dur) {
+        Class.prototype.add = function () {
             var _this = this;
-            if (dur === void 0) { dur = 0; }
-            return new Mist.Promise(function (responsor) {
-                var r = _this.value.compose(function (o) {
-                    names.forEach(
-                    // composer.
-                    function (name) {
-                        // tagged response.
-                        o[name] = ADD;
-                    });
-                    // {} response.
-                    return o;
-                });
-                // dur response.
-                dur > 0 ? Mist.Frame.on(_this.remove.bind(_this, names), dur).then(responsor) :
-                    // passthru.
-                    r.then(responsor);
-            });
-        };
-        /**
-        * @param {} names
-        * @return {}
-        */
-        Class.prototype.next = function (names) {
+            var names = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                names[_i - 0] = arguments[_i];
+            }
             return this.value.compose(function (o) {
-                names.forEach(
-                // composer.
-                function (name) {
-                    // tagged response.
-                    o[name] = NEXT;
-                });
                 // {} response.
-                return o;
+                return _this.compose(names, ADD, o);
             });
         };
         /**
         * @param {} names
-        * @return {}
         */
-        Class.prototype.prev = function (names) {
-            return this.value.compose(function (o) {
-                names.forEach(
-                // composer.
-                function (name) {
-                    // tagged response.
-                    o[name] = PREVIOUS;
-                });
-                // {} response.
-                return o;
-            });
-        };
-        /**
-        * @param {} names
-        * @param {} dur
-        * @return {}
-        */
-        Class.prototype.remove = function (names, dur) {
+        Class.prototype.next = function () {
             var _this = this;
-            if (dur === void 0) { dur = 0; }
-            return new Mist.Promise(function (responsor) {
-                var r = _this.value.compose(function (o) {
-                    names.forEach(
-                    // composer.
-                    function (name) {
-                        // tagged response.
-                        o[name] = REMOVE;
-                    });
-                    // {} response.
-                    return o;
-                });
-                // dur response.
-                dur > 0 ? Mist.Frame.on(_this.add.bind(_this, names), dur).then(responsor) :
-                    // passthru.
-                    r.then(responsor);
+            var names = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                names[_i - 0] = arguments[_i];
+            }
+            return this.value.compose(function (o) {
+                // {} response.
+                return _this.compose(names, NEXT, o);
             });
         };
         /**
         * @param {} names
-        * @return {}
         */
-        Class.prototype.toggle = function (names) {
+        Class.prototype.prev = function () {
+            var _this = this;
+            var names = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                names[_i - 0] = arguments[_i];
+            }
+            return this.value.compose(function (o) {
+                // {} response.
+                return _this.compose(names, PREVIOUS, o);
+            });
+        };
+        /**
+        * @param {} dur
+        */
+        Class.prototype.pulse = function (dur) {
+            // wrapper response.
+            return new Mist.Wrapper.Pulser(this, dur);
+        };
+        /**
+        * @param {} names
+        */
+        Class.prototype.remove = function () {
+            var _this = this;
+            var names = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                names[_i - 0] = arguments[_i];
+            }
+            return this.value.compose(function (o) {
+                // {} response.
+                return _this.compose(names, REMOVE, o);
+            });
+        };
+        /**
+        * @param {} dur
+        */
+        Class.prototype.time = function (dur) {
+            // wrapper response.
+            return new Mist.Wrapper.Timer(this, dur);
+        };
+        /**
+        * @param {} names
+        */
+        Class.prototype.toggle = function () {
+            var names = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                names[_i - 0] = arguments[_i];
+            }
             return this.value.compose(function (o) {
                 names.forEach(
                 // composer.
                 function (name) {
                     switch (o[name]) {
                         case ADD:
-                            // tagged response.
+                            // re response.
                             o[name] = REMOVE;
                             break;
                         case REMOVE:
-                            // tagged response.
+                            // re response.
                             o[name] = ADD;
                             break;
                         case TOGGLE:
-                            // tagged response.
+                            // re response.
                             delete o[name];
                             break;
                         default:
-                            // tagged response.
+                            // re response.
                             o[name] = TOGGLE;
                     }
                 });
                 // {} response.
                 return o;
             });
+        };
+        /**
+        * @param {} names
+        * @param {} command
+        */
+        Class.prototype.compose = function (names, command, response) {
+            if (response === void 0) { response = {}; }
+            names.forEach(function (name) {
+                response[name] = command;
+            });
+            // {} response.
+            return response;
         };
         return Class;
     }());
@@ -802,7 +905,6 @@ var Mist;
 (function (Mist) {
     /**
     * @class Emission
-    * @extends Promise
     */
     var Emission = (function (_super) {
         __extends(Emission, _super);
@@ -831,6 +933,8 @@ var Mist;
     }(Mist.Promise));
     Mist.Emission = Emission;
 })(Mist || (Mist = {}));
+/// <reference path='wrapper/pulser.ts' />
+/// <reference path='wrapper/timer.ts' />
 /// <reference path='frame.ts' />
 /// <reference path='promise.ts' />
 /// <reference path='statement.ts' />
@@ -839,7 +943,6 @@ var Mist;
 (function (Mist) {
     /**
     * @class Style
-    * @summary commands
     */
     var Style = (function () {
         /**
@@ -849,26 +952,21 @@ var Mist;
         function Style(statement) {
             var _this = this;
             this.statement = statement;
-            this.value = new Mist.Value([{}]);
+            this.value = new Mist.Value({});
             this.value.when(function (o) {
-                var response = o.map(function (p) {
-                    var response = [];
-                    // format response.
-                    for (var name_2 in p) {
-                        response.push(hycase(name_2) + ':' + p[name_2]);
-                    }
-                    // a response.
-                    return statement.selector()
-                        + '{'
-                        + response.join(';')
-                        + '}';
-                });
+                var response = [];
+                // format response.
+                for (var name_3 in o) {
+                    response.push(hycase(name_3) + ':' + o[name_3]);
+                }
                 // inner response.
-                _this.create().innerHTML = response.join('');
+                _this.create().innerHTML = statement.selector()
+                    + '{'
+                    + response.join(';')
+                    + '}';
             });
         }
         /**
-        * @return {}
         * @summary conv
         */
         Style.rem = function () {
@@ -879,90 +977,77 @@ var Mist;
         };
         /**
         * @param {} css
-        * @param {} dur
-        * @return {}
         */
-        Style.prototype.add = function (css, dur) {
+        Style.prototype.add = function (css) {
             var _this = this;
-            if (dur === void 0) { dur = 0; }
-            return new Mist.Promise(function (responsor) {
-                var s = _this;
-                var r = s.value.compose(function (o) {
-                    // initialize.
-                    var response = s.composer(css, dur, dur > 0 ? {} : o[0]);
-                    // dur response.
-                    if (dur > 0) {
-                        o.push(response);
-                        // lazy response.
-                        var r = Mist.Frame.on(function () {
-                            return s.value.compose(function (o) {
-                                // composer.
-                                var i = o.indexOf(response);
-                                i < 0 || o.splice(i, 1);
-                                // [] response.
-                                return o;
-                            });
-                        }, dur);
-                        // connect.
-                        r.then(responsor);
-                    }
-                    // [] response.
-                    return o;
-                });
-                // passthru.
-                dur > 0 || r.then(responsor);
+            return this.value.compose(function (o) {
+                // {} response.
+                return _this.compose(css, o);
             });
         };
         /**
-        * @return {}
         * @summary scoped
         */
         Style.prototype.get = function () {
             var response = {};
-            this.value.composite.forEach(function (css) {
-                // composer.
-                for (var name_3 in css) {
-                    response[name_3] = css[name_3];
-                }
-            });
+            var s = this;
+            // composer.
+            for (var name_4 in s.value.composite) {
+                response[name_4] = s.value.composite[name_4];
+            }
             // {} response.
             return response;
         };
         /**
+        * @param {} dur
+        */
+        Style.prototype.pulse = function (dur) {
+            // wrapper response.
+            return new Mist.Wrapper.Pulser(this, dur);
+        };
+        /**
         * @param {} css
-        * @return {}
         */
         Style.prototype.set = function (css) {
-            var s = this;
-            var r = s.value.compose(function () {
-                // [] response.
-                return [s.composer(css)];
+            var _this = this;
+            return this.value.compose(function () {
+                // {} response.
+                return _this.compose(css);
             });
-            // passthru.
-            return r;
+        };
+        /**
+        * @param {} dur
+        */
+        Style.prototype.time = function (dur) {
+            // wrapper response.
+            return new Mist.Wrapper.Timer(this, dur);
         };
         /**
         * @access private
         */
-        Style.prototype.composer = function (css, dur, response) {
-            if (dur === void 0) { dur = 0; }
+        Style.prototype.compose = function (css, response) {
             if (response === void 0) { response = {}; }
             var s = this;
             // composer.
-            for (var name_4 in css) {
-                if (css[name_4] instanceof Mist.Promise) {
+            for (var name_5 in css) {
+                var p = css[name_5];
+                if (p instanceof Mist.Promise) {
                     function composer(name, v) {
                         var response = {};
                         response[name] = v;
-                        // reset response.
-                        s.add(response, dur);
+                        // reposite.
+                        s.add(response);
                     }
                     // lazy response.
-                    css[name_4].when(composer.bind(s, name_4));
+                    p.when(composer.bind(s, name_5));
+                }
+                else if (p instanceof Function) {
+                    // a response.
+                    response[name_5] = p();
                 }
                 else {
                     // passthru.
-                    response[name_4] = css[name_4];
+                    response[name_5] = p;
                 }
             }
             // {} response.
@@ -1011,75 +1096,57 @@ var Mist;
             */
             function Detail(e) {
                 this.e = e;
-                /**
-                * @access public
-                */
-                this.client = { x: 0, y: 0 };
-                /**
-                * @access public
-                */
-                this.move = { x: 0, y: 0 };
-                /**
-                * @access public
-                */
-                this.page = { x: 0, y: 0 };
+                var s = this;
                 // mapped.
                 if (e instanceof MouseEvent) {
                     // no response.
-                    this.mouse(e);
+                    s.mouse(e);
                 }
                 else if (e instanceof TouchEvent) {
                     // no response.
-                    this.touch(e);
+                    s.touch(e);
                 }
-                session(this);
+                session(s);
             }
             /**
             * @access private
             */
             Detail.prototype.mouse = function (e) {
-                var o = e;
+                var p = e;
                 // rec response.
-                var p = session();
+                var s = session();
                 // passed milliseconds.
-                var s = p ? e.timeStamp - p.e.timeStamp : 0;
+                var passed = s ? e.timeStamp - s.e.timeStamp : 0;
                 // move response.
-                var x = p ? o.pageX - p.page.x : 0;
-                var y = p ? o.pageY - p.page.y : 0;
+                var x = s ? p.pageX - s.page.x : 0;
+                var y = s ? p.pageY - s.page.y : 0;
                 // initialize.
-                this.set(o, s, x, y);
+                this.set(p, passed, x, y);
             };
             /**
-            * @param {} o
-            * @param {} s
-            * @param {} x
-            * @param {} y
+            * @access private
             */
-            Detail.prototype.set = function (o, s, x, y) {
-                this.client.x = o.clientX;
-                this.client.y = o.clientY;
-                this.move.x = x;
-                this.move.y = y;
-                // move per milliseconds.
-                this.mpms = s ? (x * x + y * y) / s : 0;
-                this.page.x = o.pageX;
-                this.page.y = o.pageY;
-                this.passed = s;
+            Detail.prototype.set = function (p, passed, x, y) {
+                this.client = { x: p.clientX, y: p.clientY };
+                this.move = { x: x, y: y };
+                this.mpms = passed ? (x * x + y * y) / passed : 0;
+                this.page = { x: p.pageX, y: p.pageY };
+                this.passed = passed;
             };
             /**
             * @access private
             */
             Detail.prototype.touch = function (e) {
-                var o = e.changedTouches[0];
+                var p = e.changedTouches[0];
                 // rec response.
-                var p = session();
+                var s = session();
                 // passed milliseconds.
-                var s = p ? e.timeStamp - p.e.timeStamp : 0;
+                var passed = s ? e.timeStamp - s.e.timeStamp : 0;
                 // move response.
-                var x = p ? o.pageX - p.page.x : 0;
-                var y = p ? o.pageY - p.page.y : 0;
+                var x = s ? p.pageX - s.page.x : 0;
+                var y = s ? p.pageY - s.page.y : 0;
                 // initialize.
-                this.set(o, s, x, y);
+                this.set(p, passed, x, y);
             };
             return Detail;
         }());
@@ -1128,6 +1195,7 @@ var Mist;
                 var s = this;
                 function responsor(e) {
                     var r = new Recognizer.Detail(e);
+                    // disp response.
                     s.emitter.emit('pan', r);
                     s.emitter.emit('panend', r);
                     // end response.
@@ -1144,6 +1212,7 @@ var Mist;
                 function responsor(e) {
                     if (s.txg) {
                         var r = new Recognizer.Detail(e);
+                        // disp response.
                         s.emitter.emit('pan', r);
                         s.emitter.emit('panmove', r);
                         // dir response.
@@ -1167,6 +1236,7 @@ var Mist;
                 var s = this;
                 function responsor(e) {
                     var r = new Recognizer.Detail(e);
+                    // disp response.
                     s.emitter.emit('pan', r);
                     s.emitter.emit('panstart', r);
                     // begin response.
@@ -1274,7 +1344,6 @@ var Mist;
         }
         /**
         * @param {} selector
-        * @return {}
         */
         Statement.prototype.concat = function (selector) {
             var s = this.selector();
@@ -1292,7 +1361,6 @@ var Mist;
             this.elements().forEach(listener);
         };
         /**
-        * @return {}
         * @summary mapped
         */
         Statement.prototype.elements = function () {
@@ -1315,7 +1383,6 @@ var Mist;
             return response;
         };
         /**
-        * @return {}
         * @summary mapped
         */
         Statement.prototype.first = function () {
@@ -1338,7 +1405,6 @@ var Mist;
             return response;
         };
         /**
-        * @return {}
         * @summary mapped
         */
         Statement.prototype.last = function () {
@@ -1362,7 +1428,6 @@ var Mist;
         };
         /**
         * @param {} name
-        * @return {}
         */
         Statement.prototype.on = function (name) {
             // {} response.
@@ -1370,14 +1435,12 @@ var Mist;
         };
         /**
         * @param {} name
-        * @return {}
         */
         Statement.prototype.once = function (name) {
             // lasting response.
             return Mist.Component.create(Mist.Emission, this.emitter, name);
         };
         /**
-        * @return {}
         * @summary mapped
         */
         Statement.prototype.selector = function () {
@@ -1438,7 +1501,7 @@ var Mist;
  * @description Reactive CSS framework
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.4.6
+ * @version 0.5.0
  */
 /// <reference path='mist/component.ts' />
 /// <reference path='mist/statement.ts' />

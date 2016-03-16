@@ -38,6 +38,8 @@ namespace Mist {
 
           var r = new Detail(e);
 
+          // disp response.
+
           s.emitter.emit('pan', r);
           s.emitter.emit('panend', r);
 
@@ -62,6 +64,8 @@ namespace Mist {
           if (s.txg) {
 
             var r = new Detail(e);
+
+            // disp response.
 
             s.emitter.emit('pan', r);
             s.emitter.emit('panmove', r);
@@ -89,6 +93,8 @@ namespace Mist {
         function responsor(e: any) {
 
           var r = new Detail(e);
+
+          // disp response.
 
           s.emitter.emit('pan', r);
           s.emitter.emit('panstart', r);
