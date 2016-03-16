@@ -4,7 +4,7 @@
 
 This is a solution for the development of CSS library.
 
-In order to control the CSS, Do you use such heavy weight library of Angular and React? With the MIST, you can define the reactive style without the code, such as {} on your dom.
+In order to control the CSS, Do you use such heavy weight library? With this, you can define the reactive style without the code, such as {} on your dom.
 
 ## USAGE
 ### Install
