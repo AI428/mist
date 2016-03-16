@@ -2,11 +2,13 @@
 
 > Reactive CSS framework
 
-This is a solution for the development of CSS library. In order to control the CSS, Do you use such heavy weight library of Angular and React? With the MIST, you can define the reactive style without the code, such as {} on your dom.
+This is a solution for the development of CSS library.
 
-# USAGE
+In order to control the CSS, Do you use such heavy weight library of Angular and React? With the MIST, you can define the reactive style without the code, such as {} on your dom.
 
-## Add MIST to your project
+## USAGE
+
+### Add to project
 
 Download the latest version. After only load.
 
@@ -14,9 +16,9 @@ Download the latest version. After only load.
 <script src=mist.min.js></script>
 ```
 
-## Define CSS class
+### Define CSS class
 
-Any of the selector, or the element style specify. The following code is a class that red elements when you click.
+Any of the selector, or the element style define. The following code is a class that red elements when you click.
 
 ```js
 mist('*').on('click').then(function() {
@@ -28,8 +30,27 @@ mist('*').on('click').then(function() {
 Add this class to any selector.
 
 ```js
-mist('any selector').style.add('redden');
+mist('any selector').class.add('redden');
 ```
 
-# LICENSE
+Try blink red. The following code will blink at a second intervals.
+
+```js
+mist('any selector').class.pulse(1000).toggle('redden');
+```
+
+The style, in addition to the string, you can pass a function or Mist.Promise.
+
+Function is evaluated just to adapt the style. Mist.Promise in the return value, such as mist.on function, is thenable module, is evaluated each time the callback function is called.
+
+The code that red elements when you click is rewritten as follows.
+
+```js
+mist('.redden').style.set({
+
+  background: mist('*').on('click').then(function() { return 'red'; })
+});
+```
+
+## LICENSE
 This is released under the [MIT](//opensource.org/licenses/MIT). © AI428
