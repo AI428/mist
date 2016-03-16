@@ -7,7 +7,7 @@ This is a solution for the development of CSS library.
 In order to control the CSS, Do you use such heavy weight library of Angular and React? With the MIST, you can define the reactive style without the code, such as {} on your dom.
 
 ## USAGE
-### Add to the project
+### Install
 Download the latest version. After only load.
 
 ```html
@@ -37,10 +37,16 @@ Add this class to any selector.
 mist('any selector').class.add('redden');
 ```
 
-The following code will blink at a second intervals.
+The following code will blink at one second intervals.
 
 ```js
 mist('any selector').class.pulse(1000).toggle('redden');
+```
+
+You can also remove one second later.
+
+```js
+mist('any selector').class.time(1000).remove('redden');
 ```
 
 The style, in addition to the string, you can pass a function or `Mist.Promise`.
