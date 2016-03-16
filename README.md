@@ -39,9 +39,7 @@ Add this class to any selector.
 mist('any selector').class.add('redden');
 ```
 
-So, try red flashes the element to use this class.
-
-The following code will flashes at one second intervals.
+So, try red flashes the element to use this class. The following code will flashes at one second intervals.
 
 ```js
 mist('any selector').class.pulse(1000).toggle('redden');
