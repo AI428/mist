@@ -15,7 +15,9 @@ Download the latest version. After only load.
 ```
 
 ### Define class
-Any of the selector, or the element style define. The following code is a class that red elements when you click.
+Any of the selector, or the element style define.
+
+The following code is a class that red elements when you click. `redden` is still non-existent class.
 
 ```js
 mist('*').on('click').then(
@@ -37,13 +39,19 @@ Add this class to any selector.
 mist('any selector').class.add('redden');
 ```
 
-The following code will blink at one second intervals.
+So, try red flashes the element to use this class. The following code will flashes at one second intervals.
 
 ```js
 mist('any selector').class.pulse(1000).toggle('redden');
 ```
 
-You can also remove one second later.
+You can also remove.
+
+```js
+mist('any selector').class.remove('redden');
+```
+
+One second later.
 
 ```js
 mist('any selector').class.time(1000).remove('redden');
