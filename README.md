@@ -5,10 +5,10 @@
 
 This is a solution for development of CSS library.
 
-In order to control CSS, Do you use such heavy weight library of `Angular`, `jQuery` and `React`? With the **MIST**, you can define the reactive style without the code, such as {} on your DOM.
+In order to control CSS, Do you use such heavy weight library of `Angular`, `jQuery` and `React`? With the `MIST`, you can define the reactive style without the code, such as {} on your DOM.
 
 ## USAGE
-### INATALLATION
+### INSTALL
 [Get](https://github.com/AI428/mist/releases) the latest version.
 
 ```html
