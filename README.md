@@ -61,13 +61,13 @@ mist('any selector').class.time(1000).remove('redden');
 ### React to style
 The style, in addition to the string, you can pass a function or `Mist.Promise`.
 
-Function is evaluated just to pass the element. `Mist.Promise` in the return value, such as `mist.on` function, is thenable module, is evaluated each time the callback function is called.The code that red elements when you click is rewritten as follows.
+Function is evaluated just to pass the element. `Mist.Promise` in the return value, such as `mist.on` function, is thenable module, is evaluated each time the callback function is called. The code that red elements when you click is rewritten as follows.
 
 ```js
 mist('.redden').style.set({
 
   background: mist('*').on('click').then(
-  
+
     function() {
 
       return 'red';
