@@ -3,9 +3,9 @@
 # MIST
 > _Reactive CSS Framework_
 
-This is a solution for development of CSS library.
+This is a solution for the development of CSS library.
 
-In order to control CSS, Do you use such heavy weight library of `Angular`, `jQuery` and `React`? With **MIST**, you can define the reactive style without CSS changes that defile the DOM.
+In order to control CSS, Do you use such heavy weight library of `Angular`, `jQuery` and `React`? With `MIST`, you can define the reactive style without CSS changes that defile the DOM.
 
 ## USAGE
 ### INSTALL
@@ -51,7 +51,7 @@ You can also remove.
 mist('any selector').class.remove('redden');
 ```
 
-One second later.
+Run after one second, it is also possible that.
 
 ```js
 mist('any selector').class.time(1000).remove('redden');
@@ -60,7 +60,9 @@ mist('any selector').class.time(1000).remove('redden');
 ### REACT TO STYLE
 The style, in addition to string, you can pass a function or `Mist.Promise`.
 
-Function is evaluated just to pass the element. `Mist.Promise` in the return value, such as `mist.on` function, is module like Promise/A+, is evaluated each time the callback function is called. The code that red elements when you click is rewritten as follows.
+Function is evaluated just to pass the element. `Mist.Promise` in the return value, such as `mist.on` function, is module like Promise/A+, is evaluated each time the callback function is called.
+
+A combination of these to develop a CSS library. Code to red the elements, it can be rewritten as follows.
 
 ```js
 mist('.redden').style.set({
@@ -74,8 +76,6 @@ mist('.redden').style.set({
   )
 });
 ```
-
-A combination of these to develop a CSS library.
 
 ## LICENSE
 This is released under the [MIT](//opensource.org/licenses/MIT). © AI428
