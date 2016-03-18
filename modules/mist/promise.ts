@@ -154,7 +154,6 @@ namespace Mist {
     */
     resume() {
 
-      // initialize.
       this.txg = null;
       this.txr = null;
     }

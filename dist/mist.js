@@ -277,7 +277,6 @@ var Mist;
         * @summary for loop
         */
         Promise.prototype.resume = function () {
-            // initialize.
             this.txg = null;
             this.txr = null;
         };
@@ -1498,7 +1497,7 @@ var Mist;
 })(Mist || (Mist = {}));
 /**
  * @copyright AI428
- * @description Reactive CSS Framework
+ * @description A JavaScript framework for the reactive style
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
  * @version 0.5.0
