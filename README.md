@@ -1,4 +1,4 @@
-![MIST](https://github.com/AI428/mist/blob/master/logos/mist_1600_1180.png)
+<img alt='MIST' src='https://github.com/AI428/mist/blob/master/logos/mist.png' width='300'>
 
 # MIST
 > _A JavaScript framework for the reactive style_
