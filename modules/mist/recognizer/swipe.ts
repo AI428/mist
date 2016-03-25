@@ -18,7 +18,7 @@ namespace Mist {
       * @static
       * @summary move per milliseconds
       */
-      static mpms: number = 24;
+      static mpms: number = 8;
 
       /**
       * @constructor

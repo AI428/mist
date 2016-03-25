@@ -3,7 +3,7 @@
  * @description A JavaScript framework for the reactive style
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.5.0
+ * @version 0.5.1
  */
 
 /// <reference path='mist/component.ts' />

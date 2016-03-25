@@ -1,3 +1,4 @@
+/// <reference path='../component.ts'/>
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
 /// <reference path='../statement.ts'/>
@@ -15,6 +16,7 @@ namespace Mist {
     export class Pan {
 
       private txg: boolean;
+      private txv: Detail;
 
       /**
       * @constructor
@@ -36,16 +38,19 @@ namespace Mist {
 
         function responsor(e: any) {
 
-          var r = new Detail(e);
+          if (s.txg) {
 
-          // disp response.
+            var r = s.txv.diff(e);
 
-          s.emitter.emit('pan', r);
-          s.emitter.emit('panend', r);
+            // disp response.
 
-          // end response.
+            s.emitter.emit('pan', r);
+            s.emitter.emit('panend', r);
 
-          s.txg = false;
+            // end response.
+
+            s.txg = false;
+          }
         }
 
         new Emission(Component.create<Emitter>(Emitter, '*'), 'mouseup').when(responsor);
@@ -63,7 +68,7 @@ namespace Mist {
 
           if (s.txg) {
 
-            var r = new Detail(e);
+            var r = s.txv.diff(e);
 
             // disp response.
 
@@ -76,6 +81,8 @@ namespace Mist {
             if (r.move.x > 0) s.emitter.emit('panright', r);
             if (r.move.y < 0) s.emitter.emit('panup', r);
             if (r.move.y > 0) s.emitter.emit('pandown', r);
+
+            s.txv = r;
           }
         }
 
@@ -102,6 +109,7 @@ namespace Mist {
           // begin response.
 
           s.txg = true;
+          s.txv = r;
         }
 
         new Emission(s.emitter, 'mousedown').when(responsor);
