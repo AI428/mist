@@ -11,7 +11,6 @@
   <meta name='MobileOptimized' content='320'>
   <meta name='viewport' content='maximum-scale=1.0,width=device-width'>
   <!---->
-  <link href='//fonts.googleapis.com/css?family=Kalam' rel='stylesheet'>
   <link href='//fonts.googleapis.com/css?family=Homenaje' rel='stylesheet'>
   <link href='//fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet'>
   <link href='//fonts.googleapis.com/css?family=VT323' rel='stylesheet'>
@@ -19,7 +18,7 @@
   <link href='demos/css/normalize.css' rel='stylesheet'>
   <link href='demos/css/skeleton.css' rel='stylesheet'>
   <!---->
-  <script src='dist/mist.min.js'></script>
+  <script src='dist/mist.js'></script>
   <!---->
   <style>
     body {
@@ -47,13 +46,15 @@
     h1 img {
       height: auto;
       width: 100%;
-      max-height: 300px;
-      max-width: 300px;
     }
 
-    header > h3 {
+    header {
+      margin: 0 auto;
+      max-width: 400px;
+    }
+
+    header > h6 {
       color: #444;
-      font-family: 'Kalam';
       text-shadow: 0 0 2px #888;
     }
 
@@ -95,8 +96,7 @@
 <body>
   <header>
     <h1><a href='/'><img alt='MIST' src='logos/mist.png'></a/></h1>
-    <h3>A JavaScript framework for the reactive CSS development.
-      <br>This is a solution for the development of CSS library.</h3>
+    <h6>A JavaScript framework for the reactive style. This is a solution for the development of CSS library.</h6>
   </header>
   <main>
     <section class='row'>
@@ -129,16 +129,36 @@
     </p>
   </footer>
   <script>
-    /*
-     * homing statement.
-     */
     (function() {
 
       var homing = mist('#homing');
 
+      /*
+       * @summary test of panstart, panend
+       */
+      homing.on('panend').when(
+
+        function() {
+
+          statement.style.add({
+
+            transform: ''
+          });
+        });
+
       var statement = homing.concat(' > div');
 
+      /*
+       * @summary test of panmove, swipe
+       */
       statement.style.set({
+
+        background: homing.on('swipe').when(
+
+          function(response) {
+
+            return 'hsl(' + response.mpms + ',20%,80%)';
+          }),
 
         transform: homing.on('panmove').when(
 
@@ -149,25 +169,20 @@
             var x = response.client.x - r.left - (r.width / 2);
             var y = response.client.y - r.top - (r.height / 2);
 
+            // matrix response.
+
             return 'translate3d(-50%,-50%,0) translate3d(' + x + 'px,' + y + 'px,0)';
           })
       });
-
-      homing.on('panend').when(
-
-        function() {
-
-          statement.style.set({});
-        });
     })();
 
-    /*
-     * timer statement.
-     */
     (function() {
 
       var statement = mist('#timer > div::before');
 
+      /*
+       * @summary test of pulse
+       */
       statement.style.pulse(1000).set({
 
         content: function() {

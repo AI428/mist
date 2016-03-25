@@ -134,10 +134,9 @@ namespace Mist {
         if (p instanceof Promise) {
 
           function composer(
-            name
-            : string,
-            v
-            : string
+
+            name: string,
+            v: string
             ) {
 
             var response: any = {};
