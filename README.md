@@ -1,4 +1,4 @@
-<img alt='MIST' src='https://github.com/AI428/mist/blob/master/logos/mist.png' width='300'>
+<img alt='MIST' src='https://github.com/AI428/mist/blob/master/logos/mist.png' width='400'>
 
 # MIST
 > _A JavaScript framework for the reactive style_

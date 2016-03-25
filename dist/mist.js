@@ -447,79 +447,76 @@ var Mist;
         var Detail = (function () {
             /**
             * @constructor
-            * @param {} e
+            * @param {} event
             */
-            function Detail(e) {
-                this.e = e;
+            function Detail(event) {
+                this.event = event;
+                /**
+                * @access public
+                */
+                this.move = {
+                    x: 0,
+                    y: 0
+                };
+                /**
+                * @access public
+                */
+                this.mpms = 0;
+                /**
+                * @access public
+                */
+                this.passed = 0;
+                var response;
                 var s = this;
                 // mapped.
-                if (e instanceof MouseEvent) {
-                    // no response.
-                    s.mouse(e);
+                if (event instanceof MouseEvent) {
+                    // {} response.
+                    response = event;
                 }
-                else if (e instanceof TouchEvent) {
-                    // no response.
-                    s.touch(e);
+                else if (event instanceof TouchEvent) {
+                    // {} response.
+                    response = event.changedTouches[0];
                 }
-                session(s);
+                // mapped response.
+                s.set(response);
             }
             /**
-            * @access private
+            * @param {} event
             */
-            Detail.prototype.mouse = function (e) {
-                var p = e;
-                // rec response.
-                var s = session();
+            Detail.prototype.diff = function (event) {
+                var s = this;
+                var response = new Detail(event);
                 // passed milliseconds.
-                var passed = s ? e.timeStamp - s.e.timeStamp : 0;
+                var passed = event.timeStamp - s.event.timeStamp;
+                response.passed = passed;
                 // move response.
-                var x = s ? p.pageX - s.page.x : 0;
-                var y = s ? p.pageY - s.page.y : 0;
-                // initialize.
-                this.set(p, passed, x, y);
+                var x = response.page.x - s.page.x;
+                var y = response.page.y - s.page.y;
+                response.move = { x: x, y: y };
+                // move per milliseconds.
+                response.mpms = passed ? (x * x + y * y) / passed : 0;
+                // {} response.
+                return response;
             };
             /**
             * @access private
             */
-            Detail.prototype.set = function (p, passed, x, y) {
-                this.client = { x: p.clientX, y: p.clientY };
-                this.move = { x: x, y: y };
-                this.mpms = passed ? (x * x + y * y) / passed : 0;
-                this.page = { x: p.pageX, y: p.pageY };
-                this.passed = passed;
-            };
-            /**
-            * @access private
-            */
-            Detail.prototype.touch = function (e) {
-                var p = e.changedTouches[0];
-                // rec response.
-                var s = session();
-                // passed milliseconds.
-                var passed = s ? e.timeStamp - s.e.timeStamp : 0;
-                // move response.
-                var x = s ? p.pageX - s.page.x : 0;
-                var y = s ? p.pageY - s.page.y : 0;
-                // initialize.
-                this.set(p, passed, x, y);
+            Detail.prototype.set = function (response) {
+                this.client = {
+                    x: response.clientX,
+                    y: response.clientY
+                };
+                this.page = {
+                    x: response.pageX,
+                    y: response.pageY
+                };
             };
             return Detail;
         }());
         Recognizer.Detail = Detail;
-        /**
-        * @access private
-        * @static
-        */
-        var sessions;
-        /**
-        * @access private
-        * @static
-        */
-        function session(v) {
-            return v ? (sessions = v) : sessions;
-        }
     })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
 })(Mist || (Mist = {}));
+/// <reference path='../component.ts'/>
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
 /// <reference path='../statement.ts'/>
@@ -549,12 +546,14 @@ var Mist;
             Pan.prototype.end = function () {
                 var s = this;
                 function responsor(e) {
-                    var r = new Recognizer.Detail(e);
-                    // disp response.
-                    s.emitter.emit('pan', r);
-                    s.emitter.emit('panend', r);
-                    // end response.
-                    s.txg = false;
+                    if (s.txg) {
+                        var r = s.txv.diff(e);
+                        // disp response.
+                        s.emitter.emit('pan', r);
+                        s.emitter.emit('panend', r);
+                        // end response.
+                        s.txg = false;
+                    }
                 }
                 new Mist.Emission(Mist.Component.create(Mist.Emitter, '*'), 'mouseup').when(responsor);
                 new Mist.Emission(s.emitter, 'touchend').when(prevent).when(responsor);
@@ -566,7 +565,7 @@ var Mist;
                 var s = this;
                 function responsor(e) {
                     if (s.txg) {
-                        var r = new Recognizer.Detail(e);
+                        var r = s.txv.diff(e);
                         // disp response.
                         s.emitter.emit('pan', r);
                         s.emitter.emit('panmove', r);
@@ -579,6 +578,7 @@ var Mist;
                             s.emitter.emit('panup', r);
                         if (r.move.y > 0)
                             s.emitter.emit('pandown', r);
+                        s.txv = r;
                     }
                 }
                 new Mist.Emission(s.emitter, 'mousemove').when(responsor);
@@ -596,6 +596,7 @@ var Mist;
                     s.emitter.emit('panstart', r);
                     // begin response.
                     s.txg = true;
+                    s.txv = r;
                 }
                 new Mist.Emission(s.emitter, 'mousedown').when(responsor);
                 new Mist.Emission(s.emitter, 'touchstart').when(prevent).when(responsor);
@@ -664,7 +665,7 @@ var Mist;
             * @static
             * @summary move per milliseconds
             */
-            Swipe.mpms = 24;
+            Swipe.mpms = 8;
             return Swipe;
         }());
         Recognizer.Swipe = Swipe;
@@ -1500,7 +1501,7 @@ var Mist;
  * @description A JavaScript framework for the reactive style
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.5.0
+ * @version 0.5.1
  */
 /// <reference path='mist/component.ts' />
 /// <reference path='mist/statement.ts' />

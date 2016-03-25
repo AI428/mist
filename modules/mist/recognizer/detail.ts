@@ -11,146 +11,123 @@ namespace Mist {
       /**
       * @access public
       */
-      client: { x: number, y: number };
+      client: {
+        x: number,
+        y: number
+      };
 
       /**
       * @access public
       */
-      move: { x: number, y: number };
+      move: {
+        x: number,
+        y: number
+      } = {
+        x: 0,
+        y: 0
+      };
 
       /**
       * @access public
       */
-      mpms: number;
+      mpms: number = 0;
 
       /**
       * @access public
       */
-      page: { x: number, y: number };
+      page: {
+        x: number,
+        y: number
+      };
 
       /**
       * @access public
       */
-      passed: number;
+      passed: number = 0;
 
       /**
       * @constructor
-      * @param {} e
+      * @param {} event
       */
-      constructor(e: MouseEvent);
+      constructor(event: MouseEvent);
 
       /**
       * @constructor
-      * @param {} e
+      * @param {} event
       */
-      constructor(e: TouchEvent);
+      constructor(event: TouchEvent);
 
       /**
       * @constructor
-      * @param {} e
+      * @param {} event
       */
-      constructor(public e: any) {
+      constructor(public event: any) {
+
+        var response: any;
 
         var s = this;
 
         // mapped.
-        if (e instanceof MouseEvent) {
-          // no response.
-          s.mouse(e);
-        } else if (e instanceof TouchEvent) {
-          // no response.
-          s.touch(e);
+        if (event instanceof MouseEvent) {
+          // {} response.
+          response = event;
+        } else if (event instanceof TouchEvent) {
+          // {} response.
+          response = event.changedTouches[0];
         }
 
-        session(s);
+        // mapped response.
+        s.set(response);
       }
 
       /**
-      * @access private
+      * @param {} event
       */
-      private mouse(e: MouseEvent) {
+      diff(event: any): Detail {
 
-        var p = e;
+        var s = this;
 
-        // rec response.
-
-        var s = session();
+        var response = new Detail(event);
 
         // passed milliseconds.
 
-        var passed = s ? e.timeStamp - s.e.timeStamp : 0;
+        var passed = event.timeStamp - s.event.timeStamp;
+
+        response.passed = passed;
 
         // move response.
 
-        var x = s ? p.pageX - s.page.x : 0;
-        var y = s ? p.pageY - s.page.y : 0;
+        var x = response.page.x - s.page.x;
+        var y = response.page.y - s.page.y;
 
-        // initialize.
+        response.move = { x: x, y: y };
 
-        this.set(p, passed, x, y);
+        // move per milliseconds.
+
+        response.mpms = passed ? (x * x + y * y) / passed : 0;
+
+        // {} response.
+
+        return response;
       }
 
       /**
       * @access private
       */
-      private set(
+      private set(response: any) {
 
-        p: any,
-        passed: number,
-        x: number,
-        y: number
-        ) {
+        this.client = {
 
-        this.client = { x: p.clientX, y: p.clientY };
+          x: response.clientX,
+          y: response.clientY
+        };
 
-        this.move = { x: x, y: y };
+        this.page = {
 
-        this.mpms = passed ? (x * x + y * y) / passed : 0;
-
-        this.page = { x: p.pageX, y: p.pageY };
-
-        this.passed = passed;
+          x: response.pageX,
+          y: response.pageY
+        };
       }
-
-      /**
-      * @access private
-      */
-      private touch(e: TouchEvent) {
-
-        var p = e.changedTouches[0];
-
-        // rec response.
-
-        var s = session();
-
-        // passed milliseconds.
-
-        var passed = s ? e.timeStamp - s.e.timeStamp : 0;
-
-        // move response.
-
-        var x = s ? p.pageX - s.page.x : 0;
-        var y = s ? p.pageY - s.page.y : 0;
-
-        // initialize.
-
-        this.set(p, passed, x, y);
-      }
-    }
-
-    /**
-    * @access private
-    * @static
-    */
-    var sessions: any;
-
-    /**
-    * @access private
-    * @static
-    */
-    function session(v?: any) {
-
-      return v ? (sessions = v) : sessions;
     }
   }
 }
