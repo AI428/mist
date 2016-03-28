@@ -117,7 +117,6 @@ var Mist;
         Emitter.prototype.add = function (name, listener) {
             this.obss[name] || (this.obss[name] = []);
             this.obss[name].push(listener);
-            // lasting response.
             this.ready(name);
         };
         /**
@@ -447,10 +446,10 @@ var Mist;
         var Detail = (function () {
             /**
             * @constructor
-            * @param {} event
+            * @param {} src
             */
-            function Detail(event) {
-                this.event = event;
+            function Detail(src) {
+                this.src = src;
                 /**
                 * @access public
                 */
@@ -469,34 +468,43 @@ var Mist;
                 var response;
                 var s = this;
                 // mapped.
-                if (event instanceof MouseEvent) {
+                if (src instanceof MouseEvent) {
                     // {} response.
-                    response = event;
+                    response = src;
                 }
-                else if (event instanceof TouchEvent) {
+                else if (src instanceof TouchEvent) {
                     // {} response.
-                    response = event.changedTouches[0];
+                    response = src.changedTouches[0];
                 }
                 // mapped response.
                 s.set(response);
             }
             /**
-            * @param {} event
+            * @param {} src
             */
-            Detail.prototype.diff = function (event) {
+            Detail.prototype.diff = function (src) {
                 var s = this;
-                var response = new Detail(event);
+                var response = new Detail(src);
                 // passed milliseconds.
-                var passed = event.timeStamp - s.event.timeStamp;
+                var passed = src.timeStamp - s.src.timeStamp;
                 response.passed = passed;
                 // move response.
                 var x = response.page.x - s.page.x;
                 var y = response.page.y - s.page.y;
                 response.move = { x: x, y: y };
                 // move per milliseconds.
-                response.mpms = passed ? (x * x + y * y) / passed : 0;
+                response.mpms = passed ? Math.sqrt(x * x + y * y) / passed : 0;
                 // {} response.
                 return response;
+            };
+            /**
+            * @param {} element
+            */
+            Detail.prototype.measure = function (element) {
+                var r = element.getBoundingClientRect();
+                var x = this.client.x - r.left - r.width / 2;
+                var y = this.client.y - r.top - r.height / 2;
+                return { x: x, y: y };
             };
             /**
             * @access private
@@ -548,7 +556,6 @@ var Mist;
                 function responsor(e) {
                     if (s.txg) {
                         var r = s.txv.diff(e);
-                        // disp response.
                         s.emitter.emit('pan', r);
                         s.emitter.emit('panend', r);
                         // end response.
@@ -566,8 +573,6 @@ var Mist;
                 function responsor(e) {
                     if (s.txg) {
                         var r = s.txv.diff(e);
-                        // disp response.
-                        s.emitter.emit('pan', r);
                         s.emitter.emit('panmove', r);
                         // dir response.
                         if (r.move.x < 0)
@@ -591,12 +596,10 @@ var Mist;
                 var s = this;
                 function responsor(e) {
                     var r = new Recognizer.Detail(e);
-                    // disp response.
-                    s.emitter.emit('pan', r);
                     s.emitter.emit('panstart', r);
                     // begin response.
-                    s.txg = true;
                     s.txv = r;
+                    s.txg = true;
                 }
                 new Mist.Emission(s.emitter, 'mousedown').when(responsor);
                 new Mist.Emission(s.emitter, 'touchstart').when(prevent).when(responsor);
@@ -633,39 +636,69 @@ var Mist;
             */
             function Swipe(emitter) {
                 this.emitter = emitter;
-                new Mist.Emission(emitter, 'panend').when(function (response) {
-                    var s = Swipe.mpms / 2;
-                    var v = Swipe.mpms;
-                    // filt response.
-                    if (v < response.mpms) {
-                        emitter.emit('swipe', response);
+                this.end();
+                this.move();
+            }
+            /**
+            * @access private
+            */
+            Swipe.prototype.end = function () {
+                var s = this;
+                new Mist.Emission(s.emitter, 'panend').when(function (response) {
+                    if (s.txg) {
+                        var r = s.txv.diff(response.src);
                         // filt response.
-                        if (s < (response.move.x *
-                            response.move.x) / response.passed) {
+                        if (Swipe.passed > r.passed) {
+                            s.emitter.emit('swipe', r);
                             // dir response.
-                            if (response.move.x < 0)
-                                emitter.emit('swipeleft', response);
-                            if (response.move.x > 0)
-                                emitter.emit('swiperight', response);
+                            var x = r.move.x * r.move.x;
+                            var y = r.move.y * r.move.y;
+                            if (x < y) {
+                                // dir response.
+                                if (r.move.y < 0)
+                                    s.emitter.emit('swipeup', r);
+                                if (r.move.y > 0)
+                                    s.emitter.emit('swipedown', r);
+                            }
+                            else {
+                                // dir response.
+                                if (r.move.x < 0)
+                                    s.emitter.emit('swipeleft', r);
+                                if (r.move.x > 0)
+                                    s.emitter.emit('swiperight', r);
+                            }
                         }
+                        s.txg = false;
+                    }
+                });
+            };
+            /**
+            * @access private
+            */
+            Swipe.prototype.move = function () {
+                var s = this;
+                new Mist.Emission(s.emitter, 'panmove').when(function (response) {
+                    if (!s.txg) {
                         // filt response.
-                        if (s < (response.move.y *
-                            response.move.y) / response.passed) {
-                            // dir response.
-                            if (response.move.y < 0)
-                                emitter.emit('swipeup', response);
-                            if (response.move.y > 0)
-                                emitter.emit('swipedown', response);
+                        if (Swipe.mpms < response.mpms) {
+                            s.txv = response;
+                            s.txg = true;
                         }
                     }
                 });
-            }
+            };
             /**
             * @access public
             * @static
             * @summary move per milliseconds
             */
-            Swipe.mpms = 8;
+            Swipe.mpms = 0.8;
+            /**
+            * @access public
+            * @static
+            * @summary passed times
+            */
+            Swipe.passed = 64;
             return Swipe;
         }());
         Recognizer.Swipe = Swipe;
@@ -1501,7 +1534,7 @@ var Mist;
  * @description A JavaScript framework for the reactive style
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.5.1
+ * @version 0.5.2
  */
 /// <reference path='mist/component.ts' />
 /// <reference path='mist/statement.ts' />

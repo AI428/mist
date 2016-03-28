@@ -153,7 +153,7 @@ declare namespace Mist {
         * @namespace Recognizer
         */
         class Detail {
-            e: any;
+            src: any;
             /**
             * @access public
             */
@@ -185,26 +185,29 @@ declare namespace Mist {
             passed: number;
             /**
             * @constructor
-            * @param {} e
+            * @param {} src
             */
-            constructor(e: MouseEvent);
+            constructor(src: MouseEvent);
             /**
             * @constructor
-            * @param {} e
+            * @param {} src
             */
-            constructor(e: TouchEvent);
+            constructor(src: TouchEvent);
+            /**
+            * @param {} src
+            */
+            diff(src: any): Detail;
+            /**
+            * @param {} element
+            */
+            measure(element: Element): {
+                x: number;
+                y: number;
+            };
             /**
             * @access private
             */
-            private mouse(e);
-            /**
-            * @access private
-            */
-            private set(p, passed, x, y);
-            /**
-            * @access private
-            */
-            private touch(e);
+            private set(response);
         }
     }
 }
@@ -217,6 +220,7 @@ declare namespace Mist {
         class Pan {
             private emitter;
             private txg;
+            private txv;
             /**
             * @constructor
             * @param {} emitter
@@ -245,6 +249,8 @@ declare namespace Mist {
         */
         class Swipe {
             private emitter;
+            private txg;
+            private txv;
             /**
             * @access public
             * @static
@@ -252,10 +258,24 @@ declare namespace Mist {
             */
             static mpms: number;
             /**
+            * @access public
+            * @static
+            * @summary passed times
+            */
+            static passed: number;
+            /**
             * @constructor
             * @param {} emitter
             */
             constructor(emitter: Emitter);
+            /**
+            * @access private
+            */
+            private end();
+            /**
+            * @access private
+            */
+            private move();
         }
     }
 }
@@ -532,7 +552,7 @@ declare namespace Mist {
  * @description A JavaScript framework for the reactive style
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.5.0
+ * @version 0.5.2
  */
 /**
  * @param {} statement
