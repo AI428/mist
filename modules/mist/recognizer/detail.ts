@@ -47,33 +47,33 @@ namespace Mist {
 
       /**
       * @constructor
-      * @param {} event
+      * @param {} src
       */
-      constructor(event: MouseEvent);
+      constructor(src: MouseEvent);
 
       /**
       * @constructor
-      * @param {} event
+      * @param {} src
       */
-      constructor(event: TouchEvent);
+      constructor(src: TouchEvent);
 
       /**
       * @constructor
-      * @param {} event
+      * @param {} src
       */
-      constructor(public event: any) {
+      constructor(public src: any) {
 
         var response: any;
 
         var s = this;
 
         // mapped.
-        if (event instanceof MouseEvent) {
+        if (src instanceof MouseEvent) {
           // {} response.
-          response = event;
-        } else if (event instanceof TouchEvent) {
+          response = src;
+        } else if (src instanceof TouchEvent) {
           // {} response.
-          response = event.changedTouches[0];
+          response = src.changedTouches[0];
         }
 
         // mapped response.
@@ -81,17 +81,17 @@ namespace Mist {
       }
 
       /**
-      * @param {} event
+      * @param {} src
       */
-      diff(event: any): Detail {
+      diff(src: any): Detail {
 
         var s = this;
 
-        var response = new Detail(event);
+        var response = new Detail(src);
 
         // passed milliseconds.
 
-        var passed = event.timeStamp - s.event.timeStamp;
+        var passed = src.timeStamp - s.src.timeStamp;
 
         response.passed = passed;
 
@@ -104,7 +104,7 @@ namespace Mist {
 
         // move per milliseconds.
 
-        response.mpms = passed ? (x * x + y * y) / passed : 0;
+        response.mpms = passed ? Math.sqrt(x * x + y * y) / passed : 0;
 
         // {} response.
 
@@ -112,9 +112,36 @@ namespace Mist {
       }
 
       /**
+      * @param {} element
+      */
+      measure(element: Element): {
+
+        x: number,
+        y: number
+      } {
+
+        var r = element.getBoundingClientRect();
+
+        var x = this.client.x - r.left - r.width / 2;
+        var y = this.client.y - r.top - r.height / 2;
+
+        return { x: x, y: y };
+      }
+
+      /**
       * @access private
       */
-      private set(response: any) {
+      private set(response: {
+
+        clientX
+        : number,
+        clientY
+        : number,
+        pageX
+        : number,
+        pageY
+        : number
+      }) {
 
         this.client = {
 
