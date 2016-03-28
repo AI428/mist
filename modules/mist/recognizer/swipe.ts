@@ -13,12 +13,22 @@ namespace Mist {
     */
     export class Swipe {
 
+      private txg: boolean;
+      private txv: Detail;
+
       /**
       * @access public
       * @static
       * @summary move per milliseconds
       */
-      static mpms: number = 8;
+      static mpms: number = 0.8;
+
+      /**
+      * @access public
+      * @static
+      * @summary passed times
+      */
+      static passed: number = 64;
 
       /**
       * @constructor
@@ -26,47 +36,76 @@ namespace Mist {
       */
       constructor(private emitter: Emitter) {
 
-        new Emission(emitter, 'panend').when(
+        this.end();
+        this.move();
+      }
+
+      /**
+      * @access private
+      */
+      private end() {
+
+        var s = this
+
+        new Emission(s.emitter, 'panend').when(
 
           function(response: Detail) {
 
-            var s = Swipe.mpms / 2;
-            var v = Swipe.mpms;
+            if (s.txg) {
 
-            // filt response.
-
-            if (v < response.mpms) {
-
-              emitter.emit('swipe', response);
+              var r = s.txv.diff(response.src);
 
               // filt response.
 
-              if (s < (
+              if (Swipe.passed > r.passed) {
 
-                response.move.x *
-                response.move.x
-
-                ) / response.passed) {
+                s.emitter.emit('swipe', r);
 
                 // dir response.
 
-                if (response.move.x < 0) emitter.emit('swipeleft', response);
-                if (response.move.x > 0) emitter.emit('swiperight', response);
+                var x = r.move.x * r.move.x;
+                var y = r.move.y * r.move.y;
+
+                if (x < y) {
+
+                  // dir response.
+
+                  if (r.move.y < 0) s.emitter.emit('swipeup', r);
+                  if (r.move.y > 0) s.emitter.emit('swipedown', r);
+
+                } else {
+
+                  // dir response.
+
+                  if (r.move.x < 0) s.emitter.emit('swipeleft', r);
+                  if (r.move.x > 0) s.emitter.emit('swiperight', r);
+                }
               }
 
+              s.txg = false;
+            }
+          });
+      }
+
+      /**
+      * @access private
+      */
+      private move() {
+
+        var s = this;
+
+        new Emission(s.emitter, 'panmove').when(
+
+          function(response: Detail) {
+
+            if (!s.txg) {
+
               // filt response.
 
-              if (s < (
+              if (Swipe.mpms < response.mpms) {
 
-                response.move.y *
-                response.move.y
-
-                ) / response.passed) {
-
-                // dir response.
-
-                if (response.move.y < 0) emitter.emit('swipeup', response);
-                if (response.move.y > 0) emitter.emit('swipedown', response);
+                s.txv = response;
+                s.txg = true;
               }
             }
           });

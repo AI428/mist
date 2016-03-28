@@ -42,8 +42,6 @@ namespace Mist {
 
             var r = s.txv.diff(e);
 
-            // disp response.
-
             s.emitter.emit('pan', r);
             s.emitter.emit('panend', r);
 
@@ -70,9 +68,6 @@ namespace Mist {
 
             var r = s.txv.diff(e);
 
-            // disp response.
-
-            s.emitter.emit('pan', r);
             s.emitter.emit('panmove', r);
 
             // dir response.
@@ -101,15 +96,12 @@ namespace Mist {
 
           var r = new Detail(e);
 
-          // disp response.
-
-          s.emitter.emit('pan', r);
           s.emitter.emit('panstart', r);
 
           // begin response.
 
-          s.txg = true;
           s.txv = r;
+          s.txg = true;
         }
 
         new Emission(s.emitter, 'mousedown').when(responsor);
