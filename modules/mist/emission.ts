@@ -3,40 +3,41 @@
 
 namespace Mist {
 
-  /**
-  * @class Emission
-  */
-  export class Emission extends Promise {
-
     /**
-    * @constructor
-    * @param {} emitter
-    * @param {} name
+    * @class Emission
+    * @summary emit listener
     */
-    constructor(
+    export class Emission extends Promise {
 
-      private emitter: Emitter,
-      private name: string) {
+        /**
+        * @constructor
+        * @param {} emitter
+        * @param {} name
+        */
+        constructor(
 
-      super(function(
+            private emitter: Emitter,
+            private name: string) {
 
-        succeed,
-        erred
-        ) {
+            super(function(
 
-        emitter.add(name, function(response) {
+                succeed,
+                erred
+            ) {
 
-          try {
-            // commit response.
-            succeed(response);
+                emitter.add(name, function(response) {
 
-          } catch (e) {
+                    try {
+                        // commit response.
+                        succeed(response);
 
-            // fail response.
-            erred(e)
-          }
-        });
-      });
+                    } catch (e) {
+
+                        // fail response.
+                        erred(e)
+                    }
+                });
+            });
+        }
     }
-  }
 }

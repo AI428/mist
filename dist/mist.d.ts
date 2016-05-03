@@ -134,6 +134,7 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Emission
+    * @summary emit listener
     */
     class Emission extends Promise {
         private emitter;
@@ -150,12 +151,13 @@ declare namespace Mist {
     namespace Recognizer {
         /**
         * @class Detail
-        * @namespace Recognizer
+        * @summary reconized data transfer
         */
         class Detail {
             src: any;
             /**
             * @access public
+            * @summary client point
             */
             client: {
                 x: number;
@@ -163,6 +165,7 @@ declare namespace Mist {
             };
             /**
             * @access public
+            * @summary moved from prev
             */
             move: {
                 x: number;
@@ -170,10 +173,12 @@ declare namespace Mist {
             };
             /**
             * @access public
+            * @summary moved per milliseconds
             */
             mpms: number;
             /**
             * @access public
+            * @summary page point
             */
             page: {
                 x: number;
@@ -181,6 +186,7 @@ declare namespace Mist {
             };
             /**
             * @access public
+            * @summary milliseconds from prev
             */
             passed: number;
             /**
@@ -215,7 +221,7 @@ declare namespace Mist {
     namespace Recognizer {
         /**
         * @class Pan
-        * @namespace Recognizer
+        * @summary pan recognizer
         */
         class Pan {
             private emitter;
@@ -245,7 +251,7 @@ declare namespace Mist {
     namespace Recognizer {
         /**
         * @class Swipe
-        * @namespace Recognizer
+        * @namespace swipe recognizer
         */
         class Swipe {
             private emitter;
@@ -254,13 +260,13 @@ declare namespace Mist {
             /**
             * @access public
             * @static
-            * @summary move per milliseconds
+            * @summary moved per milliseconds
             */
             static mpms: number;
             /**
             * @access public
             * @static
-            * @summary passed times
+            * @summary milliseconds from prev
             */
             static passed: number;
             /**
@@ -283,7 +289,7 @@ declare namespace Mist {
     namespace Wrapper {
         /**
         * @class Voker
-        * @namespace Wrapper
+        * @summary method invoker
         */
         class Voker {
             private component;
@@ -305,7 +311,7 @@ declare namespace Mist {
     namespace Wrapper {
         /**
         * @class Pulser
-        * @namespace Wrapper
+        * @summary pulse voker
         */
         class Pulser extends Voker {
             dur: number;
@@ -327,7 +333,7 @@ declare namespace Mist {
     namespace Wrapper {
         /**
         * @class Timer
-        * @namespace Wrapper
+        * @summary time voker
         */
         class Timer extends Voker {
             dur: number;
@@ -348,7 +354,7 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Frame
-    * @summary queuer
+    * @summary queuer on frame
     */
     class Frame {
         private static txg;
@@ -394,6 +400,7 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Class
+    * @summary css classer
     */
     class Class {
         private statement;
@@ -441,6 +448,7 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Style
+    * @summary css styler
     */
     class Style {
         private statement;
@@ -488,6 +496,7 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Statement
+    * @summary implement class
     */
     class Statement {
         private statement;
@@ -549,10 +558,10 @@ declare namespace Mist {
 }
 /**
  * @copyright AI428
- * @description A JavaScript framework for the reactive style
+ * @description A JavaScript framework for the reactive CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.5.2
+ * @version 0.5.3
  */
 /**
  * @param {} statement

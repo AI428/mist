@@ -70,6 +70,7 @@ var Mist;
     var o = Element.prototype;
     o.closest = o.closest || function (selector) {
         var s = this;
+        // find response.
         while (s) {
             if (s.matches(selector))
                 break;
@@ -407,6 +408,7 @@ var Mist;
 (function (Mist) {
     /**
     * @class Emission
+    * @summary emit listener
     */
     var Emission = (function (_super) {
         __extends(Emission, _super);
@@ -441,7 +443,7 @@ var Mist;
     (function (Recognizer) {
         /**
         * @class Detail
-        * @namespace Recognizer
+        * @summary reconized data transfer
         */
         var Detail = (function () {
             /**
@@ -452,6 +454,7 @@ var Mist;
                 this.src = src;
                 /**
                 * @access public
+                * @summary moved from prev
                 */
                 this.move = {
                     x: 0,
@@ -459,10 +462,12 @@ var Mist;
                 };
                 /**
                 * @access public
+                * @summary moved per milliseconds
                 */
                 this.mpms = 0;
                 /**
                 * @access public
+                * @summary milliseconds from prev
                 */
                 this.passed = 0;
                 var response;
@@ -485,14 +490,14 @@ var Mist;
             Detail.prototype.diff = function (src) {
                 var s = this;
                 var response = new Detail(src);
-                // passed milliseconds.
+                // milliseconds from prev.
                 var passed = src.timeStamp - s.src.timeStamp;
                 response.passed = passed;
-                // move response.
+                // moved response.
                 var x = response.page.x - s.page.x;
                 var y = response.page.y - s.page.y;
                 response.move = { x: x, y: y };
-                // move per milliseconds.
+                // moved per milliseconds.
                 response.mpms = passed ? Math.sqrt(x * x + y * y) / passed : 0;
                 // {} response.
                 return response;
@@ -502,8 +507,10 @@ var Mist;
             */
             Detail.prototype.measure = function (element) {
                 var r = element.getBoundingClientRect();
+                // dist response.
                 var x = this.client.x - r.left - r.width / 2;
                 var y = this.client.y - r.top - r.height / 2;
+                // {} response.
                 return { x: x, y: y };
             };
             /**
@@ -535,7 +542,7 @@ var Mist;
     (function (Recognizer) {
         /**
         * @class Pan
-        * @namespace Recognizer
+        * @summary pan recognizer
         */
         var Pan = (function () {
             /**
@@ -627,7 +634,7 @@ var Mist;
     (function (Recognizer) {
         /**
         * @class Swipe
-        * @namespace Recognizer
+        * @namespace swipe recognizer
         */
         var Swipe = (function () {
             /**
@@ -690,13 +697,13 @@ var Mist;
             /**
             * @access public
             * @static
-            * @summary move per milliseconds
+            * @summary moved per milliseconds
             */
             Swipe.mpms = 0.8;
             /**
             * @access public
             * @static
-            * @summary passed times
+            * @summary milliseconds from prev
             */
             Swipe.passed = 64;
             return Swipe;
@@ -710,7 +717,7 @@ var Mist;
     (function (Wrapper) {
         /**
         * @class Voker
-        * @namespace Wrapper
+        * @summary method invoker
         */
         var Voker = (function () {
             /**
@@ -758,7 +765,7 @@ var Mist;
     (function (Wrapper) {
         /**
         * @class Pulser
-        * @namespace Wrapper
+        * @summary pulse voker
         */
         var Pulser = (function (_super) {
             __extends(Pulser, _super);
@@ -798,6 +805,7 @@ var Mist;
         Wrapper.Pulser = Pulser;
     })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
 })(Mist || (Mist = {}));
+/// <reference path='../promise.ts'/>
 /// <reference path='voker.ts'/>
 var Mist;
 (function (Mist) {
@@ -805,7 +813,7 @@ var Mist;
     (function (Wrapper) {
         /**
         * @class Timer
-        * @namespace Wrapper
+        * @summary time voker
         */
         var Timer = (function (_super) {
             __extends(Timer, _super);
@@ -850,7 +858,7 @@ var Mist;
 (function (Mist) {
     /**
     * @class Frame
-    * @summary queuer
+    * @summary queuer on frame
     */
     var Frame = (function () {
         function Frame() {
@@ -913,9 +921,11 @@ var Mist;
                         responsor() || o.push(responsor);
                     }
                     if (s.txg =
-                        !!s.txs.push.apply(s.txs, o)) {
+                        // end response.
+                        !!s.txs.push.apply(
+                        // lazy response.
+                        s.txs, o))
                         requestAnimationFrame(composer);
-                    }
                 })();
             })();
         };
@@ -1001,6 +1011,7 @@ var Mist;
     var PREVIOUS = 5;
     /**
     * @class Class
+    * @summary css classer
     */
     var Class = (function () {
         /**
@@ -1210,6 +1221,7 @@ var Mist;
 (function (Mist) {
     /**
     * @class Style
+    * @summary css styler
     */
     var Style = (function () {
         /**
@@ -1359,6 +1371,7 @@ var Mist;
 (function (Mist) {
     /**
     * @class Statement
+    * @summary implement class
     */
     var Statement = (function () {
         /**
@@ -1531,10 +1544,10 @@ var Mist;
 })(Mist || (Mist = {}));
 /**
  * @copyright AI428
- * @description A JavaScript framework for the reactive style
+ * @description A JavaScript framework for the reactive CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.5.2
+ * @version 0.5.3
  */
 /// <reference path='mist/component.ts' />
 /// <reference path='mist/statement.ts' />

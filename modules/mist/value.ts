@@ -3,80 +3,80 @@
 
 namespace Mist {
 
-  /**
-  * @class Value
-  * @summary composer
-  */
-  export class Value extends Promise {
-
-    private xg: boolean;
-    private xr: () => void;
-    private xs: ((response: any) => void)[] = [];
-
     /**
-    * @constructor
-    * @param {} composite
+    * @class Value
+    * @summary composer
     */
-    constructor(public composite?: any) {
+    export class Value extends Promise {
 
-      super((
+        private xg: boolean;
+        private xr: () => void;
+        private xs: ((response: any) => void)[] = [];
 
-        succeed,
-        erred
-        ) => {
+        /**
+        * @constructor
+        * @param {} composite
+        */
+        constructor(public composite?: any) {
 
-        this.xr = () => {
-          this.xg || (() => {
-            this.xg = true;
+            super((
 
-            // ser response.
-            Frame.at(() => {
+                succeed,
+                erred
+            ) => {
 
-              var responsor: (response: any) => void;
+                this.xr = () => {
+                    this.xg || (() => {
+                        this.xg = true;
 
-              try {
-                // commit response.
-                succeed(this.composite);
+                        // ser response.
+                        Frame.at(() => {
 
-              } catch (e) {
+                            var responsor: (response: any) => void;
 
-                // fail response.
-                erred(e);
-              }
+                            try {
+                                // commit response.
+                                succeed(this.composite);
 
-              while (
+                            } catch (e) {
 
-                responsor = this.xs.shift()) {
-                responsor(this.composite);
-              }
+                                // fail response.
+                                erred(e);
+                            }
 
-              this.xg = false;
+                            while (
+
+                                responsor = this.xs.shift()) {
+                                responsor(this.composite);
+                            }
+
+                            this.xg = false;
+                        });
+                    })();
+                }
             });
-          })();
         }
-      });
+
+        /**
+        * @param {} composer
+        */
+        compose(composer: (composite: any) => any): Promise {
+
+            return new Promise(
+
+                (responsor) => {
+
+                    // ser response.
+                    Frame.at(() => {
+
+                        // a response.
+                        this.composite = composer(this.composite);
+
+                        // queues.
+                        this.xs.push(responsor);
+                        this.xr();
+                    });
+                });
+        }
     }
-
-    /**
-    * @param {} composer
-    */
-    compose(composer: (composite: any) => any): Promise {
-
-      return new Promise(
-
-        (responsor) => {
-
-          // ser response.
-          Frame.at(() => {
-
-            // a response.
-            this.composite = composer(this.composite);
-
-            // queues.
-            this.xs.push(responsor);
-            this.xr();
-          });
-        });
-    }
-  }
 }

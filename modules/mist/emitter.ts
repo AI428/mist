@@ -3,136 +3,136 @@
 
 namespace Mist {
 
-  /**
-  * @class Emitter
-  * @summary for event
-  */
-  export class Emitter {
-
-    private emits: any = {};
-    private obss: any = {};
-
     /**
-    * @constructor
-    * @param {} statement
+    * @class Emitter
+    * @summary for event
     */
-    constructor(statement: Statement);
+    export class Emitter {
 
-    /**
-    * @constructor
-    * @param {} statement
-    */
-    constructor(statement: string);
+        private emits: any = {};
+        private obss: any = {};
 
-    /**
-    * @constructor
-    * @param {} statement
-    */
-    constructor(private statement: any) {
-    }
+        /**
+        * @constructor
+        * @param {} statement
+        */
+        constructor(statement: Statement);
 
-    /**
-    * @param {} name
-    * @param {} options
-    * @return {}
-    */
-    static customize(name: string, options: any = {}): Event {
+        /**
+        * @constructor
+        * @param {} statement
+        */
+        constructor(statement: string);
 
-      var e = document.createEvent('CustomEvent');
+        /**
+        * @constructor
+        * @param {} statement
+        */
+        constructor(private statement: any) {
+        }
 
-      // initialize.
-      e.initCustomEvent(name,
-        options.bubbles || true,
-        options.cancelable || true,
-        options.detail);
+        /**
+        * @param {} name
+        * @param {} options
+        * @return {}
+        */
+        static customize(name: string, options: any = {}): Event {
 
-      // {} response.
-      return e;
-    }
+            var e = document.createEvent('CustomEvent');
 
-    /**
-    * @param {} name
-    * @param {} listener
-    */
-    add(name: string, listener: (response: any) => void) {
+            // initialize.
+            e.initCustomEvent(name,
+                options.bubbles || true,
+                options.cancelable || true,
+                options.detail);
 
-      this.obss[name] || (this.obss[name] = []);
-      this.obss[name].push(listener);
-      this.ready(name);
-    }
+            // {} response.
+            return e;
+        }
 
-    /**
-    * @param {} name
-    * @param {} response
-    */
-    emit(name: string, response?: any) {
+        /**
+        * @param {} name
+        * @param {} listener
+        */
+        add(name: string, listener: (response: any) => void) {
 
-      for (let i in
-        this.obss[name]) {
-        this.obss[name][i](response);
-      }
-    }
+            this.obss[name] || (this.obss[name] = []);
+            this.obss[name].push(listener);
+            this.ready(name);
+        }
 
-    /**
-    * @param {} name
-    * @param {} listener
-    */
-    remove(name: string, listener?: (response: any) => void) {
+        /**
+        * @param {} name
+        * @param {} response
+        */
+        emit(name: string, response?: any) {
 
-      var o = this.obss[name];
-
-      function composer() {
-
-        // composer.
-        var i = o.indexOf(listener);
-        i < 0 || o.splice(i, 1);
-      }
-
-      // composer.
-      o && listener ? composer() : o = null;
-    }
-
-    /**
-    * @access private
-    */
-    private ready(name: string) {
-
-      var o = this.emits;
-
-      // lasting response.
-      o[name] || document.addEventListener(name,
-        o[name] = (e: Event) => {
-          var element = e.target;
-          if (element instanceof Element) {
-            if (element.closest(this.selector())) {
-              this.emit(name, e instanceof CustomEvent ?
-                e.detail :
-                e);
+            for (let i in
+                this.obss[name]) {
+                this.obss[name][i](response);
             }
-          }
-        });
+        }
+
+        /**
+        * @param {} name
+        * @param {} listener
+        */
+        remove(name: string, listener?: (response: any) => void) {
+
+            var o = this.obss[name];
+
+            function composer() {
+
+                // composer.
+                var i = o.indexOf(listener);
+                i < 0 || o.splice(i, 1);
+            }
+
+            // composer.
+            o && listener ? composer() : o = null;
+        }
+
+        /**
+        * @access private
+        */
+        private ready(name: string) {
+
+            var o = this.emits;
+
+            // lasting response.
+            o[name] || document.addEventListener(name,
+                o[name] = (e: Event) => {
+                    var element = e.target;
+                    if (element instanceof Element) {
+                        if (element.closest(this.selector())) {
+                            this.emit(name, e instanceof CustomEvent ?
+                                e.detail :
+                                e);
+                        }
+                    }
+                });
+        }
+
+        /**
+        * @access private
+        */
+        private selector() {
+
+            var response: string;
+
+            var s = this.statement;
+
+            // mapped.
+            if (s instanceof Statement) {
+                // a response.
+                response = s.selector();
+            } else {
+                // a response.
+                response = s;
+            }
+
+            // mapped response.
+            return response;
+        }
     }
-
-    /**
-    * @access private
-    */
-    private selector() {
-
-      var response: string;
-
-      var s = this.statement;
-
-      // mapped.
-      if (s instanceof Statement) {
-        // a response.
-        response = s.selector();
-      } else {
-        // a response.
-        response = s;
-      }
-
-      // mapped response.
-      return response;
-    }
-  }
 }

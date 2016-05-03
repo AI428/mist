@@ -1,9 +1,9 @@
 /**
  * @copyright AI428
- * @description A JavaScript framework for the reactive style
+ * @description A JavaScript framework for the reactive CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.5.2
+ * @version 0.5.3
  */
 
 /// <reference path='mist/component.ts' />
@@ -26,6 +26,6 @@ function mist(statement: string): Mist.Statement;
  * @return {Mist.Statement}
  */
 function mist(statement: any): Mist.Statement {
-  return Mist.Component.create<Mist.Statement>(
-    Mist.Statement, statement);
+    return Mist.Component.create<Mist.Statement>(
+        Mist.Statement, statement);
 }

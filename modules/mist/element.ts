@@ -4,15 +4,15 @@
 */
 interface Element {
 
-  /**
-  * @param {} selector
-  */
-  closest: (selector: string) => Element;
+    /**
+    * @param {} selector
+    */
+    closest: (selector: string) => Element;
 
-  /**
-  * @param {} selector
-  */
-  mozMatchesSelector: (selector: string) => boolean;
+    /**
+    * @param {} selector
+    */
+    mozMatchesSelector: (selector: string) => boolean;
 }
 
 /**
@@ -21,12 +21,12 @@ interface Element {
 */
 (function() {
 
-  var o = Element.prototype;
+    var o = Element.prototype;
 
-  o.matches = o.matches
-  || o.mozMatchesSelector
-  || o.msMatchesSelector
-  || o.webkitMatchesSelector;
+    o.matches = o.matches
+        || o.mozMatchesSelector
+        || o.msMatchesSelector
+        || o.webkitMatchesSelector;
 
 })();
 
@@ -36,18 +36,21 @@ interface Element {
 */
 (function() {
 
-  var o = Element.prototype;
+    var o = Element.prototype;
 
-  o.closest = o.closest || function(selector: string) {
+    o.closest = o.closest || function(selector: string) {
 
-    var s = this;
+        var s = this;
 
-    while (s) {
-      if (s.matches(selector)) break;
-      s = s.parentElement;
-    }
+        // find response.
 
-    // {} response.
-    return s;
-  };
+        while (s) {
+            if (s.matches(selector)) break;
+            s = s.parentElement;
+        }
+
+        // {} response.
+
+        return s;
+    };
 })();

@@ -1,47 +1,47 @@
 namespace Mist {
 
-  export namespace Wrapper {
+    export namespace Wrapper {
 
-    /**
-    * @class Voker
-    * @namespace Wrapper
-    */
-    export class Voker {
+        /**
+        * @class Voker
+        * @summary method invoker
+        */
+        export class Voker {
 
-      /**
-      * @constructor
-      * @param {} component
-      */
-      constructor(private component: any) {
+            /**
+            * @constructor
+            * @param {} component
+            */
+            constructor(private component: any) {
 
-        var s: any = this;
+                var s: any = this;
 
-        for (let name in component) {
+                for (let name in component) {
 
-          if (component[name] instanceof Function) {
+                    if (component[name] instanceof Function) {
 
-            // lazy response.
-            function composer(...o: any[]) {
-              return s.compose$(
-                component[name].bind(
-                  component), o);
+                        // lazy response.
+                        function composer(...o: any[]) {
+                            return s.compose$(
+                                component[name].bind(
+                                    component), o);
+                        }
+
+                        // {} response.
+                        s[name] = composer;
+                    }
+                }
             }
 
-            // {} response.
-            s[name] = composer;
-          }
+            /**
+            * @param {} composer
+            * @param {} o
+            * @summary for override
+            */
+            compose$(composer: any, o: any[]) {
+
+                return composer.apply(composer, o);
+            }
         }
-      }
-
-      /**
-      * @param {} composer
-      * @param {} o
-      * @summary for override
-      */
-      compose$(composer: any, o: any[]) {
-
-        return composer.apply(composer, o);
-      }
     }
-  }
 }

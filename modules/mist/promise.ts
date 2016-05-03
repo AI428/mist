@@ -1,315 +1,316 @@
 namespace Mist {
 
-  /**
-  * @class Promise
-  * @summary thenable
-  */
-  export class Promise {
-
-    private err: (response: any) => any;
-    private success: (response: any) => any;
-    private txg: boolean;
-    private txr: () => void;
-
     /**
-    * @constructor
-    * @param {} process
+    * @class Promise
+    * @summary thenable
     */
-    constructor(process: (
+    export class Promise {
 
-      succeed
-      : (response: any) => void,
-      erred
-      : (response: any) => void
-      ) => void) {
+        private err: (response: any) => any;
+        private success: (response: any) => any;
+        private txg: boolean;
+        private txr: () => void;
 
-      // bind response.
-      var s = this.succeed;
-      var e = this.erred;
+        /**
+        * @constructor
+        * @param {} process
+        */
+        constructor(process: (
 
-      // initialize.
-      this.resume();
+            succeed
+                : (response: any) => void,
+            erred
+                : (response: any) => void
 
-      // lazy response.
-      process(
+        ) => void) {
 
-        s.bind(this),
-        e.bind(this));
-    }
+            // bind response.
+            var s = this.succeed;
+            var e = this.erred;
 
-    /**
-    * @param {} commits
-    */
-    static all(commits: Promise[]): Promise {
+            // initialize.
+            this.resume();
 
-      return new Promise(
+            // lazy response.
+            process(
 
-        function(
+                s.bind(this),
+                e.bind(this));
+        }
 
-          succeed,
-          erred
-          ) {
+        /**
+        * @param {} commits
+        */
+        static all(commits: Promise[]): Promise {
 
-          var p: number;
-          var response: any[] = [];
+            return new Promise(
 
-          function composer(a: any) {
+                function(
 
-            // composer.
-            if (response.push(a) > p) {
+                    succeed,
+                    erred
+                ) {
 
-              try {
-                // commit response.
-                succeed(response);
+                    var p: number;
+                    var response: any[] = [];
 
-              } catch (e) {
+                    function composer(a: any) {
 
-                // fail response.
-                erred(e);
-              }
+                        // composer.
+                        if (response.push(a) > p) {
 
-              // initialize.
-              response = [];
-            }
-          }
+                            try {
+                                // commit response.
+                                succeed(response);
 
-          commits.map(
+                            } catch (e) {
 
-            function(commit, i) {
+                                // fail response.
+                                erred(e);
+                            }
 
-              commit.when(composer);
+                            // initialize.
+                            response = [];
+                        }
+                    }
 
-              // bind response.
-              p = i;
+                    commits.map(
+
+                        function(commit, i) {
+
+                            commit.when(composer);
+
+                            // bind response.
+                            p = i;
+                        });
+                });
+        }
+
+        /**
+        * @param {} commits
+        */
+        static race(commits: Promise[]): Promise {
+
+            return new Promise(
+
+                function(
+
+                    succeed,
+                    erred
+                ) {
+
+                    // initialize.
+                    commits.forEach(function(commit) {
+
+                        commit.when(
+
+                            function(response: any) {
+
+                                try {
+                                    // commit response.
+                                    succeed(response);
+
+                                } catch (e) {
+
+                                    // fail response.
+                                    erred(e);
+                                }
+                            });
+                    });
+                });
+        }
+
+        /**
+        * @param {} err
+        */
+        catch(err: (response: any) => any): Promise {
+
+            return new Promise((
+
+                succeed,
+                erred
+            ) => {
+
+                // initialize.
+                this.err = function(response) {
+
+                    try {
+                        // commit response.
+                        succeed(err(response));
+
+                    } catch (e) {
+
+                        // fail response.
+                        erred(e);
+                    }
+                };
+
+                // fixed response.
+                this.tx();
             });
-        });
-    }
+        }
 
-    /**
-    * @param {} commits
-    */
-    static race(commits: Promise[]): Promise {
+        /**
+        * @summary for loop
+        */
+        resume() {
 
-      return new Promise(
+            this.txg = null;
+            this.txr = null;
+        }
 
-        function(
+        /**
+        * @param {} success
+        * @param {} err
+        */
+        then(success: (response: any) => any, err?: (response: any) => any): Promise {
 
-          succeed,
-          erred
-          ) {
+            return new Promise((
 
-          // initialize.
-          commits.forEach(function(commit) {
+                succeed,
+                erred
+            ) => {
 
-            commit.when(
+                // compose.
+                this.err = erred;
 
-              function(response: any) {
+                // initialize.
+                this.success = function(response) {
 
-                try {
-                  // commit response.
-                  succeed(response);
+                    try {
+                        // commit respoonse.
+                        succeed(success(response));
 
-                } catch (e) {
+                    } catch (e) {
 
-                  // fail response.
-                  erred(e);
+                        // fail response.
+                        err ? succeed(err(e)) : erred(e);
+                    }
+                };
+
+                // fixed response.
+                this.tx();
+            });
+        }
+
+        /**
+        * @param {} success
+        * @param {} err
+        */
+        when(success: (response: any) => any, err?: (response: any) => any): Promise {
+
+            var s = (response: any) => {
+
+                var p = success(response);
+
+                // loop response.
+                this.resume();
+
+                // passthru.
+                return p;
+            };
+
+            var e = err ? (response: any) => {
+
+                var p = err(response);
+
+                // loop response.
+                this.resume();
+
+                // passthru.
+                return p;
+
+            } : err;
+
+            // {} response.
+            return this.then(s, e);
+        }
+
+        /**
+        * @access private
+        */
+        private erred(response: any) {
+
+            if (!this.txg) {
+
+                var m = this.err;
+
+                if (m) {
+
+                    this.txg = true;
+
+                    // fail response.
+                    if (response instanceof Promise) {
+
+                        // lazy response
+                        response.then(m);
+
+                    } else {
+                        // passthru.
+                        m(response);
+                    }
+                } else {
+
+                    // initialize.
+                    this.txr = (
+                    ) => {
+
+                        // fixed response.
+                        this.erred(response);
+                    }
                 }
-              });
-          });
-        });
-    }
+            }
 
-    /**
-    * @param {} err
-    */
-    catch(err: (response: any) => any): Promise {
-
-      return new Promise((
-
-        succeed,
-        erred
-        ) => {
-
-        // initialize.
-        this.err = function(response) {
-
-          try {
-            // commit response.
-            succeed(err(response));
-
-          } catch (e) {
-
-            // fail response.
-            erred(e);
-          }
-        };
-
-        // fixed response.
-        this.tx();
-      });
-    }
-
-    /**
-    * @summary for loop
-    */
-    resume() {
-
-      this.txg = null;
-      this.txr = null;
-    }
-
-    /**
-    * @param {} success
-    * @param {} err
-    */
-    then(success: (response: any) => any, err?: (response: any) => any): Promise {
-
-      return new Promise((
-
-        succeed,
-        erred
-        ) => {
-
-        // compose.
-        this.err = erred;
-
-        // initialize.
-        this.success = function(response) {
-
-          try {
-            // commit respoonse.
-            succeed(success(response));
-
-          } catch (e) {
-
-            // fail response.
-            err ? succeed(err(e)) : erred(e);
-          }
-        };
-
-        // fixed response.
-        this.tx();
-      });
-    }
-
-    /**
-    * @param {} success
-    * @param {} err
-    */
-    when(success: (response: any) => any, err?: (response: any) => any): Promise {
-
-      var s = (response: any) => {
-
-        var p = success(response);
-
-        // loop response.
-        this.resume();
-
-        // passthru.
-        return p;
-      };
-
-      var e = err ? (response: any) => {
-
-        var p = err(response);
-
-        // loop response.
-        this.resume();
-
-        // passthru.
-        return p;
-
-      } : err;
-
-      // {} response.
-      return this.then(s, e);
-    }
-
-    /**
-    * @access private
-    */
-    private erred(response: any) {
-
-      if (!this.txg) {
-
-        var m = this.err;
-
-        if (m) {
-
-          this.txg = true;
-
-          // fail response.
-          if (response instanceof Promise) {
-
-            // lazy response
-            response.then(m);
-
-          } else {
-            // passthru.
-            m(response);
-          }
-        } else {
-
-          // initialize.
-          this.txr = (
-            ) => {
-
-            // fixed response.
-            this.erred(response);
-          }
+            console.log(response);
         }
-      }
 
-      console.log(response);
-    }
+        /**
+        * @access private
+        */
+        private succeed(response: any) {
 
-    /**
-    * @access private
-    */
-    private succeed(response: any) {
+            if (!this.txg) {
 
-      if (!this.txg) {
+                var m = this.success;
 
-        var m = this.success;
+                if (m) {
 
-        if (m) {
+                    this.txg = true;
 
-          this.txg = true;
+                    // commit response.
+                    if (response instanceof Promise) {
 
-          // commit response.
-          if (response instanceof Promise) {
+                        // lazy response
+                        response.then(m);
 
-            // lazy response
-            response.then(m);
+                    } else {
+                        // passthru.
+                        m(response);
+                    }
+                } else {
 
-          } else {
-            // passthru.
-            m(response);
-          }
-        } else {
+                    // initialize.
+                    this.txr = (
+                    ) => {
 
-          // initialize.
-          this.txr = (
-            ) => {
-
-            // fixed response.
-            this.succeed(response);
-          }
+                        // fixed response.
+                        this.succeed(response);
+                    }
+                }
+            }
         }
-      }
+
+        /**
+        * @access private
+        */
+        private tx() {
+
+            var responsor: () => void;
+
+            if (
+                responsor = this.txr) {
+                responsor();
+            }
+        }
     }
-
-    /**
-    * @access private
-    */
-    private tx() {
-
-      var responsor: () => void;
-
-      if (
-        responsor = this.txr) {
-        responsor();
-      }
-    }
-  }
 }

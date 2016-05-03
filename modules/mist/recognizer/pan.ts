@@ -7,118 +7,118 @@
 
 namespace Mist {
 
-  export namespace Recognizer {
+    export namespace Recognizer {
 
-    /**
-    * @class Pan
-    * @namespace Recognizer
-    */
-    export class Pan {
+        /**
+        * @class Pan
+        * @summary pan recognizer
+        */
+        export class Pan {
 
-      private txg: boolean;
-      private txv: Detail;
+            private txg: boolean;
+            private txv: Detail;
 
-      /**
-      * @constructor
-      * @param {} emitter
-      */
-      constructor(private emitter: Emitter) {
+            /**
+            * @constructor
+            * @param {} emitter
+            */
+            constructor(private emitter: Emitter) {
 
-        this.end();
-        this.move();
-        this.start();
-      }
+                this.end();
+                this.move();
+                this.start();
+            }
 
-      /**
-      * @access private
-      */
-      private end() {
+            /**
+            * @access private
+            */
+            private end() {
 
-        var s = this;
+                var s = this;
 
-        function responsor(e: any) {
+                function responsor(e: any) {
 
-          if (s.txg) {
+                    if (s.txg) {
 
-            var r = s.txv.diff(e);
+                        var r = s.txv.diff(e);
 
-            s.emitter.emit('pan', r);
-            s.emitter.emit('panend', r);
+                        s.emitter.emit('pan', r);
+                        s.emitter.emit('panend', r);
 
-            // end response.
+                        // end response.
 
-            s.txg = false;
-          }
+                        s.txg = false;
+                    }
+                }
+
+                new Emission(Component.create<Emitter>(Emitter, '*'), 'mouseup').when(responsor);
+                new Emission(s.emitter, 'touchend').when(prevent).when(responsor);
+            }
+
+            /**
+            * @access private
+            */
+            private move() {
+
+                var s = this;
+
+                function responsor(e: any) {
+
+                    if (s.txg) {
+
+                        var r = s.txv.diff(e);
+
+                        s.emitter.emit('panmove', r);
+
+                        // dir response.
+
+                        if (r.move.x < 0) s.emitter.emit('panleft', r);
+                        if (r.move.x > 0) s.emitter.emit('panright', r);
+                        if (r.move.y < 0) s.emitter.emit('panup', r);
+                        if (r.move.y > 0) s.emitter.emit('pandown', r);
+
+                        s.txv = r;
+                    }
+                }
+
+                new Emission(s.emitter, 'mousemove').when(responsor);
+                new Emission(s.emitter, 'touchmove').when(prevent).when(responsor);
+            }
+
+            /**
+            * @access private
+            */
+            private start() {
+
+                var s = this;
+
+                function responsor(e: any) {
+
+                    var r = new Detail(e);
+
+                    s.emitter.emit('panstart', r);
+
+                    // begin response.
+
+                    s.txv = r;
+                    s.txg = true;
+                }
+
+                new Emission(s.emitter, 'mousedown').when(responsor);
+                new Emission(s.emitter, 'touchstart').when(prevent).when(responsor);
+            }
         }
 
-        new Emission(Component.create<Emitter>(Emitter, '*'), 'mouseup').when(responsor);
-        new Emission(s.emitter, 'touchend').when(prevent).when(responsor);
-      }
+        /**
+        * @access private
+        * @static
+        */
+        function prevent(e: Event) {
 
-      /**
-      * @access private
-      */
-      private move() {
+            e.preventDefault();
 
-        var s = this;
-
-        function responsor(e: any) {
-
-          if (s.txg) {
-
-            var r = s.txv.diff(e);
-
-            s.emitter.emit('panmove', r);
-
-            // dir response.
-
-            if (r.move.x < 0) s.emitter.emit('panleft', r);
-            if (r.move.x > 0) s.emitter.emit('panright', r);
-            if (r.move.y < 0) s.emitter.emit('panup', r);
-            if (r.move.y > 0) s.emitter.emit('pandown', r);
-
-            s.txv = r;
-          }
+            // passthru.
+            return e;
         }
-
-        new Emission(s.emitter, 'mousemove').when(responsor);
-        new Emission(s.emitter, 'touchmove').when(prevent).when(responsor);
-      }
-
-      /**
-      * @access private
-      */
-      private start() {
-
-        var s = this;
-
-        function responsor(e: any) {
-
-          var r = new Detail(e);
-
-          s.emitter.emit('panstart', r);
-
-          // begin response.
-
-          s.txv = r;
-          s.txg = true;
-        }
-
-        new Emission(s.emitter, 'mousedown').when(responsor);
-        new Emission(s.emitter, 'touchstart').when(prevent).when(responsor);
-      }
     }
-
-    /**
-    * @access private
-    * @static
-    */
-    function prevent(e: Event) {
-
-      e.preventDefault();
-
-      // passthru.
-      return e;
-    }
-  }
 }

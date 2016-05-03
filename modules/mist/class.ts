@@ -8,301 +8,302 @@
 
 namespace Mist {
 
-  const ADD
-    : number = 1;
+    const ADD
+        : number = 1;
 
-  const REMOVE
-    : number = 2;
+    const REMOVE
+        : number = 2;
 
-  const TOGGLE
-    : number = 3;
+    const TOGGLE
+        : number = 3;
 
-  const NEXT
-    : number = 4;
+    const NEXT
+        : number = 4;
 
-  const PREVIOUS
-    : number = 5;
-
-  /**
-  * @class Class
-  */
-  export class Class {
-
-    private value: Value;
+    const PREVIOUS
+        : number = 5;
 
     /**
-    * @constructor
-    * @param {} statement
+    * @class Class
+    * @summary css classer
     */
-    constructor(private statement: Statement) {
+    export class Class {
 
-      this.value = new Value({});
-      this.value.when(
+        private value: Value;
 
-        function(o) {
+        /**
+        * @constructor
+        * @param {} statement
+        */
+        constructor(private statement: Statement) {
 
-          var response: string[][] = [];
+            this.value = new Value({});
+            this.value.when(
 
-          for (let name in o) {
+                function(o) {
 
-            var i = o[name];
+                    var response: string[][] = [];
 
-            // format response.
+                    for (let name in o) {
 
-            response[i] || (response[i] = []);
-            response[i].push(name);
+                        var i = o[name];
 
-            // reposit.
+                        // format response.
 
-            delete o[name];
-          }
+                        response[i] || (response[i] = []);
+                        response[i].push(name);
 
-          var queues: Function[] = [];
+                        // reposit.
 
-          statement.each(
+                        delete o[name];
+                    }
 
-            function(e) {
+                    var queues: Function[] = [];
 
-              var classes = e.classList;
+                    statement.each(
 
-              response.map(
+                        function(e) {
 
-                function(names, i) {
+                            var classes = e.classList;
 
-                  switch (i) {
+                            response.map(
 
-                    case ADD:
+                                function(names, i) {
 
-                      // bulk response.
+                                    switch (i) {
 
-                      classes.add.apply(classes, names);
+                                        case ADD:
 
-                      break;
-                    case REMOVE:
+                                            // bulk response.
 
-                      // bulk response.
+                                            classes.add.apply(classes, names);
 
-                      classes.remove.apply(classes, names);
+                                            break;
+                                        case REMOVE:
 
-                      break;
-                    case TOGGLE:
+                                            // bulk response.
 
-                      names.forEach(
+                                            classes.remove.apply(classes, names);
 
-                        function(name) {
+                                            break;
+                                        case TOGGLE:
 
-                          classes.toggle(name);
+                                            names.forEach(
+
+                                                function(name) {
+
+                                                    classes.toggle(name);
+                                                });
+
+                                            break;
+                                        case NEXT:
+
+                                            var o = (e.nextElementSibling || statement.first()).classList;
+
+                                            // filt response.
+
+                                            names = names.filter(
+
+                                                function(name) {
+
+                                                    var r = classes.contains(name);
+                                                    if (r) classes.remove(name);
+
+                                                    // is response.
+
+                                                    return r;
+                                                });
+
+                                            if (names.length) {
+
+                                                queues.push(
+
+                                                    function() {
+
+                                                        // lazy response.
+
+                                                        o.add.apply(o, names);
+                                                    });
+                                            }
+
+                                            break;
+                                        case PREVIOUS:
+
+                                            var o = (e.previousElementSibling || statement.last()).classList;
+
+                                            // filt response.
+
+                                            names = names.filter(
+
+                                                function(name) {
+
+                                                    var r = classes.contains(name);
+                                                    if (r) classes.remove(name);
+
+                                                    // is response.
+
+                                                    return r;
+                                                });
+
+                                            if (names.length) {
+
+                                                queues.push(
+
+                                                    function() {
+
+                                                        // lazy response.
+
+                                                        o.add.apply(o, names);
+                                                    });
+                                            }
+
+                                            break;
+                                    }
+                                });
                         });
 
-                      break;
-                    case NEXT:
+                    queues.forEach(
 
-                      var o = (e.nextElementSibling || statement.first()).classList;
+                        function(responsor) {
 
-                      // filt response.
-
-                      names = names.filter(
-
-                        function(name) {
-
-                          var r = classes.contains(name);
-                          if (r) classes.remove(name);
-
-                          // is response.
-
-                          return r;
+                            responsor();
                         });
-
-                      if (names.length) {
-
-                        queues.push(
-
-                          function() {
-
-                            // lazy response.
-
-                            o.add.apply(o, names);
-                          });
-                      }
-
-                      break;
-                    case PREVIOUS:
-
-                      var o = (e.previousElementSibling || statement.last()).classList;
-
-                      // filt response.
-
-                      names = names.filter(
-
-                        function(name) {
-
-                          var r = classes.contains(name);
-                          if (r) classes.remove(name);
-
-                          // is response.
-
-                          return r;
-                        });
-
-                      if (names.length) {
-
-                        queues.push(
-
-                          function() {
-
-                            // lazy response.
-
-                            o.add.apply(o, names);
-                          });
-                      }
-
-                      break;
-                  }
                 });
+        }
+
+        /**
+        * @param {} names
+        */
+        add(...names: string[]): Promise {
+
+            return this.value.compose((o) => {
+
+                // {} response.
+
+                return this.compose(names, ADD, o);
             });
+        }
 
-          queues.forEach(
+        /**
+        * @param {} names
+        */
+        next(...names: string[]): Promise {
 
-            function(responsor) {
+            return this.value.compose((o) => {
 
-              responsor();
+                // {} response.
+
+                return this.compose(names, NEXT, o);
             });
-        });
-    }
+        }
 
-    /**
-    * @param {} names
-    */
-    add(...names: string[]): Promise {
+        /**
+        * @param {} names
+        */
+        prev(...names: string[]): Promise {
 
-      return this.value.compose((o) => {
+            return this.value.compose((o) => {
 
-        // {} response.
+                // {} response.
 
-        return this.compose(names, ADD, o);
-      });
-    }
-
-    /**
-    * @param {} names
-    */
-    next(...names: string[]): Promise {
-
-      return this.value.compose((o) => {
-
-        // {} response.
-
-        return this.compose(names, NEXT, o);
-      });
-    }
-
-    /**
-    * @param {} names
-    */
-    prev(...names: string[]): Promise {
-
-      return this.value.compose((o) => {
-
-        // {} response.
-
-        return this.compose(names, PREVIOUS, o);
-      });
-    }
-
-    /**
-    * @param {} dur
-    */
-    pulse(dur: number): Wrapper.Pulser {
-
-      // wrapper response.
-
-      return new Wrapper.Pulser(this, dur);
-    }
-
-    /**
-    * @param {} names
-    */
-    remove(...names: string[]): Promise {
-
-      return this.value.compose((o) => {
-
-        // {} response.
-
-        return this.compose(names, REMOVE, o);
-      });
-    }
-
-    /**
-    * @param {} dur
-    */
-    time(dur: number): Wrapper.Timer {
-
-      // wrapper response.
-
-      return new Wrapper.Timer(this, dur);
-    }
-
-    /**
-    * @param {} names
-    */
-    toggle(...names: string[]): Promise {
-
-      return this.value.compose(
-
-        function(o) {
-
-          names.forEach(
-
-            // composer.
-            function(name) {
-
-              switch (o[name]) {
-
-                case ADD:
-
-                  // ! response.
-                  o[name] = REMOVE;
-
-                  break;
-                case REMOVE:
-
-                  // ! response.
-                  o[name] = ADD;
-
-                  break;
-                case TOGGLE:
-
-                  // remove.
-                  delete o[name];
-
-                  break;
-                default:
-
-                  // passthru.
-                  o[name] = TOGGLE;
-              }
+                return this.compose(names, PREVIOUS, o);
             });
+        }
 
-          // {} response.
-          return o;
-        });
+        /**
+        * @param {} dur
+        */
+        pulse(dur: number): Wrapper.Pulser {
+
+            // wrapper response.
+
+            return new Wrapper.Pulser(this, dur);
+        }
+
+        /**
+        * @param {} names
+        */
+        remove(...names: string[]): Promise {
+
+            return this.value.compose((o) => {
+
+                // {} response.
+
+                return this.compose(names, REMOVE, o);
+            });
+        }
+
+        /**
+        * @param {} dur
+        */
+        time(dur: number): Wrapper.Timer {
+
+            // wrapper response.
+
+            return new Wrapper.Timer(this, dur);
+        }
+
+        /**
+        * @param {} names
+        */
+        toggle(...names: string[]): Promise {
+
+            return this.value.compose(
+
+                function(o) {
+
+                    names.forEach(
+
+                        // composer.
+                        function(name) {
+
+                            switch (o[name]) {
+
+                                case ADD:
+
+                                    // ! response.
+                                    o[name] = REMOVE;
+
+                                    break;
+                                case REMOVE:
+
+                                    // ! response.
+                                    o[name] = ADD;
+
+                                    break;
+                                case TOGGLE:
+
+                                    // remove.
+                                    delete o[name];
+
+                                    break;
+                                default:
+
+                                    // passthru.
+                                    o[name] = TOGGLE;
+                            }
+                        });
+
+                    // {} response.
+                    return o;
+                });
+        }
+
+        /**
+        * @param {} names
+        * @param {} command
+        */
+        private compose(names: string[], command: number, response: any = {}) {
+
+            names.forEach(
+
+                function(name) {
+
+                    response[name] = command;
+                });
+
+            // {} response.
+            return response;
+        }
     }
-
-    /**
-    * @param {} names
-    * @param {} command
-    */
-    private compose(names: string[], command: number, response: any = {}) {
-
-      names.forEach(
-
-        function(name) {
-
-          response[name] = command;
-        });
-
-      // {} response.
-      return response;
-    }
-  }
 }

@@ -12,44 +12,44 @@ var name = 'modules/mist.ts';
 
 g.task('declare',
 
-  function() {
+    function() {
 
-    // initialize.
+        // initialize.
 
-    var m = g.dest(dist_dir);
+        var m = g.dest(dist_dir);
 
-    g.src(name).pipe(t({
+        g.src(name).pipe(t({
 
-      declaration: true,
-      out: dist_name
+            declaration: true,
+            out: dist_name
 
-    })).dts.pipe(m);
-  });
+        })).dts.pipe(m);
+    });
 
 g.task('default',
 
-  function() {
+    function() {
 
-    // initialize.
+        // initialize.
 
-    var m = g.dest(dist_dir);
-    var n = g.dest(dist_dir);
+        var m = g.dest(dist_dir);
+        var n = g.dest(dist_dir);
 
-    g.src(name).pipe(t({
+        g.src(name).pipe(t({
 
-      noImplicitAny: true,
-      out: dist_name,
-      target: 'ES5'
+            noImplicitAny: true,
+            out: dist_name,
+            target: 'ES5'
 
-    })).pipe(n).pipe(u({
+        })).pipe(n).pipe(u({
 
-      // uglify response.
-      preserveComments: 'license'
+            // uglify response.
+            preserveComments: 'license'
 
-    })).pipe(r({
+        })).pipe(r({
 
-      // rename response.
-      extname: dist_min_ext
+            // rename response.
+            extname: dist_min_ext
 
-    })).pipe(m);
-  });
+        })).pipe(m);
+    });

@@ -1,19 +1,19 @@
 {
-  "author": "AI428",
-  "bugs": {
-    "url": "https://github.com/AI428/mist/issues"
-  },
-  "description": "A JavaScript framework for the reactive style",
-  "devDependencies": {
-    "gulp": "~3.9.1",
-    "gulp-rename": "~1.2.2",
-    "gulp-typescript": "~2.12.0",
-    "gulp-uglify": "~1.5.3"
-  },
-  "license": "MIT",
-  "name": "MIST",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/AI428/mist"
-  }
+    "author": "AI428",
+    "bugs": {
+        "url": "https://github.com/AI428/mist/issues"
+    },
+    "description": "A JavaScript framework for the reactive CSS",
+    "devDependencies": {
+        "gulp": "~3.9.1",
+        "gulp-rename": "~1.2.2",
+        "gulp-typescript": "~2.12.0",
+        "gulp-uglify": "~1.5.3"
+    },
+    "license": "MIT",
+    "name": "mist",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/AI428/mist"
+    }
 }

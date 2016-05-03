@@ -1,70 +1,65 @@
 namespace Mist {
 
-  /**
-  * @class Component
-  * @summary factory
-  */
-  export class Component {
+    /**
+    * @class Component
+    * @summary factory
+    */
+    export class Component {
 
-    static responses: any = {};
+        static responses: any = {};
+
+        /**
+        * @param {} modular
+        * @param {} o
+        */
+        static create<T>(modular: any, ...o: any[]): T {
+
+            // ser response.
+
+            var m = ser([modular]);
+            var n = ser(o);
+
+            // initialize.
+
+            this.responses[m] || (this.responses[m] = {});
+
+            // inher response.
+
+            if (!this.responses[m][n]) {
+                this.responses[m][n] = new (
+                    modular.bind.apply(
+                        modular, [modular].concat([].slice.apply(o))
+                    )
+                );
+            }
+
+            // lasting response.
+            return this.responses[m][n];
+        }
+    }
 
     /**
-    * @param {} modular
-    * @param {} o
+    * @access private
+    * @static
     */
-    static create<T>(
+    var sessions = 0;
 
-      modular: any,
-      ...o: any[]
-      ): T {
+    /**
+    * @access private
+    * @static
+    */
+    function ser(response: any[]) {
 
-      // ser response.
+        return JSON.stringify(
 
-      var m = ser([modular]);
-      var n = ser(o);
+            // [] response.
+            response.map(
 
-      // initialize.
-
-      this.responses[m] || (this.responses[m] = {});
-
-      // inher response.
-
-      if (!this.responses[m][n]) {
-        this.responses[m][n] = new (
-          modular.bind.apply(
-            modular, [modular].concat(
-              [].slice.apply(o))
-            )
-          );
-      }
-
-      // lasting response.
-      return this.responses[m][n];
+                function(v) {
+                    return v instanceof Object ?
+                        v.sessions || (v.sessions = sessions++) :
+                        v;
+                })
+        );
     }
-  }
-
-  /**
-  * @access private
-  * @static
-  */
-  var sessions = 0;
-
-  /**
-  * @access private
-  * @static
-  */
-  function ser(response: any[]) {
-
-    return JSON.stringify(
-
-      // [] response.
-      response.map(
-
-        function(v) {
-          return v instanceof Object ?
-            v.sessions || (v.sessions = sessions++) :
-            v;
-        })
-      );
-  }
 }

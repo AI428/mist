@@ -2,57 +2,57 @@
 
 namespace Mist {
 
-  export namespace Wrapper {
+    export namespace Wrapper {
 
-    /**
-    * @class Pulser
-    * @namespace Wrapper
-    */
-    export class Pulser extends Voker {
+        /**
+        * @class Pulser
+        * @summary pulse voker
+        */
+        export class Pulser extends Voker {
 
-      /**
-      * @constructor
-      * @param {} component
-      * @param {} dur
-      */
-      constructor(component: any, public dur: number = 0) {
+            /**
+            * @constructor
+            * @param {} component
+            * @param {} dur
+            */
+            constructor(component: any, public dur: number = 0) {
 
-        super(component);
-      }
+                super(component);
+            }
 
-      /**
-      * @param {} composer
-      * @param {} o
-      */
-      compose$(composer: any, o: any[]) {
+            /**
+            * @param {} composer
+            * @param {} o
+            */
+            compose$(composer: any, o: any[]) {
 
-        var s = this;
+                var s = this;
 
-        return new Promise(
+                return new Promise(
 
-          function(
+                    function(
 
-            succeed,
-            erred
-            ) {
+                        succeed,
+                        erred
+                    ) {
 
-            (function responsor() {
+                        (function responsor() {
 
-              try {
-                // commit response.
-                succeed(composer.apply(composer, o));
+                            try {
+                                // commit response.
+                                succeed(composer.apply(composer, o));
 
-                // lazy response.
-                !s.dur || setTimeout(responsor, s.dur);
+                                // lazy response.
+                                !s.dur || setTimeout(responsor, s.dur);
 
-              } catch (e) {
+                            } catch (e) {
 
-                // fail response.
-                erred(e);
-              }
-            })();
-          });
-      }
+                                // fail response.
+                                erred(e);
+                            }
+                        })();
+                    });
+            }
+        }
     }
-  }
 }
