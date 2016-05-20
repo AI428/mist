@@ -81,7 +81,7 @@ statement.style.set(redden).then(
 It can also be unflag.
 
 ```javascript
-// At 1.5 seconds intervals
+// At 3 seconds intervals
 
 statement.style.pulse(3000).set(redden).when(
 
