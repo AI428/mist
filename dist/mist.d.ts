@@ -1,35 +1,34 @@
 declare namespace Mist {
     /**
     * @class Component
-    * @summary factory
     */
     class Component {
         static responses: any;
         /**
-        * @param {} modular
+        * @param {} component
         * @param {} o
         */
-        static create<T>(modular: any, ...o: any[]): T;
+        static create<T>(component: any, ...o: any[]): T;
     }
 }
 /**
 * @class Element
-* @summary for vendor
 */
 interface Element {
     /**
     * @param {} selector
+    * @summary for polyfill
     */
     closest: (selector: string) => Element;
     /**
     * @param {} selector
+    * @summary for polyfill
     */
     mozMatchesSelector: (selector: string) => boolean;
 }
 declare namespace Mist {
     /**
     * @class Emitter
-    * @summary for event
     */
     class Emitter {
         private statement;
@@ -69,7 +68,7 @@ declare namespace Mist {
         /**
         * @access private
         */
-        private ready(name);
+        private on(name);
         /**
         * @access private
         */
@@ -79,12 +78,11 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Promise
-    * @summary thenable
     */
     class Promise {
         private err;
         private success;
-        private txg;
+        private txd;
         private txr;
         /**
         * @constructor
@@ -134,7 +132,6 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Emission
-    * @summary emit listener
     */
     class Emission extends Promise {
         private emitter;
@@ -150,14 +147,12 @@ declare namespace Mist {
 declare namespace Mist {
     namespace Recognizer {
         /**
-        * @class Detail
-        * @summary reconized data transfer
+        * @class Summary
         */
-        class Detail {
-            src: any;
+        class Summary {
+            event: any;
             /**
             * @access public
-            * @summary client point
             */
             client: {
                 x: number;
@@ -178,7 +173,6 @@ declare namespace Mist {
             mpms: number;
             /**
             * @access public
-            * @summary page point
             */
             page: {
                 x: number;
@@ -191,18 +185,18 @@ declare namespace Mist {
             passed: number;
             /**
             * @constructor
-            * @param {} src
+            * @param {} event
             */
-            constructor(src: MouseEvent);
+            constructor(event: MouseEvent);
             /**
             * @constructor
-            * @param {} src
+            * @param {} event
             */
-            constructor(src: TouchEvent);
+            constructor(event: TouchEvent);
             /**
-            * @param {} src
+            * @param {} event
             */
-            diff(src: any): Detail;
+            diff(event: any): Summary;
             /**
             * @param {} element
             */
@@ -221,12 +215,18 @@ declare namespace Mist {
     namespace Recognizer {
         /**
         * @class Pan
-        * @summary pan recognizer
         */
         class Pan {
             private emitter;
-            private txg;
-            private txv;
+            /**
+            * @access private
+            */
+            private prev;
+            /**
+            * @access private
+            * @summary is transact
+            */
+            private txd;
             /**
             * @constructor
             * @param {} emitter
@@ -251,12 +251,18 @@ declare namespace Mist {
     namespace Recognizer {
         /**
         * @class Swipe
-        * @namespace swipe recognizer
         */
         class Swipe {
             private emitter;
-            private txg;
-            private txv;
+            /**
+            * @access private
+            */
+            private prev;
+            /**
+            * @access private
+            * @summary is transact
+            */
+            private txd;
             /**
             * @access public
             * @static
@@ -289,7 +295,6 @@ declare namespace Mist {
     namespace Wrapper {
         /**
         * @class Voker
-        * @summary method invoker
         */
         class Voker {
             private component;
@@ -311,10 +316,13 @@ declare namespace Mist {
     namespace Wrapper {
         /**
         * @class Pulser
-        * @summary pulse voker
         */
         class Pulser extends Voker {
             dur: number;
+            /**
+            * @access private
+            */
+            private id;
             /**
             * @constructor
             * @param {} component
@@ -333,10 +341,13 @@ declare namespace Mist {
     namespace Wrapper {
         /**
         * @class Timer
-        * @summary time voker
         */
         class Timer extends Voker {
             dur: number;
+            /**
+            * @access private
+            */
+            private id;
             /**
             * @constructor
             * @param {} component
@@ -354,21 +365,14 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Frame
-    * @summary queuer on frame
     */
     class Frame {
-        private static txg;
-        private static txs;
+        static success: (() => void)[];
+        static txd: boolean;
         /**
         * @param {} responsor
-        * @param {} delay
         */
-        static at(responsor: () => void, delay?: number): void;
-        /**
-        * @param {} responsor
-        * @param {} delay
-        */
-        static on(responsor: () => any, delay?: number): Promise;
+        static at(responsor: () => void): void;
         /**
         * @access private
         * @static
@@ -379,13 +383,12 @@ declare namespace Mist {
 declare namespace Mist {
     /**
     * @class Value
-    * @summary composer
     */
     class Value extends Promise {
         composite: any;
-        private xg;
-        private xr;
         private xs;
+        private xd;
+        private xr;
         /**
         * @constructor
         * @param {} composite
@@ -399,60 +402,18 @@ declare namespace Mist {
 }
 declare namespace Mist {
     /**
-    * @class Class
-    * @summary css classer
-    */
-    class Class {
-        private statement;
-        private value;
-        /**
-        * @constructor
-        * @param {} statement
-        */
-        constructor(statement: Statement);
-        /**
-        * @param {} names
-        */
-        add(...names: string[]): Promise;
-        /**
-        * @param {} names
-        */
-        next(...names: string[]): Promise;
-        /**
-        * @param {} names
-        */
-        prev(...names: string[]): Promise;
-        /**
-        * @param {} dur
-        */
-        pulse(dur: number): Wrapper.Pulser;
-        /**
-        * @param {} names
-        */
-        remove(...names: string[]): Promise;
-        /**
-        * @param {} dur
-        */
-        time(dur: number): Wrapper.Timer;
-        /**
-        * @param {} names
-        */
-        toggle(...names: string[]): Promise;
-        /**
-        * @param {} names
-        * @param {} command
-        */
-        private compose(names, command, response?);
-    }
-}
-declare namespace Mist {
-    /**
     * @class Style
-    * @summary css styler
     */
     class Style {
         private statement;
+        /**
+        * @access private
+        * @summary for scoped
+        */
         private e;
+        /**
+        * @access private
+        */
         private value;
         /**
         * @constructor
@@ -460,27 +421,25 @@ declare namespace Mist {
         */
         constructor(statement: Statement);
         /**
-        * @summary conv
-        */
-        static rem(): number;
-        /**
         * @param {} css
         */
-        add(css: any): Promise;
+        add(...css: any[]): Promise;
         /**
         * @summary scoped
         */
         get(): any;
         /**
         * @param {} dur
+        * @summary lazy responsor
         */
         pulse(dur: number): Wrapper.Pulser;
         /**
         * @param {} css
         */
-        set(css: any): Promise;
+        set(...css: any[]): Promise;
         /**
         * @param {} dur
+        * @summary lazy responsor
         */
         time(dur: number): Wrapper.Timer;
         /**
@@ -490,20 +449,24 @@ declare namespace Mist {
         /**
         * @access private
         */
+        private composer(name, v);
+        /**
+        * @access private
+        */
         private create();
     }
 }
 declare namespace Mist {
     /**
     * @class Statement
-    * @summary implement class
     */
     class Statement {
         private statement;
         /**
         * @access public
+        * @summary th selector
         */
-        class: Class;
+        static nth: string;
         /**
         * @access public
         */
@@ -523,13 +486,13 @@ declare namespace Mist {
         */
         constructor(statement: string);
         /**
+        * @summary mapped
+        */
+        a(): Element;
+        /**
         * @param {} selector
         */
-        concat(selector: string): Statement;
-        /**
-        * @param {} listener
-        */
-        each(listener: (element: Element) => void): void;
+        any(selector: string): Statement;
         /**
         * @summary mapped
         */
@@ -537,31 +500,32 @@ declare namespace Mist {
         /**
         * @summary mapped
         */
-        first(): Element;
-        /**
-        * @summary mapped
-        */
         last(): Element;
+        /**
+        * @param {} selector
+        */
+        not(selector: string): Statement;
         /**
         * @param {} name
         */
         on(name: string): Emission;
         /**
-        * @param {} name
-        */
-        once(name: string): Emission;
-        /**
         * @summary mapped
         */
         selector(): string;
+        /**
+        * @param {} s
+        * @param {} e
+        */
+        th(s: number, e: number): Statement[];
     }
 }
 /**
  * @copyright AI428
- * @description A JavaScript framework for the reactive CSS
+ * @description Modular CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.5.3
+ * @version 0.6.0
  */
 /**
  * @param {} statement
