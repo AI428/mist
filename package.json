@@ -3,11 +3,11 @@
     "bugs": {
         "url": "https://github.com/AI428/mist/issues"
     },
-    "description": "A JavaScript framework for the reactive CSS",
+    "description": "Modular CSS in JS",
     "devDependencies": {
         "gulp": "~3.9.1",
         "gulp-rename": "~1.2.2",
-        "gulp-typescript": "~2.12.0",
+        "gulp-typescript": "~2.13.0",
         "gulp-uglify": "~1.5.3"
     },
     "license": "MIT",
