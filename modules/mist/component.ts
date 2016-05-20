@@ -2,21 +2,18 @@ namespace Mist {
 
     /**
     * @class Component
-    * @summary factory
     */
     export class Component {
 
         static responses: any = {};
 
         /**
-        * @param {} modular
+        * @param {} component
         * @param {} o
         */
-        static create<T>(modular: any, ...o: any[]): T {
+        static create<T>(component: any, ...o: any[]): T {
 
-            // ser response.
-
-            var m = ser([modular]);
+            var m = ser([component]);
             var n = ser(o);
 
             // initialize.
@@ -27,13 +24,14 @@ namespace Mist {
 
             if (!this.responses[m][n]) {
                 this.responses[m][n] = new (
-                    modular.bind.apply(
-                        modular, [modular].concat([].slice.apply(o))
+                    component.bind.apply(
+                        component, [component].concat([].slice.apply(o))
                     )
                 );
             }
 
             // lasting response.
+
             return this.responses[m][n];
         }
     }
@@ -48,18 +46,16 @@ namespace Mist {
     * @access private
     * @static
     */
-    function ser(response: any[]) {
+    function ser(conv: any[]) {
 
         return JSON.stringify(
 
-            // [] response.
-            response.map(
+            conv.map(
 
                 function(v) {
                     return v instanceof Object ?
                         v.sessions || (v.sessions = sessions++) :
                         v;
-                })
-        );
+                }));
     }
 }

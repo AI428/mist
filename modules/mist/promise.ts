@@ -2,13 +2,12 @@ namespace Mist {
 
     /**
     * @class Promise
-    * @summary thenable
     */
     export class Promise {
 
         private err: (response: any) => any;
         private success: (response: any) => any;
-        private txg: boolean;
+        private txd: boolean;
         private txr: () => void;
 
         /**
@@ -99,7 +98,6 @@ namespace Mist {
                     erred
                 ) {
 
-                    // initialize.
                     commits.forEach(function(commit) {
 
                         commit.when(
@@ -155,7 +153,7 @@ namespace Mist {
         */
         resume() {
 
-            this.txg = null;
+            this.txd = false;
             this.txr = null;
         }
 
@@ -231,23 +229,21 @@ namespace Mist {
         */
         private erred(response: any) {
 
-            if (!this.txg) {
+            if (!this.txd) {
 
-                var m = this.err;
+                if (this.err) {
 
-                if (m) {
-
-                    this.txg = true;
+                    this.txd = true;
 
                     // fail response.
                     if (response instanceof Promise) {
 
                         // lazy response
-                        response.then(m);
+                        response.then(this.err);
 
                     } else {
                         // passthru.
-                        m(response);
+                        this.err(response);
                     }
                 } else {
 
@@ -269,23 +265,21 @@ namespace Mist {
         */
         private succeed(response: any) {
 
-            if (!this.txg) {
+            if (!this.txd) {
 
-                var m = this.success;
+                if (this.success) {
 
-                if (m) {
-
-                    this.txg = true;
+                    this.txd = true;
 
                     // commit response.
                     if (response instanceof Promise) {
 
                         // lazy response
-                        response.then(m);
+                        response.then(this.success);
 
                     } else {
                         // passthru.
-                        m(response);
+                        this.success(response);
                     }
                 } else {
 

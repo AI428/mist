@@ -3,7 +3,7 @@
 /// <reference path='../emitter.ts'/>
 /// <reference path='../statement.ts'/>
 
-/// <reference path='detail.ts'/>
+/// <reference path='summary.ts'/>
 
 namespace Mist {
 
@@ -11,12 +11,19 @@ namespace Mist {
 
         /**
         * @class Pan
-        * @summary pan recognizer
         */
         export class Pan {
 
-            private txg: boolean;
-            private txv: Detail;
+            /**
+            * @access private
+            */
+            private prev: Summary;
+
+            /**
+            * @access private
+            * @summary is transact
+            */
+            private txd: boolean;
 
             /**
             * @constructor
@@ -38,16 +45,16 @@ namespace Mist {
 
                 function responsor(e: any) {
 
-                    if (s.txg) {
+                    if (s.txd) {
 
-                        var r = s.txv.diff(e);
+                        var r = s.prev.diff(e);
+
+                        // disp response.
 
                         s.emitter.emit('pan', r);
                         s.emitter.emit('panend', r);
 
-                        // end response.
-
-                        s.txg = false;
+                        s.txd = false;
                     }
                 }
 
@@ -64,9 +71,11 @@ namespace Mist {
 
                 function responsor(e: any) {
 
-                    if (s.txg) {
+                    if (s.txd) {
 
-                        var r = s.txv.diff(e);
+                        var r = s.prev.diff(e);
+
+                        // disp response.
 
                         s.emitter.emit('panmove', r);
 
@@ -77,7 +86,7 @@ namespace Mist {
                         if (r.move.y < 0) s.emitter.emit('panup', r);
                         if (r.move.y > 0) s.emitter.emit('pandown', r);
 
-                        s.txv = r;
+                        s.prev = r;
                     }
                 }
 
@@ -94,14 +103,15 @@ namespace Mist {
 
                 function responsor(e: any) {
 
-                    var r = new Detail(e);
+                    var r = new Summary(e);
+
+                    // disp response.
 
                     s.emitter.emit('panstart', r);
 
-                    // begin response.
+                    s.prev = r;
 
-                    s.txv = r;
-                    s.txg = true;
+                    s.txd = true;
                 }
 
                 new Emission(s.emitter, 'mousedown').when(responsor);

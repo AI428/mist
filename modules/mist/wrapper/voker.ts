@@ -4,7 +4,6 @@ namespace Mist {
 
         /**
         * @class Voker
-        * @summary method invoker
         */
         export class Voker {
 

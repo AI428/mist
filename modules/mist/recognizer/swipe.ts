@@ -1,7 +1,7 @@
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
 
-/// <reference path='detail.ts'/>
+/// <reference path='summary.ts'/>
 
 namespace Mist {
 
@@ -9,12 +9,19 @@ namespace Mist {
 
         /**
         * @class Swipe
-        * @namespace swipe recognizer
         */
         export class Swipe {
 
-            private txg: boolean;
-            private txv: Detail;
+            /**
+            * @access private
+            */
+            private prev: Summary;
+
+            /**
+            * @access private
+            * @summary is transact
+            */
+            private txd: boolean;
 
             /**
             * @access public
@@ -49,19 +56,19 @@ namespace Mist {
 
                 new Emission(s.emitter, 'panend').when(
 
-                    function(response: Detail) {
+                    function(response: Summary) {
 
-                        if (s.txg) {
+                        if (s.txd) {
 
-                            var r = s.txv.diff(response.src);
+                            var r = s.prev.diff(response.event);
 
                             // filt response.
 
                             if (Swipe.passed > r.passed) {
 
-                                s.emitter.emit('swipe', r);
+                                // disp response.
 
-                                // dir response.
+                                s.emitter.emit('swipe', r);
 
                                 var x = r.move.x * r.move.x;
                                 var y = r.move.y * r.move.y;
@@ -82,7 +89,7 @@ namespace Mist {
                                 }
                             }
 
-                            s.txg = false;
+                            s.txd = false;
                         }
                     });
             }
@@ -96,16 +103,17 @@ namespace Mist {
 
                 new Emission(s.emitter, 'panmove').when(
 
-                    function(response: Detail) {
+                    function(response: Summary) {
 
-                        if (!s.txg) {
+                        if (!s.txd) {
 
                             // filt response.
 
                             if (Swipe.mpms < response.mpms) {
 
-                                s.txv = response;
-                                s.txg = true;
+                                s.prev = response;
+
+                                s.txd = true;
                             }
                         }
                     });

@@ -5,13 +5,12 @@ namespace Mist {
 
     /**
     * @class Value
-    * @summary composer
     */
     export class Value extends Promise {
 
-        private xg: boolean;
-        private xr: () => void;
         private xs: ((response: any) => void)[] = [];
+        private xd: boolean;
+        private xr: () => void;
 
         /**
         * @constructor
@@ -26,10 +25,9 @@ namespace Mist {
             ) => {
 
                 this.xr = () => {
-                    this.xg || (() => {
-                        this.xg = true;
+                    this.xd || (() => {
+                        this.xd = true;
 
-                        // ser response.
                         Frame.at(() => {
 
                             var responsor: (response: any) => void;
@@ -50,7 +48,7 @@ namespace Mist {
                                 responsor(this.composite);
                             }
 
-                            this.xg = false;
+                            this.xd = false;
                         });
                     })();
                 }
@@ -66,13 +64,10 @@ namespace Mist {
 
                 (responsor) => {
 
-                    // ser response.
                     Frame.at(() => {
 
                         // a response.
                         this.composite = composer(this.composite);
-
-                        // queues.
                         this.xs.push(responsor);
                         this.xr();
                     });

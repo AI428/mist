@@ -1,16 +1,17 @@
 /**
 * @class Element
-* @summary for vendor
 */
 interface Element {
 
     /**
     * @param {} selector
+    * @summary for polyfill
     */
     closest: (selector: string) => Element;
 
     /**
     * @param {} selector
+    * @summary for polyfill
     */
     mozMatchesSelector: (selector: string) => boolean;
 }
@@ -38,19 +39,17 @@ interface Element {
 
     var o = Element.prototype;
 
-    o.closest = o.closest || function(selector: string) {
+    o.closest = o.closest
 
-        var s = this;
+        || function(selector: string) {
 
-        // find response.
+            var response = this;
 
-        while (s) {
-            if (s.matches(selector)) break;
-            s = s.parentElement;
-        }
+            while (response) {
+                if (response.matches(selector)) break;
+                response = response.parentElement;
+            }
 
-        // {} response.
-
-        return s;
-    };
+            return response;
+        };
 })();

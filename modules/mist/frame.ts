@@ -4,73 +4,19 @@ namespace Mist {
 
     /**
     * @class Frame
-    * @summary queuer on frame
     */
     export class Frame {
 
-        private static txg: boolean;
-        private static txs: (() => boolean)[] = [];
+        static success: (() => void)[] = [];
+        static txd: boolean;
 
         /**
         * @param {} responsor
-        * @param {} delay
         */
-        static at(responsor: () => void, delay: number = 0) {
+        static at(responsor: () => void) {
 
-            this.txs.push(
-
-                function() {
-
-                    var r = 0 > delay--;
-
-                    if (r) {
-
-                        // commit response.
-                        responsor();
-                    }
-
-                    return r;
-                });
-
+            this.success.push(responsor);
             this.tx();
-        }
-
-        /**
-        * @param {} responsor
-        * @param {} delay
-        */
-        static on(responsor: () => any, delay: number = 0): Promise {
-
-            return new Promise((
-
-                succeed,
-                erred
-            ) => {
-
-                this.txs.push(
-
-                    function() {
-
-                        var r = 0 > delay--;
-
-                        if (r) {
-
-                            try {
-                                // commit response.
-                                succeed(responsor());
-
-                            } catch (e) {
-
-                                // fail response.
-                                erred(e);
-                            }
-                        }
-
-                        return r;
-                    });
-
-                this.tx();
-            });
         }
 
         /**
@@ -79,33 +25,39 @@ namespace Mist {
         */
         private static tx() {
 
-            this.txg || (() => {
-                this.txg = true;
+            this.txd || (() => {
+                this.txd = true;
+
+                // initialize.
+
+                var txr: (() => void)[] = [];
 
                 var s = this;
 
                 (function composer() {
 
-                    // initialize.
-
-                    var o: (() => boolean)[] = [];
-
-                    var responsor: () => boolean;
+                    var i = 0;
+                    var responsor: () => void;
 
                     while (
 
-                        responsor = s.txs.shift()) {
-                        responsor() || o.push(responsor);
+                        responsor = txr.shift()) {
+                        responsor();
                     }
 
-                    if (s.txg =
+                    while (
 
-                        // end response.
-                        !!s.txs.push.apply(
+                        responsor = s.success.shift()) {
 
-                            // lazy response.
-                            s.txs, o)) requestAnimationFrame(composer);
+                        // loop response.
 
+                        i = txr.push(responsor);
+                    }
+
+                    // lazy response.
+
+                    s.txd = i > 0;
+                    s.txd && requestAnimationFrame(composer);
                 })();
             })();
         }

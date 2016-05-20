@@ -5,7 +5,6 @@ namespace Mist {
 
     /**
     * @class Emitter
-    * @summary for event
     */
     export class Emitter {
 
@@ -40,7 +39,6 @@ namespace Mist {
 
             var e = document.createEvent('CustomEvent');
 
-            // initialize.
             e.initCustomEvent(name,
                 options.bubbles || true,
                 options.cancelable || true,
@@ -58,7 +56,7 @@ namespace Mist {
 
             this.obss[name] || (this.obss[name] = []);
             this.obss[name].push(listener);
-            this.ready(name);
+            this.on(name);
         }
 
         /**
@@ -95,7 +93,7 @@ namespace Mist {
         /**
         * @access private
         */
-        private ready(name: string) {
+        private on(name: string) {
 
             var o = this.emits;
 
@@ -131,7 +129,6 @@ namespace Mist {
                 response = s;
             }
 
-            // mapped response.
             return response;
         }
     }
