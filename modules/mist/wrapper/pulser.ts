@@ -6,9 +6,13 @@ namespace Mist {
 
         /**
         * @class Pulser
-        * @summary pulse voker
         */
         export class Pulser extends Voker {
+
+            /**
+            * @access private
+            */
+            private id: number = 0;
 
             /**
             * @constructor
@@ -28,6 +32,9 @@ namespace Mist {
 
                 var s = this;
 
+                clearTimeout(s.id);
+
+                // {} response.
                 return new Promise(
 
                     function(
@@ -43,7 +50,7 @@ namespace Mist {
                                 succeed(composer.apply(composer, o));
 
                                 // lazy response.
-                                !s.dur || setTimeout(responsor, s.dur);
+                                !s.dur || (s.id = setTimeout(responsor, s.dur));
 
                             } catch (e) {
 

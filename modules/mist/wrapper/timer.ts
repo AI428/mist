@@ -8,9 +8,13 @@ namespace Mist {
 
         /**
         * @class Timer
-        * @summary time voker
         */
         export class Timer extends Voker {
+
+            /**
+            * @access private
+            */
+            private id: number = 0;
 
             /**
             * @constructor
@@ -30,6 +34,9 @@ namespace Mist {
 
                 var s = this;
 
+                clearTimeout(s.id);
+
+                // {} response.
                 return new Promise(
 
                     function(
@@ -52,7 +59,7 @@ namespace Mist {
                         }
 
                         // lazy response.
-                        !s.dur || setTimeout(responsor, s.dur);
+                        !s.dur || (s.id = setTimeout(responsor, s.dur));
                     });
             }
         }
