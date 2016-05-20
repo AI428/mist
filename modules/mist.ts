@@ -1,9 +1,9 @@
 /**
  * @copyright AI428
- * @description A JavaScript framework for the reactive CSS
+ * @description Modular CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.5.3
+ * @version 0.6.0
  */
 
 /// <reference path='mist/component.ts' />
