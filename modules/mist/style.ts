@@ -1,7 +1,7 @@
 /// <reference path='wrapper/pulser.ts' />
 /// <reference path='wrapper/timer.ts' />
 
-/// <reference path='frame.ts' />
+/// <reference path='component.ts' />
 /// <reference path='promise.ts' />
 /// <reference path='statement.ts' />
 /// <reference path='value.ts' />
@@ -10,11 +10,18 @@ namespace Mist {
 
     /**
     * @class Style
-    * @summary css styler
     */
     export class Style {
 
+        /**
+        * @access private
+        * @summary for scoped
+        */
         private e: HTMLStyleElement;
+
+        /**
+        * @access private
+        */
         private value: Value;
 
         /**
@@ -45,28 +52,20 @@ namespace Mist {
         }
 
         /**
-        * @summary conv
-        */
-        static rem(): number {
-
-            var e = document.body;
-            var s = getComputedStyle(e);
-
-            // conv response.
-            return parseInt(s.fontSize, 10);
-        }
-
-        /**
         * @param {} css
         */
-        add(css: any): Promise {
+        add(...css: any[]): Promise {
 
-            return this.value.compose((o) => {
+            return this.value.compose(
 
-                // {} response.
+                // composer.
+                (o) => this.compose(assign(css), o)
 
-                return this.compose(css, o);
-            });
+            ).then(
+
+                // for composition.
+                () => this
+                );
         }
 
         /**
@@ -78,7 +77,7 @@ namespace Mist {
 
             var s = this;
 
-            // composer.
+            // format response.
             for (let name in s.value.composite) {
                 response[name] = s.value.composite[name];
             }
@@ -89,10 +88,9 @@ namespace Mist {
 
         /**
         * @param {} dur
+        * @summary lazy responsor
         */
         pulse(dur: number): Wrapper.Pulser {
-
-            // wrapper response.
 
             return new Wrapper.Pulser(this, dur);
         }
@@ -100,22 +98,25 @@ namespace Mist {
         /**
         * @param {} css
         */
-        set(css: any): Promise {
+        set(...css: any[]): Promise {
 
-            return this.value.compose(() => {
+            return this.value.compose(
 
-                // {} response.
+                // composer.
+                () => this.compose(assign(css))
 
-                return this.compose(css);
-            });
+            ).then(
+
+                // for composition.
+                () => this
+                );
         }
 
         /**
         * @param {} dur
+        * @summary lazy responsor
         */
         time(dur: number): Wrapper.Timer {
-
-            // wrapper response.
 
             return new Wrapper.Timer(this, dur);
         }
@@ -125,39 +126,18 @@ namespace Mist {
         */
         private compose(css: any, response: any = {}) {
 
-            var s = this;
-
-            // composer.
             for (let name in css) {
 
                 var p = css[name];
 
+                // mapped.
                 if (p instanceof Promise) {
-
-                    function composer(
-
-                        name: string,
-                        v: string
-                    ) {
-
-                        var response: any = {};
-
-                        response[name] = v;
-
-                        // reposit.
-                        s.add(response);
-                    }
-
                     // lazy response.
-                    p.when(composer.bind(s, name));
-
+                    p.when(this.composer.bind(this, name));
                 } else if (p instanceof Function) {
-
                     // a response.
                     response[name] = p();
-
                 } else {
-
                     // passthru.
                     response[name] = p;
                 }
@@ -165,6 +145,19 @@ namespace Mist {
 
             // {} response.
             return response;
+        }
+
+        /**
+        * @access private
+        */
+        private composer(name: string, v: any) {
+
+            var response: any = {};
+
+            response[name] = v;
+
+            // {} response.
+            this.add(response);
         }
 
         /**
@@ -187,6 +180,26 @@ namespace Mist {
             // lasting response.
             return this.e;
         }
+    }
+
+    /**
+    * @access private
+    * @static
+    */
+    function assign(o: any[]) {
+
+        var response: any = {};
+
+        o.map(function(a) {
+
+            // format response.
+            for (let name in a) {
+                response[name] = a[name];
+            }
+        });
+
+        // {} response.
+        return response;
     }
 
     /**
