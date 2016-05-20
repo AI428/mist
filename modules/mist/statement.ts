@@ -1,7 +1,6 @@
 /// <reference path='recognizer/pan.ts' />
 /// <reference path='recognizer/swipe.ts' />
 
-/// <reference path='class.ts' />
 /// <reference path='component.ts' />
 /// <reference path='emission.ts' />
 /// <reference path='emitter.ts' />
@@ -11,14 +10,14 @@ namespace Mist {
 
     /**
     * @class Statement
-    * @summary implement class
     */
     export class Statement {
 
         /**
         * @access public
+        * @summary th selector
         */
-        class: Class;
+        static nth = ':nth-of-type';
 
         /**
         * @access public
@@ -48,40 +47,58 @@ namespace Mist {
         */
         constructor(private statement: any) {
 
-            // initialize.
-            this.class = new Class(this);
             this.emitter = new Emitter(this);
             this.style = new Style(this);
 
-            // recognizer.
             new Recognizer.Pan(this.emitter);
             new Recognizer.Swipe(this.emitter);
         }
 
         /**
-        * @param {} selector
+        * @summary mapped
         */
-        concat(selector: string): Statement {
+        a(): Element {
 
-            var s = this.selector();
+            var response: Element;
 
-            // [] response.
-            var response = s.split(',').map(
+            var s = this.statement;
 
-                function(p) {
-                    return p.trim() + selector;
-                });
+            // mapped.
+            if (s instanceof Element) {
+                // a response.
+                response = s;
+            } else {
+                // a response.
+                response = document.querySelector(s);
+            }
 
-            // lasting response.
-            return Component.create<Statement>(Statement, response.join());
+            return response;
         }
 
         /**
-        * @param {} listener
+        * @param {} selector
         */
-        each(listener: (element: Element) => void) {
+        any(selector: string): Statement {
 
-            this.elements().forEach(listener);
+            // lasting response.
+
+            return Component.create<Statement>(Statement,
+
+                this.selector().split(',').map(
+
+                    function(s) {
+
+                        return selector.split(',').map(
+
+                            function(term) {
+
+                                return s.trim()
+                                    + term.trim()
+                                    ;
+
+                            }).join();
+
+                    }).join());
         }
 
         /**
@@ -97,40 +114,11 @@ namespace Mist {
             if (s instanceof Element) {
                 // [] response.
                 response = [s];
-            } else if (s instanceof Statement) {
-                // [] response.
-                response = s.elements();
             } else {
                 // [] response.
                 response = [].map.call(document.querySelectorAll(s), (element: Element) => element);
             }
 
-            // mapped response.
-            return response;
-        }
-
-        /**
-        * @summary mapped
-        */
-        first(): Element {
-
-            var response: Element;
-
-            var s = this.statement;
-
-            // mapped.
-            if (s instanceof Element) {
-                // a response.
-                response = s;
-            } else if (s instanceof Statement) {
-                // a response.
-                response = s.first();
-            } else {
-                // a response.
-                response = document.querySelector(s);
-            }
-
-            // mapped response.
             return response;
         }
 
@@ -147,16 +135,31 @@ namespace Mist {
             if (s instanceof Element) {
                 // a response.
                 response = s;
-            } else if (s instanceof Statement) {
-                // a response.
-                response = s.last();
             } else {
                 // a response.
                 response = document.querySelector(s.match(/[^,]*$/).concat('last-child').join(':'));
             }
 
-            // mapped response.
             return response;
+        }
+
+        /**
+        * @param {} selector
+        */
+        not(selector: string): Statement {
+
+            // lasting response.
+
+            return this.any(selector.split(',').map(
+
+                function(s) {
+
+                    return ':not('
+                        + s.trim()
+                        + ')'
+                        ;
+
+                }).join());
         }
 
         /**
@@ -166,15 +169,6 @@ namespace Mist {
 
             // {} response.
             return new Emission(this.emitter, name);
-        }
-
-        /**
-        * @param {} name
-        */
-        once(name: string): Emission {
-
-            // lasting response.
-            return Component.create<Emission>(Emission, this.emitter, name);
         }
 
         /**
@@ -190,15 +184,34 @@ namespace Mist {
             if (s instanceof Element) {
                 // [] response.
                 response = ser(s);
-            } else if (s instanceof Statement) {
-                // a response.
-                response = s.selector();
             } else {
                 // a response.
                 response = s;
             }
 
-            // mapped response.
+            return response;
+        }
+
+        /**
+        * @param {} s
+        * @param {} e
+        */
+        th(s: number, e: number): Statement[] {
+
+            var response: Statement[] = [];
+
+            for (let n = s; n <= e; n++) {
+
+                response.push(
+
+                    this.any(Statement.nth
+                        + '('
+                        + n
+                        + ')'
+                    ));
+            }
+
+            // [] response.
             return response;
         }
     }
