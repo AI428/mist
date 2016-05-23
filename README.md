@@ -39,7 +39,7 @@ statement.style.set(center, {
 
 ### _If you want to define a more interactive modular CSS_
 
-If you want to define a more interactive modular CSS, pass the `Function` and `Mist.Promise` to the value of CSS. `Function` is evaluated just to pass. `Mist.Promise` is evaluated each time the callback function is called.
+If you want to define a more interactive modular CSS, pass the `Function` and [`Promise`](#using-the-promise) to the value of CSS. `Function` is evaluated just to pass. [`Promise`](#using-the-promise) is evaluated each time the callback function is called.
 
 ```javascript
 var redden = {
@@ -136,6 +136,39 @@ promise.then(
     // your process.
   }
 );
+```
+
+## USING THE PROMISE
+
+This like a [Promise / A+](//promisesaplus.com/). The results of the css updates and event control handled async. Here, explaining features this library is extended.
+
+### _resume_
+
+The fullfilled or rejected the promise back to pending.
+
+```javascript
+var promise = mist('a').on('click');
+
+promise.then(
+
+  function(event) {
+
+    // If you want to reuse the callback function, to use.
+
+    promise.resume();
+  }
+);
+```
+
+### _when_
+
+If you want to reuse the callback function, to use.
+
+```javascript
+var promise = mist('a').on('click');
+
+promise.when(function(e) { /** your process */ });
+promise.then(function(e) { /** your process */ promise.resume() }); // same as
 ```
 
 ## LICENSE
