@@ -35,9 +35,11 @@ statement.style.set(center, {
 
   position: 'relative'
 });
+```
 
-// same as
+It's same as follows.
 
+```javascript
 statement.style.set(center);
 statement.style.add({ position: 'relative' });
 ```
