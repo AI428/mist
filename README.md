@@ -35,6 +35,11 @@ statement.style.set(center, {
 
   position: 'relative'
 });
+
+// same as
+
+statement.style.set(center);
+statement.style.add({ position: 'relative' });
 ```
 
 ### _If you want to define a more interactive modular CSS_
@@ -75,7 +80,8 @@ statement.style.set(redden).then(
   function() {
 
     statement.style.time(3000).set({});
-});
+  }
+);
 ```
 
 It can also be unflag.
@@ -88,7 +94,8 @@ statement.style.pulse(3000).set(redden).when(
   function() {
 
     statement.style.time(1500).set({});
-});
+  }
+);
 ```
 
 ## SELECT WHAT YOU WANT TO STYLE
