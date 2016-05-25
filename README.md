@@ -180,6 +180,10 @@ promise.when(function(e) { /** your process */ });
 promise.then(function(e) { /** your process */ promise.resume() }); // same as
 ```
 
+## TEST CASE
+
+- https://github.com/AI428/css-clock
+
 ## LICENSE
 
 This is released under the [MIT](//opensource.org/licenses/MIT). © AI428
