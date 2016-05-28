@@ -142,7 +142,7 @@ promise.then(
 
   function(event) {
 
-    // your process.
+    // your process
   }
 );
 ```
@@ -162,7 +162,7 @@ promise.then(
 
   function(event) {
 
-    // If you want to reuse the callback function, to use.
+    // If you want to reuse the callback function, to use
 
     promise.resume();
   }
@@ -182,7 +182,7 @@ promise.then(function(e) { /** your process */ promise.resume() }); // same as
 
 ## TEST CASE
 
-- https://github.com/AI428/css-clock
+- <https://github.com/AI428/css-clock>
 
 ## LICENSE
 
