@@ -5,13 +5,16 @@
     },
     "description": "Modular CSS in JS",
     "devDependencies": {
-        "gulp": "~3.9.1",
-        "gulp-rename": "~1.2.2",
-        "gulp-typescript": "~2.13.0",
-        "gulp-uglify": "~1.5.3"
+        "typescript": ">=1.8.10",
+        "uglify-js": ">=2.6.2"
     },
+    "keywords": [
+        "css",
+        "mist",
+        "modular"
+    ],
     "license": "MIT",
-    "name": "mist",
+    "name": "mist.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/AI428/mist"
