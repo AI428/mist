@@ -20,14 +20,11 @@ namespace Mist {
                     if (component[name] instanceof Function) {
 
                         // lazy response.
-                        function composer(...o: any[]) {
+                        s[name] = function(...o: any[]) {
                             return s.compose$(
                                 component[name].bind(
                                     component), o);
                         }
-
-                        // {} response.
-                        s[name] = composer;
                     }
                 }
             }

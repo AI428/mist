@@ -110,7 +110,6 @@ namespace Mist {
                     s.emitter.emit('panstart', r);
 
                     s.prev = r;
-
                     s.txd = true;
                 }
 

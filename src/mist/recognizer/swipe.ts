@@ -112,7 +112,6 @@ namespace Mist {
                             if (Swipe.mpms < response.mpms) {
 
                                 s.prev = response;
-
                                 s.txd = true;
                             }
                         }

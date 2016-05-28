@@ -5,13 +5,11 @@ interface Element {
 
     /**
     * @param {} selector
-    * @summary for polyfill
     */
     closest: (selector: string) => Element;
 
     /**
     * @param {} selector
-    * @summary for polyfill
     */
     mozMatchesSelector: (selector: string) => boolean;
 }

@@ -28,11 +28,11 @@ namespace Mist {
             this.txd || (() => {
                 this.txd = true;
 
+                var s = this;
+
                 // initialize.
 
                 var txr: (() => void)[] = [];
-
-                var s = this;
 
                 (function composer() {
 

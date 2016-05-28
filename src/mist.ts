@@ -1,9 +1,9 @@
-/**
+/*!
  * @copyright AI428
  * @description Modular CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.6.0
+ * @version 0.6.1
  */
 
 /// <reference path='mist/component.ts' />
