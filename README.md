@@ -79,9 +79,9 @@ var redden = {
 
 statement.style.set(redden).then(
 
-  function() {
+  function(style) {
 
-    statement.style.time(3000).set({});
+    style.time(3000).set({});
   }
 );
 ```
@@ -93,9 +93,9 @@ It can also be unflag.
 
 statement.style.pulse(3000).set(redden).when(
 
-  function() {
+  function(style) {
 
-    statement.style.time(1500).set({});
+    style.time(1500).set({});
   }
 );
 ```
