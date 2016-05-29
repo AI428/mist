@@ -1,10 +1,10 @@
-/// <reference path='recognizer/pan.ts' />
-/// <reference path='recognizer/swipe.ts' />
+/// <reference path='recognizer/pan.ts'/>
+/// <reference path='recognizer/swipe.ts'/>
 
-/// <reference path='component.ts' />
-/// <reference path='emission.ts' />
-/// <reference path='emitter.ts' />
-/// <reference path='style.ts' />
+/// <reference path='component.ts'/>
+/// <reference path='emission.ts'/>
+/// <reference path='emitter.ts'/>
+/// <reference path='style.ts'/>
 
 namespace Mist {
 

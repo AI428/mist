@@ -1,10 +1,10 @@
-/// <reference path='wrapper/pulser.ts' />
-/// <reference path='wrapper/timer.ts' />
+/// <reference path='wrapper/pulser.ts'/>
+/// <reference path='wrapper/timer.ts'/>
 
-/// <reference path='component.ts' />
-/// <reference path='promise.ts' />
-/// <reference path='statement.ts' />
-/// <reference path='value.ts' />
+/// <reference path='component.ts'/>
+/// <reference path='promise.ts'/>
+/// <reference path='statement.ts'/>
+/// <reference path='value.ts'/>
 
 namespace Mist {
 

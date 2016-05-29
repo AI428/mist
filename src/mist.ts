@@ -6,8 +6,8 @@
  * @version 0.6.1
  */
 
-/// <reference path='mist/component.ts' />
-/// <reference path='mist/statement.ts' />
+/// <reference path='mist/component.ts'/>
+/// <reference path='mist/statement.ts'/>
 
 /**
  * @param {} statement
