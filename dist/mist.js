@@ -509,6 +509,9 @@ var Mist;
         Style.prototype.pulse = function (dur) {
             return new Mist.Wrapper.Pulser(this, dur);
         };
+        Style.prototype.pulsing = function (dur) {
+            return Mist.Component.create(Mist.Wrapper.Pulser, this, dur);
+        };
         Style.prototype.set = function () {
             var _this = this;
             var css = [];
@@ -519,6 +522,9 @@ var Mist;
         };
         Style.prototype.time = function (dur) {
             return new Mist.Wrapper.Timer(this, dur);
+        };
+        Style.prototype.timing = function (dur) {
+            return Mist.Component.create(Mist.Wrapper.Timer, this, dur);
         };
         Style.prototype.compose = function (css, response) {
             if (response === void 0) { response = {}; }
@@ -827,7 +833,7 @@ var Mist;
  * @description Modular CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.6.1
+ * @version 0.6.2
  */
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);

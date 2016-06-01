@@ -124,9 +124,11 @@ declare namespace Mist {
         constructor(statement: Statement);
         add(...css: any[]): Promise;
         get(): any;
-        pulse(dur: number): Wrapper.Pulser;
+        pulse(dur: number): any;
+        pulsing(dur: number): any;
         set(...css: any[]): Promise;
-        time(dur: number): Wrapper.Timer;
+        time(dur: number): any;
+        timing(dur: number): any;
         private compose(css, response?);
         private composer(name, v);
         private create();
@@ -190,7 +192,7 @@ declare namespace Mist {
  * @description Modular CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.6.1
+ * @version 0.6.2
  */
 declare function mist(statement: Element): Mist.Statement;
 declare function mist(statement: string): Mist.Statement;

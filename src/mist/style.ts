@@ -90,9 +90,18 @@ namespace Mist {
         * @param {} dur
         * @summary lazy responsor
         */
-        pulse(dur: number): Wrapper.Pulser {
+        pulse(dur: number): any {
 
             return new Wrapper.Pulser(this, dur);
+        }
+
+        /**
+        * @param {} dur
+        * @summary lazy responsor
+        */
+        pulsing(dur: number): any {
+
+            return Component.create(Wrapper.Pulser, this, dur);
         }
 
         /**
@@ -116,9 +125,18 @@ namespace Mist {
         * @param {} dur
         * @summary lazy responsor
         */
-        time(dur: number): Wrapper.Timer {
+        time(dur: number): any {
 
             return new Wrapper.Timer(this, dur);
+        }
+
+        /**
+        * @param {} dur
+        * @summary lazy responsor
+        */
+        timing(dur: number): any {
+
+            return Component.create(Wrapper.Timer, this, dur);
         }
 
         /**
