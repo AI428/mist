@@ -7,7 +7,17 @@ namespace Mist {
     */
     export class Frame {
 
+        /**
+        * @access public
+        * @static
+        */
         static success: (() => void)[] = [];
+
+        /**
+        * @access public
+        * @static
+        * @sumary is transact
+        */
         static txd: boolean;
 
         /**
@@ -30,7 +40,7 @@ namespace Mist {
 
                 var s = this;
 
-                // initialize.
+                // initialize
 
                 var txr: (() => void)[] = [];
 
@@ -49,12 +59,12 @@ namespace Mist {
 
                         responsor = s.success.shift()) {
 
-                        // loop response.
+                        // loop response
 
                         i = txr.push(responsor);
                     }
 
-                    // lazy response.
+                    // lazy response
 
                     s.txd = i > 0;
                     s.txd && requestAnimationFrame(composer);

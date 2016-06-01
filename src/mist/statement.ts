@@ -63,12 +63,12 @@ namespace Mist {
 
             var s = this.statement;
 
-            // mapped.
+            // mapped
             if (s instanceof Element) {
-                // a response.
+                // a response
                 response = s;
             } else {
-                // a response.
+                // a response
                 response = document.querySelector(s);
             }
 
@@ -80,7 +80,7 @@ namespace Mist {
         */
         any(selector: string): Statement {
 
-            // lasting response.
+            // lasting response
 
             return Component.create<Statement>(Statement,
 
@@ -110,12 +110,12 @@ namespace Mist {
 
             var s = this.statement;
 
-            // mapped.
+            // mapped
             if (s instanceof Element) {
-                // [] response.
+                // [] response
                 response = [s];
             } else {
-                // [] response.
+                // [] response
                 response = [].map.call(document.querySelectorAll(s), (element: Element) => element);
             }
 
@@ -131,12 +131,12 @@ namespace Mist {
 
             var s = this.statement;
 
-            // mapped.
+            // mapped
             if (s instanceof Element) {
-                // a response.
+                // a response
                 response = s;
             } else {
-                // a response.
+                // a response
                 response = document.querySelector(s.match(/[^,]*$/).concat('last-child').join(':'));
             }
 
@@ -148,7 +148,7 @@ namespace Mist {
         */
         not(selector: string): Statement {
 
-            // lasting response.
+            // lasting response
 
             return this.any(selector.split(',').map(
 
@@ -167,7 +167,7 @@ namespace Mist {
         */
         on(name: string): Emission {
 
-            // {} response.
+            // {} response
             return new Emission(this.emitter, name);
         }
 
@@ -180,12 +180,12 @@ namespace Mist {
 
             var s = this.statement;
 
-            // mapped.
+            // mapped
             if (s instanceof Element) {
-                // [] response.
+                // [] response
                 response = ser(s);
             } else {
-                // a response.
+                // a response
                 response = s;
             }
 
@@ -211,7 +211,7 @@ namespace Mist {
                     ));
             }
 
-            // [] response.
+            // [] response
             return response;
         }
     }
@@ -236,14 +236,14 @@ namespace Mist {
 
                 if (element.hasAttribute('mid')) {
 
-                    // a response.
+                    // a response
                     response = '[mid="'
                         + element.getAttribute('mid')
                         + '"]'
                         ;
                 }
 
-                // selector response.
+                // selector response
                 return response;
             })() ||
 
@@ -253,7 +253,7 @@ namespace Mist {
 
                 element.setAttribute('mid', '' + response);
 
-                // selector response.
+                // selector response
                 return '[mid="'
                     + response
                     + '"]'

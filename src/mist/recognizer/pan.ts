@@ -49,7 +49,7 @@ namespace Mist {
 
                         var r = s.prev.diff(e);
 
-                        // disp response.
+                        // disp response
 
                         s.emitter.emit('pan', r);
                         s.emitter.emit('panend', r);
@@ -75,11 +75,11 @@ namespace Mist {
 
                         var r = s.prev.diff(e);
 
-                        // disp response.
+                        // disp response
 
                         s.emitter.emit('panmove', r);
 
-                        // dir response.
+                        // dir response
 
                         if (r.move.x < 0) s.emitter.emit('panleft', r);
                         if (r.move.x > 0) s.emitter.emit('panright', r);
@@ -105,7 +105,7 @@ namespace Mist {
 
                     var r = new Summary(e);
 
-                    // disp response.
+                    // disp response
 
                     s.emitter.emit('panstart', r);
 
@@ -126,7 +126,7 @@ namespace Mist {
 
             e.preventDefault();
 
-            // passthru.
+            // passthru
             return e;
         }
     }

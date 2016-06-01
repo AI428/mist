@@ -57,12 +57,12 @@ namespace Mist {
 
                 var s = this;
 
-                // mapped.
+                // mapped
                 if (event instanceof MouseEvent) {
-                    // {} response.
+                    // {} response
                     response = event;
                 } else if (event instanceof TouchEvent) {
-                    // {} response.
+                    // {} response
                     response = event.changedTouches[0];
                 }
 
@@ -78,24 +78,24 @@ namespace Mist {
 
                 var response = new Summary(event);
 
-                // milliseconds from prev.
+                // milliseconds from prev
 
                 var passed = event.timeStamp - s.event.timeStamp;
 
                 response.passed = passed;
 
-                // moved response.
+                // moved response
 
                 var x = response.page.x - s.page.x;
                 var y = response.page.y - s.page.y;
 
                 response.move = { x: x, y: y };
 
-                // moved per milliseconds.
+                // moved per milliseconds
 
                 response.mpms = passed ? Math.sqrt(x * x + y * y) / passed : 0;
 
-                // {} response.
+                // {} response
 
                 return response;
             }
@@ -111,12 +111,12 @@ namespace Mist {
 
                 var r = element.getBoundingClientRect();
 
-                // dist response.
+                // dist response
 
                 var x = this.client.x - r.left - r.width / 2;
                 var y = this.client.y - r.top - r.height / 2;
 
-                // {} response.
+                // {} response
 
                 return { x: x, y: y };
             }

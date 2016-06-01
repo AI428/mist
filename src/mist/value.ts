@@ -33,12 +33,12 @@ namespace Mist {
                             var responsor: (response: any) => void;
 
                             try {
-                                // commit response.
+                                // commit response
                                 succeed(this.composite);
 
                             } catch (e) {
 
-                                // fail response.
+                                // fail response
                                 erred(e);
                             }
 
@@ -66,7 +66,7 @@ namespace Mist {
 
                     Frame.at(() => {
 
-                        // a response.
+                        // a response
                         this.composite = composer(this.composite);
                         this.xs.push(responsor);
                         this.xr();

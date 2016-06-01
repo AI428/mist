@@ -16,11 +16,11 @@ namespace Mist {
             var m = ser([component]);
             var n = ser(o);
 
-            // initialize.
+            // initialize
 
             this.responses[m] || (this.responses[m] = {});
 
-            // inher response.
+            // inher response
 
             if (!this.responses[m][n]) {
                 this.responses[m][n] = new (
@@ -30,7 +30,7 @@ namespace Mist {
                 );
             }
 
-            // lasting response.
+            // lasting response
 
             return this.responses[m][n];
         }

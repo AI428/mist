@@ -19,7 +19,7 @@ namespace Mist {
 
                     if (component[name] instanceof Function) {
 
-                        // lazy response.
+                        // lazy response
                         s[name] = function(...o: any[]) {
                             return s.compose$(
                                 component[name].bind(

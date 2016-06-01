@@ -62,11 +62,11 @@ namespace Mist {
 
                             var r = s.prev.diff(response.event);
 
-                            // filt response.
+                            // filt response
 
                             if (Swipe.passed > r.passed) {
 
-                                // disp response.
+                                // disp response
 
                                 s.emitter.emit('swipe', r);
 
@@ -75,14 +75,14 @@ namespace Mist {
 
                                 if (x < y) {
 
-                                    // dir response.
+                                    // dir response
 
                                     if (r.move.y < 0) s.emitter.emit('swipeup', r);
                                     if (r.move.y > 0) s.emitter.emit('swipedown', r);
 
                                 } else {
 
-                                    // dir response.
+                                    // dir response
 
                                     if (r.move.x < 0) s.emitter.emit('swipeleft', r);
                                     if (r.move.x > 0) s.emitter.emit('swiperight', r);
@@ -107,7 +107,7 @@ namespace Mist {
 
                         if (!s.txd) {
 
-                            // filt response.
+                            // filt response
 
                             if (Swipe.mpms < response.mpms) {
 

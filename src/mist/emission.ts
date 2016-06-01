@@ -27,12 +27,12 @@ namespace Mist {
                 emitter.add(name, function(response) {
 
                     try {
-                        // commit response.
+                        // commit response
                         succeed(response);
 
                     } catch (e) {
 
-                        // fail response.
+                        // fail response
                         erred(e)
                     }
                 });

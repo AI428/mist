@@ -23,14 +23,14 @@ namespace Mist {
 
         ) => void) {
 
-            // bind response.
+            // bind response
             var s = this.succeed;
             var e = this.erred;
 
-            // initialize.
+            // initialize
             this.resume();
 
-            // lazy response.
+            // lazy response
             process(
 
                 s.bind(this),
@@ -55,20 +55,20 @@ namespace Mist {
 
                     function composer(a: any) {
 
-                        // composer.
+                        // composer
                         if (response.push(a) > p) {
 
                             try {
-                                // commit response.
+                                // commit response
                                 succeed(response);
 
                             } catch (e) {
 
-                                // fail response.
+                                // fail response
                                 erred(e);
                             }
 
-                            // initialize.
+                            // initialize
                             response = [];
                         }
                     }
@@ -79,7 +79,7 @@ namespace Mist {
 
                             commit.when(composer);
 
-                            // bind response.
+                            // bind response
                             p = i;
                         });
                 });
@@ -105,12 +105,12 @@ namespace Mist {
                             function(response: any) {
 
                                 try {
-                                    // commit response.
+                                    // commit response
                                     succeed(response);
 
                                 } catch (e) {
 
-                                    // fail response.
+                                    // fail response
                                     erred(e);
                                 }
                             });
@@ -129,21 +129,21 @@ namespace Mist {
                 erred
             ) => {
 
-                // initialize.
+                // initialize
                 this.err = function(response) {
 
                     try {
-                        // commit response.
+                        // commit response
                         succeed(err(response));
 
                     } catch (e) {
 
-                        // fail response.
+                        // fail response
                         erred(e);
                     }
                 };
 
-                // fixed response.
+                // fixed response
                 this.tx();
             });
         }
@@ -169,24 +169,24 @@ namespace Mist {
                 erred
             ) => {
 
-                // compose.
+                // compose
                 this.err = erred;
 
-                // initialize.
+                // initialize
                 this.success = function(response) {
 
                     try {
-                        // commit respoonse.
+                        // commit respoonse
                         succeed(success(response));
 
                     } catch (e) {
 
-                        // fail response.
+                        // fail response
                         err ? succeed(err(e)) : erred(e);
                     }
                 };
 
-                // fixed response.
+                // fixed response
                 this.tx();
             });
         }
@@ -201,10 +201,10 @@ namespace Mist {
 
                 var p = success(response);
 
-                // loop response.
+                // loop response
                 this.resume();
 
-                // passthru.
+                // passthru
                 return p;
             };
 
@@ -212,15 +212,15 @@ namespace Mist {
 
                 var p = err(response);
 
-                // loop response.
+                // loop response
                 this.resume();
 
-                // passthru.
+                // passthru
                 return p;
 
             } : err;
 
-            // {} response.
+            // {} response
             return this.then(s, e);
         }
 
@@ -233,25 +233,26 @@ namespace Mist {
 
                 if (this.err) {
 
+                    // optimistic
                     this.txd = true;
 
-                    // fail response.
+                    // fail response
                     if (response instanceof Promise) {
 
                         // lazy response
                         response.then(this.err);
 
                     } else {
-                        // passthru.
+                        // passthru
                         this.err(response);
                     }
                 } else {
 
-                    // initialize.
+                    // initialize
                     this.txr = (
                     ) => {
 
-                        // fixed response.
+                        // fixed response
                         this.erred(response);
                     }
                 }
@@ -269,25 +270,26 @@ namespace Mist {
 
                 if (this.success) {
 
+                    // optimistic
                     this.txd = true;
 
-                    // commit response.
+                    // commit response
                     if (response instanceof Promise) {
 
                         // lazy response
                         response.then(this.success);
 
                     } else {
-                        // passthru.
+                        // passthru
                         this.success(response);
                     }
                 } else {
 
-                    // initialize.
+                    // initialize
                     this.txr = (
                     ) => {
 
-                        // fixed response.
+                        // fixed response
                         this.succeed(response);
                     }
                 }

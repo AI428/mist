@@ -44,7 +44,7 @@ namespace Mist {
                 options.cancelable || true,
                 options.detail);
 
-            // {} response.
+            // {} response
             return e;
         }
 
@@ -81,12 +81,12 @@ namespace Mist {
 
             function composer() {
 
-                // composer.
+                // composer
                 var i = o.indexOf(listener);
                 i < 0 || o.splice(i, 1);
             }
 
-            // composer.
+            // composer
             o && listener ? composer() : o = null;
         }
 
@@ -97,7 +97,7 @@ namespace Mist {
 
             var o = this.emits;
 
-            // lasting response.
+            // lasting response
             o[name] || document.addEventListener(name,
                 o[name] = (e: Event) => {
                     var element = e.target;
@@ -120,12 +120,12 @@ namespace Mist {
 
             var s = this.statement;
 
-            // mapped.
+            // mapped
             if (s instanceof Statement) {
-                // a response.
+                // a response
                 response = s.selector();
             } else {
-                // a response.
+                // a response
                 response = s;
             }
 

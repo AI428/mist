@@ -36,7 +36,7 @@ namespace Mist {
 
                 clearTimeout(s.id);
 
-                // {} response.
+                // {} response
                 return new Promise(
 
                     function(
@@ -48,17 +48,17 @@ namespace Mist {
                         function responsor() {
 
                             try {
-                                // commit response.
+                                // commit response
                                 succeed(composer.apply(composer, o));
 
                             } catch (e) {
 
-                                // fail response.
+                                // fail response
                                 erred(e);
                             }
                         }
 
-                        // lazy response.
+                        // lazy response
                         !s.dur || (s.id = setTimeout(responsor, s.dur));
                     });
             }
