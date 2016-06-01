@@ -37,12 +37,12 @@ namespace Mist {
 
                     var response: string[] = [];
 
-                    // format response.
+                    // format response
                     for (let name in o) {
                         response.push(hycase(name) + ':' + o[name]);
                     }
 
-                    // inner response.
+                    // inner response
                     this.create().innerHTML = statement.selector()
                         + '{'
                         + response.join(';')
@@ -58,12 +58,12 @@ namespace Mist {
 
             return this.value.compose(
 
-                // composer.
+                // composer
                 (o) => this.compose(assign(css), o)
 
             ).then(
 
-                // for composition.
+                // for composition
                 () => this
                 );
         }
@@ -77,12 +77,12 @@ namespace Mist {
 
             var s = this;
 
-            // format response.
+            // format response
             for (let name in s.value.composite) {
                 response[name] = s.value.composite[name];
             }
 
-            // {} response.
+            // {} response
             return response;
         }
 
@@ -91,15 +91,6 @@ namespace Mist {
         * @summary lazy responsor
         */
         pulse(dur: number): any {
-
-            return new Wrapper.Pulser(this, dur);
-        }
-
-        /**
-        * @param {} dur
-        * @summary lazy responsor
-        */
-        pulsing(dur: number): any {
 
             return Component.create(Wrapper.Pulser, this, dur);
         }
@@ -111,12 +102,12 @@ namespace Mist {
 
             return this.value.compose(
 
-                // composer.
+                // composer
                 () => this.compose(assign(css))
 
             ).then(
 
-                // for composition.
+                // for composition
                 () => this
                 );
         }
@@ -126,15 +117,6 @@ namespace Mist {
         * @summary lazy responsor
         */
         time(dur: number): any {
-
-            return new Wrapper.Timer(this, dur);
-        }
-
-        /**
-        * @param {} dur
-        * @summary lazy responsor
-        */
-        timing(dur: number): any {
 
             return Component.create(Wrapper.Timer, this, dur);
         }
@@ -148,20 +130,20 @@ namespace Mist {
 
                 var p = css[name];
 
-                // mapped.
+                // mapped
                 if (p instanceof Promise) {
-                    // lazy response.
+                    // lazy response
                     p.when(this.composer.bind(this, name));
                 } else if (p instanceof Function) {
-                    // a response.
+                    // a response
                     response[name] = p();
                 } else {
-                    // passthru.
+                    // passthru
                     response[name] = p;
                 }
             }
 
-            // {} response.
+            // {} response
             return response;
         }
 
@@ -174,7 +156,8 @@ namespace Mist {
 
             response[name] = v;
 
-            // {} response.
+            // {} response
+
             this.add(response);
         }
 
@@ -195,7 +178,7 @@ namespace Mist {
                 this.e = s;
             }
 
-            // lasting response.
+            // lasting response
             return this.e;
         }
     }
@@ -210,13 +193,13 @@ namespace Mist {
 
         o.map(function(a) {
 
-            // format response.
+            // format response
             for (let name in a) {
                 response[name] = a[name];
             }
         });
 
-        // {} response.
+        // {} response
         return response;
     }
 
@@ -226,7 +209,7 @@ namespace Mist {
     */
     function hycase(name: string) {
 
-        // hy response.
+        // hy response
         return name.replace(/[A-Z]/g, function(m) {
             return '-' + m.toLowerCase();
         });
