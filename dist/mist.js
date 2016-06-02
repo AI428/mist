@@ -522,10 +522,11 @@ var Mist;
         };
         Style.prototype.compose = function (css, response) {
             if (response === void 0) { response = {}; }
+            var s = this;
             for (var name_4 in css) {
                 var p = css[name_4];
                 if (p instanceof Mist.Promise) {
-                    p.when(this.composer.bind(this, name_4));
+                    p.when(s.composer.bind(s, name_4));
                 }
                 else if (p instanceof Function) {
                     response[name_4] = p();
@@ -556,11 +557,12 @@ var Mist;
     Mist.Style = Style;
     function assign(o) {
         var response = {};
-        o.map(function (a) {
-            for (var name_5 in a) {
-                response[name_5] = a[name_5];
+        for (var _i = 0, o_1 = o; _i < o_1.length; _i++) {
+            var s = o_1[_i];
+            for (var name_5 in s) {
+                response[name_5] = s[name_5];
             }
-        });
+        }
         return response;
     }
     function hycase(name) {
