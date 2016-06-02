@@ -320,7 +320,7 @@ var Mist;
                 if (this.err) {
                     this.txd = true;
                     if (response instanceof Promise) {
-                        response.then(this.err);
+                        response.when(this.err);
                     }
                     else {
                         this.err(response);
@@ -340,7 +340,7 @@ var Mist;
                 if (this.success) {
                     this.txd = true;
                     if (response instanceof Promise) {
-                        response.then(this.success);
+                        response.when(this.success);
                     }
                     else {
                         this.success(response);

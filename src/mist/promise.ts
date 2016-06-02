@@ -240,7 +240,7 @@ namespace Mist {
                     if (response instanceof Promise) {
 
                         // lazy response
-                        response.then(this.err);
+                        response.when(this.err);
 
                     } else {
                         // passthru
@@ -277,7 +277,7 @@ namespace Mist {
                     if (response instanceof Promise) {
 
                         // lazy response
-                        response.then(this.success);
+                        response.when(this.success);
 
                     } else {
                         // passthru
