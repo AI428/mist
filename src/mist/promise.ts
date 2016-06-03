@@ -233,7 +233,7 @@ namespace Mist {
 
                 if (this.err) {
 
-                    // optimistic
+                    // lock.
                     this.txd = true;
 
                     // fail response
@@ -270,7 +270,7 @@ namespace Mist {
 
                 if (this.success) {
 
-                    // optimistic
+                    // lock.
                     this.txd = true;
 
                     // commit response
