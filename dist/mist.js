@@ -387,7 +387,7 @@ var Mist;
                             erred(e);
                         }
                     }
-                    !s.dur || (s.id = setTimeout(responsor, s.dur));
+                    s.id = setTimeout(responsor, s.dur);
                 });
             };
             return Timer;

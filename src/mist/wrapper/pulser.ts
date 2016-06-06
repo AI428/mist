@@ -19,7 +19,7 @@ namespace Mist {
             * @param {} component
             * @param {} dur
             */
-            constructor(component: any, public dur: number = 0) {
+            constructor(component: any, private dur: number = 0) {
 
                 super(component);
             }

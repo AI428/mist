@@ -63,7 +63,7 @@ declare namespace Mist {
 declare namespace Mist {
     namespace Wrapper {
         class Pulser extends Voker {
-            dur: number;
+            private dur;
             private id;
             constructor(component: any, dur?: number);
             compose$(composer: any, o: any[]): Promise;
@@ -91,7 +91,7 @@ declare namespace Mist {
 declare namespace Mist {
     namespace Wrapper {
         class Timer extends Voker {
-            dur: number;
+            private dur;
             private id;
             constructor(component: any, dur?: number);
             compose$(composer: any, o: any[]): Promise;
