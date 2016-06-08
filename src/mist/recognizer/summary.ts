@@ -113,8 +113,8 @@ namespace Mist {
 
                 // dist response
 
-                var x = this.client.x - r.left - r.width / 2;
-                var y = this.client.y - r.top - r.height / 2;
+                var x = this.client.x - r.left;
+                var y = this.client.y - r.top;
 
                 // {} response
 

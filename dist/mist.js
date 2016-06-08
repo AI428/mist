@@ -87,8 +87,8 @@ var Mist;
             };
             Summary.prototype.measure = function (element) {
                 var r = element.getBoundingClientRect();
-                var x = this.client.x - r.left - r.width / 2;
-                var y = this.client.y - r.top - r.height / 2;
+                var x = this.client.x - r.left;
+                var y = this.client.y - r.top;
                 return { x: x, y: y };
             };
             Summary.prototype.set = function (response) {
