@@ -14,9 +14,11 @@
         "modular"
     ],
     "license": "MIT",
-    "name": "mist.js",
+    "main": "dist/mist.js",
+    "name": "mist",
     "repository": {
         "type": "git",
         "url": "https://github.com/AI428/mist"
-    }
+    },
+    "typings": "dist/mist"
 }

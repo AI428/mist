@@ -829,7 +829,7 @@ var Mist;
  * @description Modular CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.6.3
+ * @version 0.6.4
  */
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);
