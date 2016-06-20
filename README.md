@@ -1,4 +1,4 @@
-![mist.svg](https://rawgit.com/AI428/mist/master/img/mist.svg)
+![mist.svg](https://rawgit.com/AI428/mist/master/img/mist.png)
 
 # MIST
 
