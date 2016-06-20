@@ -1,6 +1,4 @@
-<p align=center>
-  <img alt=mist.svg src=https://rawgit.com/AI428/mist/master/img/mist.svg height=300 width=300>
-</p>
+![mist.svg](https://rawgit.com/AI428/mist/master/img/mist.svg)
 
 # MIST
 
