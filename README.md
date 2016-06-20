@@ -1,4 +1,4 @@
-# MIST
+# MIST <img alt=mist.svg src=https://rawgit.com/AI428/mist/master/img/mist.svg height=200 width=200>
 
 > _Modular CSS in JS_
 
