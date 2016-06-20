@@ -15,10 +15,11 @@
     ],
     "license": "MIT",
     "main": "dist/mist.js",
-    "name": "mist",
+    "name": "mist.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/AI428/mist"
     },
-    "typings": "dist/mist"
+    "typings": "dist/mist",
+    "version": "0.6.4"
 }

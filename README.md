@@ -6,6 +6,10 @@
 
 Mist is a modular CSS library that uses JavaScript.
 
+```
+npm install --save mist.js
+```
+
 ## MAKE MODULAR CSS
 
 First, a CSS in a primitive object.
