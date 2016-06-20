@@ -183,6 +183,7 @@ promise.then(function(e) { /** your process */ promise.resume() }); // same as
 ## TEST CASE
 
 - <https://github.com/AI428/css-clock>
+- <https://github.com/AI428/mato.js>
 
 ## LICENSE
 
