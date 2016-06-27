@@ -618,7 +618,7 @@ var Mist;
                 response = s;
             }
             else {
-                response = document.querySelector(s.match(/[^,]*$/).concat('last-child').join(':'));
+                response = document.querySelector(s.match(/[^,]*$/).concat('last-of-type').join(':'));
             }
             return response;
         };
@@ -829,7 +829,7 @@ var Mist;
  * @description Modular CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.6.4
+ * @version 0.6.5
  */
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);
