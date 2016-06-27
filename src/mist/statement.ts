@@ -137,7 +137,7 @@ namespace Mist {
                 response = s;
             } else {
                 // a response
-                response = document.querySelector(s.match(/[^,]*$/).concat('last-child').join(':'));
+                response = document.querySelector(s.match(/[^,]*$/).concat('last-of-type').join(':'));
             }
 
             return response;
