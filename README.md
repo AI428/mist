@@ -1,4 +1,4 @@
-![mist.svg](https://rawgit.com/AI428/mist/master/img/mist.png)
+![mist.svg](https://rawgit.com/AI428/mist/master/img/icon.png) [![npm version](https://badge.fury.io/js/mist.js.svg)](https://badge.fury.io/js/mist.js)
 
 # MIST
 
@@ -7,7 +7,7 @@
 Mist is a modular CSS library that uses JavaScript.
 
 ```
-npm install --save mist.js
+npm install mist.js --save
 ```
 
 ## MAKE MODULAR CSS
@@ -185,11 +185,6 @@ var promise = mist('a').on('click');
 promise.when(function(e) { /** your process */ });
 promise.then(function(e) { /** your process */ promise.resume() }); // same as
 ```
-
-## TEST CASE
-
-- <https://github.com/AI428/css-clock>
-- <https://github.com/AI428/mato.js>
 
 ## LICENSE
 
