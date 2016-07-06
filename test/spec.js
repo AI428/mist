@@ -9,13 +9,22 @@ document.addEventListener('DOMContentLoaded', function() {
     var f = document.querySelector('footer');
     var h = document.querySelector('header');
 
+    /*
+     * @summary Mist.Statemen
+     */
     describe('Mist.Statement', function() {
 
+        /*
+         * @summary Statement.a()
+         */
         it('a', function() {
 
             expect(statement.a()).toBe(document.body);
         });
 
+        /*
+         * @summary Statement.any()
+         */
         it('any', function() {
 
             var q = '> header,> footer';
@@ -23,12 +32,18 @@ document.addEventListener('DOMContentLoaded', function() {
             expect(statement.any(q).a()).toBe(h);
         });
 
+        /*
+         * @summary Statement.elements()
+         */
         it('elements', function() {
 
             expect(statement.elements().length).toBe(1);
             expect(statement.elements().pop()).toBe(document.body);
         });
 
+        /*
+         * @summary Statement.last()
+         */
         it('last', function() {
 
             var q = '> header,> footer';
@@ -36,6 +51,9 @@ document.addEventListener('DOMContentLoaded', function() {
             expect(statement.any(q).last()).toBe(f);
         });
 
+        /*
+         * @summary Statement.not()
+         */
         it('not', function() {
 
             var q = '> *';
@@ -43,6 +61,46 @@ document.addEventListener('DOMContentLoaded', function() {
             expect(statement.any(q).not('header').last()).toBe(f);
         });
 
+        /*
+         * @summary Statement.story()
+         */
+        it('story', function() {
+
+            statement.story('A')
+                .next(statement.story('B'))
+                .next(statement.story('C'));
+
+            expect(function() {
+
+                statement.story('A').on('click');
+
+            }).toThrowError('Forbidden, story has not started yet');
+
+            expect(function() {
+
+                statement.scene.start('A');
+
+                statement.story('A').on('click');
+                statement.story('C').on('click');
+
+            }).toThrowError('Forbidden, "A" > "C" story');
+
+            expect(function() {
+
+                statement.scene.start('A');
+
+                statement.story('A').on('click');
+                statement.story('B').on('click');
+                statement.story('C').on('click');
+
+                statement.scene.end();
+
+            }).not.toThrow();
+        });
+
+        /*
+         * @summary Statement.th()
+         */
         it('th', function() {
 
             var q = '> *';
@@ -51,6 +109,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    /*
+     * @summary Mist.Style
+     */
     describe('Mist.Style', function() {
 
         var m = {
@@ -59,23 +120,36 @@ document.addEventListener('DOMContentLoaded', function() {
             WebkitBackfaceVisibility: 'hidden'
         };
 
+        /*
+         * @summary Style.add()
+         */
         it('add', function(done) {
 
             statement.style.add({}, m).then(function() {
 
                 var css = getComputedStyle(statement.a());
 
+                // is apply
+
                 expect(css.backfaceVisibility).toEqual('hidden');
+
+                // lazy response
 
                 done();
             });
         });
 
+        /*
+         * @summary Style.get()
+         */
         it('get', function() {
 
             expect(statement.style.get()).toEqual(m);
         });
 
+        /*
+         * @summary Style.pulse()
+         */
         it('pulse', function(done) {
 
             var d = 1000 / 60;
@@ -92,33 +166,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
             }).when(function(s) {
 
-                s.pulse(d).dur = 0; // stopped
+                s.pulse(d).stop();
 
-                if (n > 1) {
+                if (n > 0) {
 
                     expect(Date.now()).toBeGreaterThan(t);
 
                     var css = getComputedStyle(statement.a());
 
+                    // apply
+
                     expect(css.opacity).toEqual('1');
 
-                    done(); // lazy
+                    // lazy response
+
+                    done();
                 }
             });
         });
 
+        /*
+         * @summary Style.set()
+         */
         it('set', function(done) {
 
             statement.style.set({}, {}).then(function() {
 
                 var s = getComputedStyle(statement.a());
 
+                // apply
+
                 expect(s.backfaceVisibility).toEqual('visible');
 
-                done(); // lazy
+                // lazy response
+
+                done();
             });
         });
 
+        /*
+         * @summary Style.time()
+         */
         it('time', function(done) {
 
             var d = 1000 / 60;
@@ -131,9 +219,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 var css = getComputedStyle(statement.a());
 
+                // apply
+
                 expect(css.backfaceVisibility).toEqual('hidden');
 
-                done(); // lazy
+                // lazy response
+
+                done();
             });
         });
     });
