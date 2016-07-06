@@ -5,28 +5,45 @@ namespace Mist {
         /**
         * @class Voker
         */
-        export class Voker {
+        export abstract class Voker {
 
             /**
             * @constructor
             * @param {} component
             */
-            constructor(private component: any) {
+            constructor(protected component$: any) {
 
                 var s: any = this;
 
-                for (let name in component) {
+                for (let name in component$) {
 
-                    if (component[name] instanceof Function) {
+                    if (component$[name] instanceof Function) {
 
-                        // lazy response
+                        // composer
                         s[name] = function(...o: any[]) {
+
                             return s.compose$(
-                                component[name].bind(
-                                    component), o);
-                        }
+                                component$[name].bind(
+                                    component$), o);
+                        };
+                    } else {
+
+                        Object.defineProperty(
+                            s, name, {
+                                get: s.accessor$.bind(
+                                    s, component$[name])
+                            });
                     }
                 }
+            }
+
+            /**
+            * @param {} o
+            * @summary for override
+            */
+            protected accessor$(o: any) {
+
+                return o; // passthru
             }
 
             /**
@@ -34,7 +51,7 @@ namespace Mist {
             * @param {} o
             * @summary for override
             */
-            compose$(composer: any, o: any[]) {
+            protected compose$(composer: any, o: any[]) {
 
                 return composer.apply(composer, o);
             }
