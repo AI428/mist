@@ -11,7 +11,7 @@ namespace Mist {
         * @access public
         * @static
         */
-        static success: (() => void)[] = [];
+        static txs: (() => void)[] = [];
 
         /**
         * @access public
@@ -25,7 +25,7 @@ namespace Mist {
         */
         static at(responsor: () => void) {
 
-            this.success.push(responsor);
+            this.txs.push(responsor);
             this.tx();
         }
 
@@ -40,9 +40,9 @@ namespace Mist {
 
                 var s = this;
 
-                // initialize
-
                 var txr: (() => void)[] = [];
+
+                // in transact
 
                 (function composer() {
 
@@ -57,7 +57,7 @@ namespace Mist {
 
                     while (
 
-                        responsor = s.success.shift()) {
+                        responsor = s.txs.shift()) {
 
                         // loop response
 

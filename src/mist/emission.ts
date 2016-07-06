@@ -16,27 +16,29 @@ namespace Mist {
         constructor(
 
             private emitter: Emitter,
-            private name: string) {
+            private name: string
+        ) {
+            super(
 
-            super(function(
+                function(
 
-                succeed,
-                erred
-            ) {
+                    succeed,
+                    erred
+                ) {
 
-                emitter.add(name, function(response) {
+                    emitter.add(name, function(response) {
 
-                    try {
-                        // commit response
-                        succeed(response);
+                        try {
+                            // commit response
+                            succeed(response);
 
-                    } catch (e) {
+                        } catch (e) {
 
-                        // fail response
-                        erred(e)
-                    }
+                            // fail response
+                            erred(e)
+                        }
+                    });
                 });
-            });
         }
     }
 }

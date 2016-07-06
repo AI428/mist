@@ -13,17 +13,6 @@ namespace Mist {
         export class Swipe {
 
             /**
-            * @access private
-            */
-            private prev: Summary;
-
-            /**
-            * @access private
-            * @summary is transact
-            */
-            private txd: boolean;
-
-            /**
             * @access public
             * @static
             * @summary moved per milliseconds
@@ -36,6 +25,17 @@ namespace Mist {
             * @summary milliseconds from prev
             */
             static passed: number = 64;
+
+            /**
+            * @access private
+            */
+            private prev: Summary;
+
+            /**
+            * @access private
+            * @summary is session
+            */
+            private sess: boolean;
 
             /**
             * @constructor
@@ -58,7 +58,7 @@ namespace Mist {
 
                     function(response: Summary) {
 
-                        if (s.txd) {
+                        if (s.sess) {
 
                             var r = s.prev.diff(response.event);
 
@@ -89,7 +89,7 @@ namespace Mist {
                                 }
                             }
 
-                            s.txd = false;
+                            s.sess = false;
                         }
                     });
             }
@@ -105,14 +105,14 @@ namespace Mist {
 
                     function(response: Summary) {
 
-                        if (!s.txd) {
+                        if (!s.sess) {
 
                             // filt response
 
                             if (Swipe.mpms < response.mpms) {
 
                                 s.prev = response;
-                                s.txd = true;
+                                s.sess = true;
                             }
                         }
                     });

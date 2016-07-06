@@ -25,9 +25,7 @@ namespace Mist {
             if (!this.responses[m][n]) {
                 this.responses[m][n] = new (
                     component.bind.apply(
-                        component, [component].concat([].slice.apply(o))
-                    )
-                );
+                        component, [component].concat([].slice.apply(o))));
             }
 
             // lasting response

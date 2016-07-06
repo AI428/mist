@@ -149,7 +149,7 @@ namespace Mist {
         }
 
         /**
-        * @summary for loop
+        * @summary for reuse
         */
         resume() {
 
@@ -169,7 +169,6 @@ namespace Mist {
                 erred
             ) => {
 
-                // compose
                 this.err = erred;
 
                 // initialize
@@ -233,7 +232,7 @@ namespace Mist {
 
                 if (this.err) {
 
-                    // lock.
+                    // lock
                     this.txd = true;
 
                     // fail response
@@ -270,7 +269,7 @@ namespace Mist {
 
                 if (this.success) {
 
-                    // lock.
+                    // lock
                     this.txd = true;
 
                     // commit response

@@ -1,7 +1,6 @@
 /// <reference path='../component.ts'/>
 /// <reference path='../emission.ts'/>
 /// <reference path='../emitter.ts'/>
-/// <reference path='../statement.ts'/>
 
 /// <reference path='summary.ts'/>
 
@@ -21,9 +20,9 @@ namespace Mist {
 
             /**
             * @access private
-            * @summary is transact
+            * @summary is session
             */
-            private txd: boolean;
+            private sess: boolean;
 
             /**
             * @constructor
@@ -45,7 +44,7 @@ namespace Mist {
 
                 function responsor(e: any) {
 
-                    if (s.txd) {
+                    if (s.sess) {
 
                         var r = s.prev.diff(e);
 
@@ -54,7 +53,7 @@ namespace Mist {
                         s.emitter.emit('pan', r);
                         s.emitter.emit('panend', r);
 
-                        s.txd = false;
+                        s.sess = false;
                     }
                 }
 
@@ -71,7 +70,7 @@ namespace Mist {
 
                 function responsor(e: any) {
 
-                    if (s.txd) {
+                    if (s.sess) {
 
                         var r = s.prev.diff(e);
 
@@ -110,7 +109,7 @@ namespace Mist {
                     s.emitter.emit('panstart', r);
 
                     s.prev = r;
-                    s.txd = true;
+                    s.sess = true;
                 }
 
                 new Emission(s.emitter, 'mousedown').when(responsor);

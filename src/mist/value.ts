@@ -66,7 +66,6 @@ namespace Mist {
 
                     Frame.at(() => {
 
-                        // a response
                         this.composite = composer(this.composite);
                         this.xs.push(responsor);
                         this.xr();
