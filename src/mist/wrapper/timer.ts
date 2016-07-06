@@ -14,29 +14,41 @@ namespace Mist {
             /**
             * @access private
             */
-            private id: number = 0;
+            private id$: number = 0;
 
             /**
             * @constructor
             * @param {} component
             * @param {} dur
             */
-            constructor(component: any, private dur: number = 0) {
+            constructor(component: any, private dur$: number = 0) {
 
                 super(component);
             }
 
             /**
+            * @summary for reuse
+            */
+            stop() {
+
+                clearTimeout(this.id$);
+            }
+
+
+            /**
             * @param {} composer
             * @param {} o
             */
-            compose$(composer: any, o: any[]) {
+            protected compose$(composer: any, o: any[]) {
 
                 var s = this;
 
-                clearTimeout(s.id);
+                // ser
+
+                s.stop();
 
                 // {} response
+
                 return new Promise(
 
                     function(
@@ -59,7 +71,7 @@ namespace Mist {
                         }
 
                         // lazy response
-                        s.id = setTimeout(responsor, s.dur);
+                        s.id$ = setTimeout(responsor, s.dur$);
                     });
             }
         }

@@ -1,3 +1,5 @@
+/// <reference path='../promise.ts'/>
+
 /// <reference path='voker.ts'/>
 
 namespace Mist {
@@ -12,29 +14,40 @@ namespace Mist {
             /**
             * @access private
             */
-            private id: number = 0;
+            private id$: number = 0;
 
             /**
             * @constructor
             * @param {} component
             * @param {} dur
             */
-            constructor(component: any, private dur: number = 0) {
+            constructor(component: any, private dur$: number = 0) {
 
                 super(component);
+            }
+
+            /**
+            * @summary for reuse
+            */
+            stop() {
+
+                clearTimeout(this.id$);
             }
 
             /**
             * @param {} composer
             * @param {} o
             */
-            compose$(composer: any, o: any[]) {
+            protected compose$(composer: any, o: any[]) {
 
                 var s = this;
 
-                clearTimeout(s.id);
+                // ser
+
+                s.stop();
 
                 // {} response
+
                 return new Promise(
 
                     function(
@@ -43,21 +56,24 @@ namespace Mist {
                         erred
                     ) {
 
-                        (function responsor() {
+                        function responsor() {
 
                             try {
                                 // commit response
                                 succeed(composer.apply(composer, o));
 
                                 // lazy response
-                                !s.dur || (s.id = setTimeout(responsor, s.dur));
+                                !s.dur$ || (s.id$ = setTimeout(responsor, s.dur$));
 
                             } catch (e) {
 
                                 // fail response
                                 erred(e);
                             }
-                        })();
+                        }
+
+                        // lazy response
+                        s.id$ = setTimeout(responsor, s.dur$);
                     });
             }
         }
