@@ -133,10 +133,7 @@ namespace Mist {
                 var p = css[name];
 
                 // mapped
-                if (p instanceof Promise) {
-                    // lazy response
-                    p.when(s.composer.bind(s, name));
-                } else if (p instanceof Function) {
+                if (p instanceof Function) {
                     // a response
                     response[name] = p();
                 } else {
@@ -147,20 +144,6 @@ namespace Mist {
 
             // {} response
             return response;
-        }
-
-        /**
-        * @access private
-        */
-        private composer(name: string, v: any) {
-
-            var response: any = {};
-
-            response[name] = v;
-
-            // {} response
-
-            this.add(response);
         }
 
         /**
@@ -193,7 +176,6 @@ namespace Mist {
 
         var response: any = {};
 
-        // format response
         for (let s of o) {
             for (let name in s) {
                 response[name] = s[name];
