@@ -41,10 +41,10 @@ declare namespace Mist {
     namespace Recognizer {
         class Swipe {
             private emitter;
-            private prev;
-            private txd;
             static mpms: number;
             static passed: number;
+            private prev;
+            private sess;
             constructor(emitter: Emitter);
             private end();
             private move();
@@ -53,21 +53,37 @@ declare namespace Mist {
 }
 declare namespace Mist {
     namespace Wrapper {
-        class Voker {
-            private component;
-            constructor(component: any);
-            compose$(composer: any, o: any[]): any;
+        abstract class Voker {
+            protected component$: any;
+            constructor(component$: any);
+            protected accessor$(o: any): any;
+            protected compose$(composer: any, o: any[]): any;
         }
     }
 }
 declare namespace Mist {
     namespace Wrapper {
-        class Pulser extends Voker {
-            private dur;
-            private id;
-            constructor(component: any, dur?: number);
-            compose$(composer: any, o: any[]): Promise;
+        class Story extends Voker {
+            name$: string;
+            constructor(statement: Statement, name$: string);
+            next(story: Story): Story;
+            prev(story: Story): Story;
+            protected accessor$(o: any): any;
+            protected compose$(composer: any, o: any[]): any;
+            private proceed();
         }
+    }
+}
+declare namespace Mist {
+    class Scene {
+        private statement;
+        pos: string;
+        private conns;
+        constructor(statement: Statement);
+        connect(s: string, e: string): void;
+        end(): void;
+        move(name: string): boolean;
+        start(name: string): void;
     }
 }
 declare namespace Mist {
@@ -90,17 +106,29 @@ declare namespace Mist {
 }
 declare namespace Mist {
     namespace Wrapper {
+        class Pulser extends Voker {
+            private dur$;
+            private id$;
+            constructor(component: any, dur$?: number);
+            stop(): void;
+            protected compose$(composer: any, o: any[]): Promise;
+        }
+    }
+}
+declare namespace Mist {
+    namespace Wrapper {
         class Timer extends Voker {
-            private dur;
-            private id;
-            constructor(component: any, dur?: number);
-            compose$(composer: any, o: any[]): Promise;
+            private dur$;
+            private id$;
+            constructor(component: any, dur$?: number);
+            stop(): void;
+            protected compose$(composer: any, o: any[]): Promise;
         }
     }
 }
 declare namespace Mist {
     class Frame {
-        static success: (() => void)[];
+        static txs: (() => void)[];
         static txd: boolean;
         static at(responsor: () => void): void;
         private static tx();
@@ -128,7 +156,6 @@ declare namespace Mist {
         set(...css: any[]): Promise;
         time(dur: number): any;
         private compose(css, response?);
-        private composer(name, v);
         private create();
     }
 }
@@ -137,6 +164,7 @@ declare namespace Mist {
         private statement;
         static nth: string;
         emitter: Emitter;
+        scene: Scene;
         style: Style;
         constructor(statement: Element);
         constructor(statement: string);
@@ -147,6 +175,7 @@ declare namespace Mist {
         not(selector: string): Statement;
         on(name: string): Emission;
         selector(): string;
+        story(name: string): any;
         th(s: number, e: number): Statement[];
     }
 }
@@ -177,7 +206,7 @@ declare namespace Mist {
         class Pan {
             private emitter;
             private prev;
-            private txd;
+            private sess;
             constructor(emitter: Emitter);
             private end();
             private move();
@@ -190,7 +219,7 @@ declare namespace Mist {
  * @description Modular CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.6.5
+ * @version 0.7.0
  */
 declare function mist(statement: Element): Mist.Statement;
 declare function mist(statement: string): Mist.Statement;

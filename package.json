@@ -10,8 +10,11 @@
     },
     "keywords": [
         "css",
+        "js",
         "mist",
-        "modular"
+        "modular",
+        "style",
+        "typescript"
     ],
     "license": "MIT",
     "main": "dist/mist.js",
@@ -21,5 +24,5 @@
         "url": "https://github.com/AI428/mist"
     },
     "typings": "dist/mist",
-    "version": "0.6.5"
+    "version": "0.7.0"
 }

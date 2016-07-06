@@ -3,7 +3,7 @@
  * @description Modular CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.6.5
+ * @version 0.7.0
  */
 
 /// <reference path='mist/component.ts'/>

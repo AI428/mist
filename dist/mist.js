@@ -119,7 +119,7 @@ var Mist;
             Swipe.prototype.end = function () {
                 var s = this;
                 new Mist.Emission(s.emitter, 'panend').when(function (response) {
-                    if (s.txd) {
+                    if (s.sess) {
                         var r = s.prev.diff(response.event);
                         if (Swipe.passed > r.passed) {
                             s.emitter.emit('swipe', r);
@@ -138,17 +138,17 @@ var Mist;
                                     s.emitter.emit('swiperight', r);
                             }
                         }
-                        s.txd = false;
+                        s.sess = false;
                     }
                 });
             };
             Swipe.prototype.move = function () {
                 var s = this;
                 new Mist.Emission(s.emitter, 'panmove').when(function (response) {
-                    if (!s.txd) {
+                    if (!s.sess) {
                         if (Swipe.mpms < response.mpms) {
                             s.prev = response;
-                            s.txd = true;
+                            s.sess = true;
                         }
                     }
                 });
@@ -165,24 +165,32 @@ var Mist;
     var Wrapper;
     (function (Wrapper) {
         var Voker = (function () {
-            function Voker(component) {
-                this.component = component;
+            function Voker(component$) {
+                this.component$ = component$;
                 var s = this;
                 var _loop_1 = function(name_1) {
-                    if (component[name_1] instanceof Function) {
+                    if (component$[name_1] instanceof Function) {
                         s[name_1] = function () {
                             var o = [];
                             for (var _i = 0; _i < arguments.length; _i++) {
                                 o[_i - 0] = arguments[_i];
                             }
-                            return s.compose$(component[name_1].bind(component), o);
+                            return s.compose$(component$[name_1].bind(component$), o);
                         };
                     }
+                    else {
+                        Object.defineProperty(s, name_1, {
+                            get: s.accessor$.bind(s, component$[name_1])
+                        });
+                    }
                 };
-                for (var name_1 in component) {
+                for (var name_1 in component$) {
                     _loop_1(name_1);
                 }
             }
+            Voker.prototype.accessor$ = function (o) {
+                return o;
+            };
             Voker.prototype.compose$ = function (composer, o) {
                 return composer.apply(composer, o);
             };
@@ -195,33 +203,75 @@ var Mist;
 (function (Mist) {
     var Wrapper;
     (function (Wrapper) {
-        var Pulser = (function (_super) {
-            __extends(Pulser, _super);
-            function Pulser(component, dur) {
-                if (dur === void 0) { dur = 0; }
-                _super.call(this, component);
-                this.dur = dur;
-                this.id = 0;
+        var Story = (function (_super) {
+            __extends(Story, _super);
+            function Story(statement, name$) {
+                _super.call(this, statement);
+                this.name$ = name$;
             }
-            Pulser.prototype.compose$ = function (composer, o) {
-                var s = this;
-                clearTimeout(s.id);
-                return new Mist.Promise(function (succeed, erred) {
-                    (function responsor() {
-                        try {
-                            succeed(composer.apply(composer, o));
-                            !s.dur || (s.id = setTimeout(responsor, s.dur));
-                        }
-                        catch (e) {
-                            erred(e);
-                        }
-                    })();
-                });
+            Story.prototype.next = function (story) {
+                var n = this.name$;
+                var s = this.component$.scene;
+                s.connect(n, story.name$);
+                return story;
             };
-            return Pulser;
+            Story.prototype.prev = function (story) {
+                return story.next(this);
+            };
+            Story.prototype.accessor$ = function (o) {
+                this.proceed();
+                return o;
+            };
+            Story.prototype.compose$ = function (composer, o) {
+                this.proceed();
+                return composer.apply(composer, o);
+            };
+            Story.prototype.proceed = function () {
+                var n = this.name$;
+                var s = this.component$.scene;
+                if (!s.pos)
+                    throw new Error("Forbidden, story has not started yet");
+                if (!s.move(n))
+                    throw new Error("Forbidden, \"" + s.pos + "\" > \"" + n + "\" story");
+            };
+            return Story;
         }(Wrapper.Voker));
-        Wrapper.Pulser = Pulser;
+        Wrapper.Story = Story;
     })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
+})(Mist || (Mist = {}));
+var Mist;
+(function (Mist) {
+    var Scene = (function () {
+        function Scene(statement) {
+            this.statement = statement;
+            this.conns = {};
+        }
+        Scene.prototype.connect = function (s, e) {
+            this.conns[s] || (this.conns[s] = {});
+            this.conns[s][e] = e;
+        };
+        Scene.prototype.end = function () {
+            this.pos = null;
+        };
+        Scene.prototype.move = function (name) {
+            var response = false;
+            var s = this;
+            var conns = s.conns[s.pos] || {};
+            if (s.pos == name) {
+                response = true;
+            }
+            else if (conns[name]) {
+                response = true;
+                s.pos = name;
+            }
+            return response;
+        };
+        Scene.prototype.start = function (name) {
+            this.pos = name;
+        };
+        return Scene;
+    }());
+    Mist.Scene = Scene;
 })(Mist || (Mist = {}));
 var Mist;
 (function (Mist) {
@@ -367,17 +417,56 @@ var Mist;
 (function (Mist) {
     var Wrapper;
     (function (Wrapper) {
+        var Pulser = (function (_super) {
+            __extends(Pulser, _super);
+            function Pulser(component, dur$) {
+                if (dur$ === void 0) { dur$ = 0; }
+                _super.call(this, component);
+                this.dur$ = dur$;
+                this.id$ = 0;
+            }
+            Pulser.prototype.stop = function () {
+                clearTimeout(this.id$);
+            };
+            Pulser.prototype.compose$ = function (composer, o) {
+                var s = this;
+                s.stop();
+                return new Mist.Promise(function (succeed, erred) {
+                    function responsor() {
+                        try {
+                            succeed(composer.apply(composer, o));
+                            !s.dur$ || (s.id$ = setTimeout(responsor, s.dur$));
+                        }
+                        catch (e) {
+                            erred(e);
+                        }
+                    }
+                    s.id$ = setTimeout(responsor, s.dur$);
+                });
+            };
+            return Pulser;
+        }(Wrapper.Voker));
+        Wrapper.Pulser = Pulser;
+    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
+})(Mist || (Mist = {}));
+var Mist;
+(function (Mist) {
+    var Wrapper;
+    (function (Wrapper) {
         var Timer = (function (_super) {
             __extends(Timer, _super);
-            function Timer(component, dur) {
-                if (dur === void 0) { dur = 0; }
+            function Timer(component, dur$) {
+                if (dur$ === void 0) { dur$ = 0; }
                 _super.call(this, component);
-                this.dur = dur;
-                this.id = 0;
+                this.dur$ = dur$;
+                this.id$ = 0;
             }
+            Timer.prototype.stop = function () {
+                clearTimeout(this.id$);
+            };
             Timer.prototype.compose$ = function (composer, o) {
                 var s = this;
-                clearTimeout(s.id);
+                s.stop();
                 return new Mist.Promise(function (succeed, erred) {
                     function responsor() {
                         try {
@@ -387,7 +476,7 @@ var Mist;
                             erred(e);
                         }
                     }
-                    s.id = setTimeout(responsor, s.dur);
+                    s.id$ = setTimeout(responsor, s.dur$);
                 });
             };
             return Timer;
@@ -401,7 +490,7 @@ var Mist;
         function Frame() {
         }
         Frame.at = function (responsor) {
-            this.success.push(responsor);
+            this.txs.push(responsor);
             this.tx();
         };
         Frame.tx = function () {
@@ -416,7 +505,7 @@ var Mist;
                     while (responsor = txr.shift()) {
                         responsor();
                     }
-                    while (responsor = s.success.shift()) {
+                    while (responsor = s.txs.shift()) {
                         i = txr.push(responsor);
                     }
                     s.txd = i > 0;
@@ -424,7 +513,7 @@ var Mist;
                 })();
             })();
         };
-        Frame.success = [];
+        Frame.txs = [];
         return Frame;
     }());
     Mist.Frame = Frame;
@@ -525,10 +614,7 @@ var Mist;
             var s = this;
             for (var name_4 in css) {
                 var p = css[name_4];
-                if (p instanceof Mist.Promise) {
-                    p.when(s.composer.bind(s, name_4));
-                }
-                else if (p instanceof Function) {
+                if (p instanceof Function) {
                     response[name_4] = p();
                 }
                 else {
@@ -536,11 +622,6 @@ var Mist;
                 }
             }
             return response;
-        };
-        Style.prototype.composer = function (name, v) {
-            var response = {};
-            response[name] = v;
-            this.add(response);
         };
         Style.prototype.create = function () {
             if (!this.e) {
@@ -577,6 +658,7 @@ var Mist;
         function Statement(statement) {
             this.statement = statement;
             this.emitter = new Mist.Emitter(this);
+            this.scene = new Mist.Scene(this);
             this.style = new Mist.Style(this);
             new Mist.Recognizer.Pan(this.emitter);
             new Mist.Recognizer.Swipe(this.emitter);
@@ -642,6 +724,9 @@ var Mist;
                 response = s;
             }
             return response;
+        };
+        Statement.prototype.story = function (name) {
+            return Mist.Component.create(Mist.Wrapper.Story, this, name);
         };
         Statement.prototype.th = function (s, e) {
             var response = [];
@@ -774,11 +859,11 @@ var Mist;
             Pan.prototype.end = function () {
                 var s = this;
                 function responsor(e) {
-                    if (s.txd) {
+                    if (s.sess) {
                         var r = s.prev.diff(e);
                         s.emitter.emit('pan', r);
                         s.emitter.emit('panend', r);
-                        s.txd = false;
+                        s.sess = false;
                     }
                 }
                 new Mist.Emission(Mist.Component.create(Mist.Emitter, '*'), 'mouseup').when(responsor);
@@ -787,7 +872,7 @@ var Mist;
             Pan.prototype.move = function () {
                 var s = this;
                 function responsor(e) {
-                    if (s.txd) {
+                    if (s.sess) {
                         var r = s.prev.diff(e);
                         s.emitter.emit('panmove', r);
                         if (r.move.x < 0)
@@ -810,7 +895,7 @@ var Mist;
                     var r = new Recognizer.Summary(e);
                     s.emitter.emit('panstart', r);
                     s.prev = r;
-                    s.txd = true;
+                    s.sess = true;
                 }
                 new Mist.Emission(s.emitter, 'mousedown').when(responsor);
                 new Mist.Emission(s.emitter, 'touchstart').when(prevent).when(responsor);
@@ -829,7 +914,7 @@ var Mist;
  * @description Modular CSS in JS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.6.5
+ * @version 0.7.0
  */
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);
