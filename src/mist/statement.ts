@@ -1,9 +1,12 @@
 /// <reference path='recognizer/pan.ts'/>
 /// <reference path='recognizer/swipe.ts'/>
 
+/// <reference path='wrapper/story.ts'/>
+
 /// <reference path='component.ts'/>
 /// <reference path='emission.ts'/>
 /// <reference path='emitter.ts'/>
+/// <reference path='scene.ts'/>
 /// <reference path='style.ts'/>
 
 namespace Mist {
@@ -23,6 +26,11 @@ namespace Mist {
         * @access public
         */
         emitter: Emitter;
+
+        /**
+        * @access public
+        */
+        scene: Scene;
 
         /**
         * @access public
@@ -48,6 +56,7 @@ namespace Mist {
         constructor(private statement: any) {
 
             this.emitter = new Emitter(this);
+            this.scene = new Scene(this);
             this.style = new Style(this);
 
             new Recognizer.Pan(this.emitter);
@@ -72,6 +81,7 @@ namespace Mist {
                 response = document.querySelector(s);
             }
 
+            // {} response
             return response;
         }
 
@@ -119,6 +129,7 @@ namespace Mist {
                 response = [].map.call(document.querySelectorAll(s), (element: Element) => element);
             }
 
+            // [] response
             return response;
         }
 
@@ -140,6 +151,7 @@ namespace Mist {
                 response = document.querySelector(s.match(/[^,]*$/).concat('last-of-type').join(':'));
             }
 
+            // {} response
             return response;
         }
 
@@ -167,7 +179,6 @@ namespace Mist {
         */
         on(name: string): Emission {
 
-            // {} response
             return new Emission(this.emitter, name);
         }
 
@@ -189,7 +200,16 @@ namespace Mist {
                 response = s;
             }
 
+            // a response
             return response;
+        }
+
+        /**
+        * @param {} name
+        */
+        story(name: string): any {
+
+            return Component.create(Wrapper.Story, this, name);
         }
 
         /**
