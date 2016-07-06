@@ -17,6 +17,7 @@ npm install mist.js --save
 First, a CSS in a primitive object.
 
 ```javascript
+
 var center = {
 
   left: '50%',
@@ -29,6 +30,7 @@ var center = {
 Next, select what you want to style in the CSS selector or `Element`. This is referred to as the `statement`.
 
 ```javascript
+
 var statement = mist('div');
 
 // After only pass the objects
@@ -39,6 +41,7 @@ statement.style.set(center);
 This can be pass more than one object, if you want to overwrite only specific properties, is as follows.
 
 ```javascript
+
 statement.style.set(center, {
 
   position: 'relative'
@@ -48,29 +51,29 @@ statement.style.set(center, {
 It's same as follows.
 
 ```javascript
+
 statement.style.set(center);
 statement.style.add({ position: 'relative' });
 ```
 
 ### _If you want to define a more interactive modular CSS_
 
-If you want to define a more interactive modular CSS, pass the `Function` and [`Promise`](#using-the-promise) to the value of CSS. `Function` is evaluated just to pass. [`Promise`](#using-the-promise) is evaluated each time the callback function is called.
+If you want to define a more interactive modular CSS, pass the `Function` to the value of CSS. `Function` is evaluated just to pass.
 
 ```javascript
-var redden = {
 
-  // When clicked, to red the background
+var vivid = {
 
-  background: statement.on('click').then(
+  background: function() {
 
-    function() {
+    var r = Math.random();
+    var n = Math.ceil(r * 255);
 
-      return 'red';
-    }
-  )
+    return `rgb(${n},${n},${n})`;
+  }
 };
 
-statement.style.set(redden);
+statement.style.set(vivid);
 ```
 
 ### _If you want timing control_
@@ -78,6 +81,7 @@ statement.style.set(redden);
 Validation, etc., if you want to apply for a few seconds CSS, you need timing control.
 
 ```javascript
+
 var redden = {
 
   background: 'red'
@@ -97,6 +101,7 @@ statement.style.set(redden).then(
 It can also be unflag.
 
 ```javascript
+
 // At 3 seconds intervals
 
 statement.style.pulse(3000).set(redden).when(
@@ -108,42 +113,58 @@ statement.style.pulse(3000).set(redden).when(
 );
 ```
 
+If you want to stop the pulser, is as follows.
+
+```javascript
+
+var pulser = statement.style.pulse(3000);
+
+pulser.stop();
+```
+
 ## SELECT WHAT YOU WANT TO STYLE
 
-### _any_
+### `any`
 
 This like a `:matches` of CSS Selectors Level 4.
 
 ```javascript
-var statement = mist('a, b').any('.a, .b');
-var statement = mist('a.a, a.b, b.a, b.b'); // same as
+
+var statement = mist('a, b').any('.c, .d');
+var statement = mist('a.c, a.d, b.c, b.d'); // same as
 ```
 
-### _not_
+### `not`
 
 This like a `:not` of CSS Selectors Level 4.
 
 ```javascript
-var statement = mist('a, b').not('.a, .b');
-var statement = mist('a:not(.a), a:not(.b), b:not(.a), b:not(.b)'); // same as
+
+var statement = mist('a, b').not('.c, .d');
+var statement = mist('a:not(.c), a:not(.d), b:not(.c), b:not(.d)'); // same as
 ```
 
-### _th_
+### `th`
 
 If you select multiple times `:nth-of-type`, to use.
 
 ```javascript
+
 var statements = mist('a').th(1, 2); // pass start, end number
-var statements = [ mist('a:nth-of-type(1)'), mist('a:nth-of-type(2)') ]; // same as
+var statements = [
+  mist('a:nth-of-type(1)'),
+  mist('a:nth-of-type(2)')
+]; // same as
 ```
 
 ## USING THE EVENT
 
-### _on_
+### `on`
 
 If you define a more interactive modular CSS using the event, to use.
 
 ```javascript
+
 var promise = mist('a').on('click');
 
 promise.then(
@@ -153,17 +174,19 @@ promise.then(
     // your process
   }
 );
+`
 ```
 
 ## USING THE PROMISE
 
 This like a [Promise / A+](//promisesaplus.com/). The results of the css updates and event control handled async. Here, explaining features this library is extended.
 
-### _resume_
+### `resume`
 
 The fullfilled or rejected the promise back to pending.
 
 ```javascript
+
 var promise = mist('a').on('click');
 
 promise.then(
@@ -177,15 +200,65 @@ promise.then(
 );
 ```
 
-### _when_
+### `when`
 
 If you want to reuse the callback function, to use.
 
 ```javascript
+
 var promise = mist('a').on('click');
 
 promise.when(function(e) { /** your process */ });
 promise.then(function(e) { /** your process */ promise.resume() }); // same as
+```
+
+## USE THE STORY
+
+Login, prevention double-press of the button, etc., if you want to control in another, to use.
+
+```javascript
+
+// Build scene A > B > C
+
+statement.story('A')
+  .next(statement.story('B'))
+  .next(statement.story('C'));
+
+statement.story('C')
+  .prev(statement.story('B'))
+  .prev(statement.story('A')); // same as
+
+// Throw error, because story has not started yet
+
+statement.story('A').style.set({});
+
+// Story A has started
+
+statement.scene.start('A');
+
+// Not throw error, because story has started
+
+statement.story('A').style.set({});
+```
+
+If you move to the next story, just call the method or property.
+
+```javascript
+
+// Move to the story B
+
+statement.story('B').style.set({});
+
+// However, do not go back to the story A, throw error
+
+statement.story('A').style.set({});
+```
+
+If you end the story, is as follows.
+
+```javascript
+
+statement.scene.end();
 ```
 
 ## LICENSE
