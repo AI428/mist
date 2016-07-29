@@ -163,7 +163,11 @@ mist('div').on('click').then(function(e) { /** your process */ mist('div').on('c
 This library's story like a state machine
 
 ```javascript
-mist('div').story('A').next(mist('div').story('B')).next(mist('div').story('A')).start();
+var misty = mist('div');
+
+// rotation story
+
+misty.story('A').next(misty.story('B')).next(misty.story('A')).start();
 ```
 
 Every time you click, the process move to a another story
@@ -171,10 +175,10 @@ Every time you click, the process move to a another story
 ```javascript
 mist('*').on('click').when(function() {
 
-  // connect to B > A > B > A > ...
+  // connect to B > A > B ...
 
-  mist('div').story('A').move(function() { /** your process on A story */ }) ||
-  mist('div').story('B').move(function() { /** your process on B story */ });
+  misty.story('A').move(function() { /** your process on A story */ }) ||
+  misty.story('B').move(function() { /** your process on B story */ });
 });
 ```
 
@@ -201,7 +205,7 @@ _param_ | _type_
 story   | next `story`
 
 ```javascript
-mist('div').story('A').next(mist('div').story('B')).next(mist('div').story('C'));
+mist('div').story('A').next(mist('div').story('B'));
 ```
 
 ### `prev(story): story`
@@ -213,7 +217,7 @@ _param_ | _type_
 story   | prev `story`
 
 ```javascript
-mist('div').story('C').prev(mist('div').story('B')).prev(mist('div').story('A'));
+mist('div').story('B').prev(mist('div').story('A'));
 ```
 
 ### `start()`
