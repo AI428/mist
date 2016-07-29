@@ -8,13 +8,13 @@
 
 Mist is a motion design library that uses modular CSS
 
-## QUICK START
+# QUICK START
 
 ```
 npm install mist.js --save
 ```
 
-## FEATURES
+# FEATURES
 
 - _Using Modular CSS_
 - _Using Style Tag_
@@ -23,7 +23,7 @@ npm install mist.js --save
 
 TL;DR [demo](//github.com/AI428/mist/tree/master/doc)
 
-## SUPPORTED BROWSER
+# SUPPORTED BROWSER
 
 - _Chrome_
 - _Edge_
@@ -31,7 +31,7 @@ TL;DR [demo](//github.com/AI428/mist/tree/master/doc)
 - _IE_
 - _Safari_
 
-## USAGE
+# USAGE
 
 Make modular CSS
 
@@ -53,7 +53,7 @@ Design motion
 mist('div').set(vivid).time(1000).set(vivid).time(1000).clear();
 ```
 
-### `mist(statement): new`
+## `mist(statement): new`
 
 New instance
 
@@ -62,9 +62,9 @@ _param_   | _type_
 statement | selector `string`, `element`
 new       | new `mist`
 
-## API
+# API
 
-### `any(selector): new`
+## `any(selector): new`
 
 Same as :any selector
 
@@ -73,7 +73,7 @@ _param_  | _type_
 selector | `string`
 new      | new `mist`
 
-### `not(selector): new`
+## `not(selector): new`
 
 Same as :not selector
 
@@ -82,15 +82,15 @@ _param_  | _type_
 selector | `string`
 new      | new `mist`
 
-### `clear(): self`
+## `clear(): self`
 
 Clear modular CSS
 
-### `clearAll(): self`
+## `clearAll(): self`
 
 Clear modular CSS each elements
 
-### `on(name): promise`
+## `on(name): promise`
 
 Listen event emission
 
@@ -99,7 +99,7 @@ _param_ | _type_
 name    | `string`
 promise | [see](#using-the-promise)
 
-### `set(...css): self`
+## `set(...css): self`
 
 Set modular CSS
 
@@ -107,7 +107,7 @@ _param_ | _type_
 ------- | ---------------------------------------------------
 css     | `{ "name": string }`, `{ "name": (now) => string }`
 
-### `setAll(...css): self`
+## `setAll(...css): self`
 
 Set modular CSS each elements
 
@@ -115,7 +115,7 @@ _param_ | _type_
 ------- | ---------------------------------------------------------------
 css     | `{ "name": string }`, `{ "name": (element, i, all) => string }`
 
-### `story(name): story`
+## `story(name): story`
 
 Make story
 
@@ -124,7 +124,7 @@ _param_ | _type_
 name    | `string`
 story   | [see](#using-the-story)
 
-### `time(dur): self`
+## `time(dur): self`
 
 Delay execution
 
@@ -132,11 +132,11 @@ _param_ | _type_
 ------- | ---------------------
 dur     | milliseconds `number`
 
-## USING THE PROMISE
+# USING THE PROMISE
 
 This library's promise like a [Promise / A+](//promisesaplus.com/), it's extended functions
 
-### `resume()`
+## `resume()`
 
 The fullfilled or rejected promise back to pending
 
@@ -144,7 +144,7 @@ The fullfilled or rejected promise back to pending
 mist('div').on('click').then(function(e) { /** your process */ mist('div').on('click').resume(); });
 ```
 
-### `when(success, err?): promise`
+## `when(success, err?): promise`
 
 If you want to reuse callback function, to use
 
@@ -158,7 +158,7 @@ mist('div').on('click').when(function(e) { /** your process */ });
 mist('div').on('click').then(function(e) { /** your process */ mist('div').on('click').resume(); }); // same as
 ```
 
-## USING THE STORY
+# USING THE STORY
 
 This library's story like a state machine
 
@@ -182,7 +182,7 @@ mist('*').on('click').when(function() {
 });
 ```
 
-### `move(succeed): be`
+## `move(succeed): be`
 
 Move story
 
@@ -191,7 +191,7 @@ _param_ | _type_
 succeed | `() => void`
 be      | success as `boolean`
 
-### `next(story): story`
+## `next(story): story`
 
 Connect story to next
 
@@ -199,7 +199,7 @@ _param_ | _type_
 ------- | ------------
 story   | next `story`
 
-### `prev(story): story`
+## `prev(story): story`
 
 Connect story to prev
 
@@ -207,10 +207,10 @@ _param_ | _type_
 ------- | ------------
 story   | prev `story`
 
-### `start()`
+## `start()`
 
 Start story, it's to be moved
 
-## LICENSE
+# LICENSE
 
 [MIT](//opensource.org/licenses/MIT) © AI428
