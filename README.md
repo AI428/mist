@@ -51,7 +51,6 @@ Design motion
 
 ```javascript
 mist('div')
-
   .set(vivid).time(1000)
   .set(vivid).time(1000).clear();
 ```
@@ -169,7 +168,6 @@ This library's story like a state machine
 var m = mist('div');
 
 m.story('A')
-
   .next(m.story('B'))
   .next(m.story('A')).start();
 ```
@@ -212,7 +210,6 @@ story   | next `story`
 var m = mist('div');
 
 m.story('A')
-
   .next(m.story('B'))
   .next(m.story('C'));
 ```
@@ -229,7 +226,6 @@ story   | prev `story`
 var m = mist('div');
 
 m.story('C')
-
   .prev(m.story('B'))
   .prev(m.story('A'));
 ```
