@@ -65,7 +65,7 @@ _param_   | _type_
 statement | selector `string`, `element`
 new       | new `mist`
 
-### `any(selector): new`
+### `mist.any(selector): new`
 
 Same as :any selector
 
@@ -74,7 +74,7 @@ _param_  | _type_
 selector | `string`
 new      | new `mist`
 
-### `not(selector): new`
+### `mist.not(selector): new`
 
 Same as :not selector
 
@@ -83,15 +83,15 @@ _param_  | _type_
 selector | `string`
 new      | new `mist`
 
-### `clear(): self`
+### `mist.clear(): self`
 
 Clear modular CSS
 
-### `clearAll(): self`
+### `mist.clearAll(): self`
 
 Clear modular CSS each elements
 
-### `on(name): promise`
+### `mist.on(name): promise`
 
 Listen event emission
 
@@ -100,7 +100,7 @@ _param_ | _type_
 name    | `string`
 promise | [see](#using-the-promise)
 
-### `set(...css): self`
+### `mist.set(...css): self`
 
 Set modular CSS
 
@@ -108,7 +108,7 @@ _param_ | _type_
 ------- | ---------------------------------------------------
 css     | `{ "name": string }`, `{ "name": (now) => string }`
 
-### `setAll(...css): self`
+### `mist.setAll(...css): self`
 
 Set modular CSS each elements
 
@@ -116,7 +116,7 @@ _param_ | _type_
 ------- | ---------------------------------------------------------------
 css     | `{ "name": string }`, `{ "name": (element, i, all) => string }`
 
-### `time(dur): self`
+### `mist.time(dur): self`
 
 Delay execution
 
