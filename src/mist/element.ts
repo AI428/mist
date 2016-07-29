@@ -6,17 +6,11 @@ interface Element {
     /**
     * @param {} selector
     */
-    closest: (selector: string) => Element;
-
-    /**
-    * @param {} selector
-    */
     mozMatchesSelector: (selector: string) => boolean;
 }
 
 /**
 * @class Element
-* @method Element.matches
 */
 (function() {
 
@@ -31,7 +25,6 @@ interface Element {
 
 /**
 * @class Element
-* @method Element.closest
 */
 (function() {
 
@@ -41,13 +34,13 @@ interface Element {
 
         || function(selector: string) {
 
-            var response = this;
+            var s = this;
 
-            while (response) {
-                if (response.matches(selector)) break;
-                response = response.parentElement;
+            while (s) {
+                if (s.matches(selector)) break;
+                s = s.parentElement;
             }
 
-            return response;
+            return s;
         };
 })();

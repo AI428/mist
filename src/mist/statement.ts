@@ -1,13 +1,10 @@
-/// <reference path='recognizer/pan.ts'/>
-/// <reference path='recognizer/swipe.ts'/>
-
-/// <reference path='wrapper/story.ts'/>
-
 /// <reference path='component.ts'/>
 /// <reference path='emission.ts'/>
 /// <reference path='emitter.ts'/>
-/// <reference path='scene.ts'/>
 /// <reference path='style.ts'/>
+
+/// <reference path='wrapper/story.ts'/>
+/// <reference path='wrapper/timer.ts'/>
 
 namespace Mist {
 
@@ -18,19 +15,8 @@ namespace Mist {
 
         /**
         * @access public
-        * @summary th selector
-        */
-        static nth = ':nth-of-type';
-
-        /**
-        * @access public
         */
         emitter: Emitter;
-
-        /**
-        * @access public
-        */
-        scene: Scene;
 
         /**
         * @access public
@@ -56,33 +42,7 @@ namespace Mist {
         constructor(private statement: any) {
 
             this.emitter = new Emitter(this);
-            this.scene = new Scene(this);
             this.style = new Style(this);
-
-            new Recognizer.Pan(this.emitter);
-            new Recognizer.Swipe(this.emitter);
-        }
-
-        /**
-        * @summary mapped
-        */
-        a(): Element {
-
-            var response: Element;
-
-            var s = this.statement;
-
-            // mapped
-            if (s instanceof Element) {
-                // a response
-                response = s;
-            } else {
-                // a response
-                response = document.querySelector(s);
-            }
-
-            // {} response
-            return response;
         }
 
         /**
@@ -112,7 +72,35 @@ namespace Mist {
         }
 
         /**
-        * @summary mapped
+        * @summary
+        */
+        clear(): Statement {
+
+            var s = this.style;
+            var m = this.style.clear;
+
+            m.apply(s);
+
+            // passthru
+            return this;
+        }
+
+        /**
+        * @summary
+        */
+        clearAll(): Statement {
+
+            var s = this.style;
+            var m = this.style.clearAll;
+
+            m.apply(s);
+
+            // passthru
+            return this;
+        }
+
+        /**
+        * @summary
         */
         elements(): Element[] {
 
@@ -130,28 +118,6 @@ namespace Mist {
             }
 
             // [] response
-            return response;
-        }
-
-        /**
-        * @summary mapped
-        */
-        last(): Element {
-
-            var response: Element;
-
-            var s = this.statement;
-
-            // mapped
-            if (s instanceof Element) {
-                // a response
-                response = s;
-            } else {
-                // a response
-                response = document.querySelector(s.match(/[^,]*$/).concat('last-of-type').join(':'));
-            }
-
-            // {} response
             return response;
         }
 
@@ -183,7 +149,7 @@ namespace Mist {
         }
 
         /**
-        * @summary mapped
+        * @summary
         */
         selector(): string {
 
@@ -205,7 +171,36 @@ namespace Mist {
         }
 
         /**
+        * @param {} css
+        */
+        set(...css: any[]): Statement {
+
+            var s = this.style;
+            var m = this.style.set;
+
+            m.apply(s, css);
+
+            // passthru
+            return this;
+        }
+
+        /**
+        * @param {} css
+        */
+        setAll(...css: any[]): Statement {
+
+            var s = this.style;
+            var m = this.style.setAll;
+
+            m.apply(s, css);
+
+            // passthru
+            return this;
+        }
+
+        /**
         * @param {} name
+        * @summary lazy responsor
         */
         story(name: string): any {
 
@@ -213,26 +208,12 @@ namespace Mist {
         }
 
         /**
-        * @param {} s
-        * @param {} e
+        * @param {} dur
+        * @summary lazy responsor
         */
-        th(s: number, e: number): Statement[] {
+        time(dur: number): any {
 
-            var response: Statement[] = [];
-
-            for (let n = s; n <= e; n++) {
-
-                response.push(
-
-                    this.any(Statement.nth
-                        + '('
-                        + n
-                        + ')'
-                    ));
-            }
-
-            // [] response
-            return response;
+            return Component.create(Wrapper.Timer, this, dur);
         }
     }
 

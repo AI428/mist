@@ -98,23 +98,25 @@ namespace Mist {
                     erred
                 ) {
 
-                    commits.forEach(function(commit) {
+                    commits.forEach(
 
-                        commit.when(
+                        function(commit) {
 
-                            function(response: any) {
+                            commit.when(
 
-                                try {
-                                    // commit response
-                                    succeed(response);
+                                function(response: any) {
 
-                                } catch (e) {
+                                    try {
+                                        // commit response
+                                        succeed(response);
 
-                                    // fail response
-                                    erred(e);
-                                }
-                            });
-                    });
+                                    } catch (e) {
+
+                                        // fail response
+                                        erred(e);
+                                    }
+                                });
+                        });
                 });
         }
 
@@ -127,6 +129,7 @@ namespace Mist {
 
                 succeed,
                 erred
+
             ) => {
 
                 // initialize
@@ -149,7 +152,7 @@ namespace Mist {
         }
 
         /**
-        * @summary for reuse
+        * @summary
         */
         resume() {
 
@@ -167,6 +170,7 @@ namespace Mist {
 
                 succeed,
                 erred
+
             ) => {
 
                 this.err = erred;
@@ -232,7 +236,7 @@ namespace Mist {
 
                 if (this.err) {
 
-                    // lock
+                    // transact
                     this.txd = true;
 
                     // fail response
@@ -269,7 +273,7 @@ namespace Mist {
 
                 if (this.success) {
 
-                    // lock
+                    // transact
                     this.txd = true;
 
                     // commit response
