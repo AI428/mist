@@ -1,4 +1,6 @@
+/// <reference path='../component.ts'/>
 /// <reference path='../statement.ts'/>
+/// <reference path='../story.ts'/>
 
 /// <reference path='voker.ts'/>
 
@@ -12,6 +14,11 @@ namespace Mist {
         export class Story extends Voker {
 
             /**
+            * @access private
+            */
+            private story$: Mist.Story;
+
+            /**
             * @constructor
             * @param {} statement
             * @param {} name
@@ -19,6 +26,24 @@ namespace Mist {
             constructor(statement: Statement, public name$: string) {
 
                 super(statement);
+
+                // lasting response
+
+                this.story$ = Component.create<Mist.Story>(Mist.Story, statement);
+            }
+
+            /**
+            * @param {} succeed
+            */
+            move(succeed: () => void): boolean {
+
+                var s = this.story$;
+                var n = this.name$;
+
+                var response = s.move(n);
+                if (response) succeed();
+
+                return response;
             }
 
             /**
@@ -26,8 +51,8 @@ namespace Mist {
             */
             next(story: Story): Story {
 
+                var s = this.story$;
                 var n = this.name$;
-                var s = this.component$.scene;
 
                 s.connect(n, story.name$);
 
@@ -44,39 +69,14 @@ namespace Mist {
             }
 
             /**
-            * @param {} o
+            * @summary
             */
-            protected accessor$(o: any) {
+            start() {
 
-                this.proceed();
-
-                // passthru
-                return o;
-            }
-
-            /**
-            * @param {} composer
-            * @param {} o
-            */
-            protected compose$(composer: any, o: any[]) {
-
-                this.proceed();
-
-                // next story
-
-                return composer.apply(composer, o);
-            }
-
-            /**
-            * @access private
-            */
-            private proceed() {
-
+                var s = this.story$;
                 var n = this.name$;
-                var s = this.component$.scene;
 
-                if (!s.pos) throw new Error(`Forbidden, story has not started yet`);
-                if (!s.move(n)) throw new Error(`Forbidden, "${s.pos}" > "${n}" story`);
+                s.start(n);
             }
         }
     }
