@@ -1,10 +1,5 @@
-/// <reference path='wrapper/pulser.ts'/>
-/// <reference path='wrapper/timer.ts'/>
-
 /// <reference path='component.ts'/>
-/// <reference path='promise.ts'/>
 /// <reference path='statement.ts'/>
-/// <reference path='value.ts'/>
 
 namespace Mist {
 
@@ -14,136 +9,124 @@ namespace Mist {
     export class Style {
 
         /**
+        * @access public
+        */
+        value: any = {};
+
+        /**
         * @access private
         * @summary for scoped
         */
         private e: HTMLStyleElement;
 
         /**
-        * @access private
-        */
-        private value: Value;
-
-        /**
         * @constructor
         * @param {} statement
         */
         constructor(private statement: Statement) {
+        }
 
-            this.value = new Value({});
-            this.value.when(
+        /**
+        * @summary
+        */
+        clear() {
 
-                (o) => {
+            this.value = {};
+            this.apply();
+        }
 
-                    var response: string[] = [];
+        /**
+        * @summary
+        */
+        clearAll() {
 
-                    // format response
-                    for (let name in o) {
-                        response.push(hycase(name) + ':' + o[name]);
-                    }
+            this.statement.elements().map(
 
-                    // inner response
-                    this.create().innerHTML = statement.selector()
-                        + '{'
-                        + response.join(';')
-                        + '}'
-                        ;
+                function(element) {
+
+                    // lasting response
+                    Component.create<Statement>(Statement, element).style.clear();
                 });
         }
 
         /**
         * @param {} css
         */
-        add(...css: any[]): Promise {
+        set(...css: any[]) {
 
-            return this.value.compose(
+            var o = this.value;
 
-                // composer
-                (o) => this.compose(assign(css), o)
+            var response = assign(css);
 
-            ).then(
+            for (let name in response) {
 
-                // for composition
-                () => this
-                );
-        }
+                var p = response[name];
 
-        /**
-        * @summary scoped
-        */
-        get(): any {
-
-            var response: any = {};
-
-            var s = this;
-
-            // format response
-            for (let name in s.value.composite) {
-                response[name] = s.value.composite[name];
+                // mapped
+                if (p instanceof Function) {
+                    // a response
+                    o[name] = p(o);
+                } else {
+                    // passthru
+                    o[name] = p;
+                }
             }
 
-            // {} response
-            return response;
-        }
-
-        /**
-        * @param {} dur
-        * @summary lazy responsor
-        */
-        pulse(dur: number): any {
-
-            return Component.create(Wrapper.Pulser, this, dur);
+            this.apply();
         }
 
         /**
         * @param {} css
         */
-        set(...css: any[]): Promise {
+        setAll(...css: any[]) {
 
-            return this.value.compose(
+            var response = assign(css);
 
-                // composer
-                () => this.compose(assign(css))
+            this.statement.elements().map(
 
-            ).then(
+                function(element, i, all) {
 
-                // for composition
-                () => this
-                );
-        }
+                    var o = {};
 
-        /**
-        * @param {} dur
-        * @summary lazy responsor
-        */
-        time(dur: number): any {
+                    for (let name in response) {
 
-            return Component.create(Wrapper.Timer, this, dur);
+                        var p = response[name];
+
+                        // mapped
+                        if (p instanceof Function) {
+                            // a response
+                            o[name] = p(element, i, all);
+                        } else {
+                            // passthru
+                            o[name] = p;
+                        }
+                    }
+
+                    // lasting response
+                    Component.create<Statement>(Statement, element).style.set(o);
+                });
         }
 
         /**
         * @access private
         */
-        private compose(css: any, response: any = {}) {
+        private apply() {
 
-            var s = this;
+            var o = this.value;
 
-            for (let name in css) {
+            var response: string[] = [];
 
-                var p = css[name];
-
-                // mapped
-                if (p instanceof Function) {
-                    // a response
-                    response[name] = p();
-                } else {
-                    // passthru
-                    response[name] = p;
-                }
+            // format response
+            for (let name in o) {
+                response.push(hycase(name) + ':' + o[name]);
             }
 
-            // {} response
-            return response;
+            // inner response
+            this.create().innerHTML = this.statement.selector()
+                + '{'
+                + response.join(';')
+                + '}'
+                ;
         }
 
         /**
@@ -192,9 +175,12 @@ namespace Mist {
     */
     function hycase(name: string) {
 
-        // hy response
-        return name.replace(/[A-Z]/g, function(m) {
-            return '-' + m.toLowerCase();
-        });
+        return name.replace(/[A-Z]/g,
+
+            function(m) {
+
+                // hy response
+                return '-' + m.toLowerCase();
+            });
     }
 }
