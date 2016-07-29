@@ -18,9 +18,10 @@ npm install mist.js --save
 
 - _Using Modular CSS_
 - _Using Style Tag_
+- _State Control_
 - _Timing Control_
 
-TL;DR [demo](//github.com/AI428/mist/master/doc)
+TL;DR [demo](//github.com/AI428/mist/tree/master/doc)
 
 ## SUPPORTED BROWSER
 
@@ -54,8 +55,6 @@ mist('div')
   .set(vivid).time(1000).clear();
 ```
 
-## API
-
 ### `mist(statement): new`
 
 New instance
@@ -65,7 +64,9 @@ _param_   | _type_
 statement | selector `string`, `element`
 new       | new `mist`
 
-### `mist.any(selector): new`
+## API
+
+### `any(selector): new`
 
 Same as :any selector
 
@@ -74,7 +75,7 @@ _param_  | _type_
 selector | `string`
 new      | new `mist`
 
-### `mist.not(selector): new`
+### `not(selector): new`
 
 Same as :not selector
 
@@ -83,15 +84,15 @@ _param_  | _type_
 selector | `string`
 new      | new `mist`
 
-### `mist.clear(): self`
+### `clear(): self`
 
 Clear modular CSS
 
-### `mist.clearAll(): self`
+### `clearAll(): self`
 
 Clear modular CSS each elements
 
-### `mist.on(name): promise`
+### `on(name): promise`
 
 Listen event emission
 
@@ -100,7 +101,7 @@ _param_ | _type_
 name    | `string`
 promise | [see](#using-the-promise)
 
-### `mist.set(...css): self`
+### `set(...css): self`
 
 Set modular CSS
 
@@ -108,7 +109,7 @@ _param_ | _type_
 ------- | ---------------------------------------------------
 css     | `{ "name": string }`, `{ "name": (now) => string }`
 
-### `mist.setAll(...css): self`
+### `setAll(...css): self`
 
 Set modular CSS each elements
 
@@ -116,7 +117,16 @@ _param_ | _type_
 ------- | ---------------------------------------------------------------
 css     | `{ "name": string }`, `{ "name": (element, i, all) => string }`
 
-### `mist.time(dur): self`
+### `story(name): story`
+
+Make story
+
+_param_ | _type_
+------- | -----------------------
+name    | `string`
+story   | [see](#using-the-story)
+
+### `time(dur): self`
 
 Delay execution
 
@@ -133,8 +143,7 @@ This library's promise like a [Promise / A+](//promisesaplus.com/), it's extende
 The fullfilled or rejected promise back to pending
 
 ```javascript
-mist('div').on('click').then(function(e) { /** your process */ });
-mist('div').on('click').resume();
+mist('div').on('click').then(function(e) { /** your process */ mist('div').on('click').resume(); });
 ```
 
 ### `when(success, err?): promise`
@@ -149,6 +158,78 @@ err     | `(response) => any`
 ```javascript
 mist('div').on('click').when(function(e) { /** your process */ });
 mist('div').on('click').then(function(e) { /** your process */ mist('div').on('click').resume(); }); // same as
+```
+
+## USING THE STORY
+
+This library's story like a state machine
+
+```javascript
+mist('div').story('A')
+  .next(mist('div').story('B'))
+  .next(mist('div').story('A')).start();
+```
+
+Every time you click, the process move to a different story
+
+```javascript
+mist('*').on('click').when(function() {
+
+  // connect to B > A > B > A > ...
+  mist('div').story('A').move(function() { /** your process on A story */ }) ||
+  mist('div').story('B').move(function() { /** your process on B story */ });
+});
+```
+
+### `move(succeed): be`
+
+Move story
+
+_param_ | _type_
+------- | --------------------
+succeed | `() => void`
+be      | success as `boolean`
+
+```javascript
+mist('div').story('A').move(function() { /** your process on A story */ }) ||
+mist('div').story('B').move(function() { /** your process on B story */ });
+```
+
+### `next(story): story`
+
+Connect story to next
+
+_param_ | _type_
+------- | ------------
+story   | next `story`
+
+```javascript
+mist('div').story('A')
+  .next(mist('div').story('B'))
+  .next(mist('div').story('C'));
+```
+
+### `prev(story): story`
+
+Connect story to prev
+
+_param_ | _type_
+------- | ------------
+story   | prev `story`
+
+```javascript
+mist('div').story('C')
+  .prev(mist('div').story('B'))
+  .prev(mist('div').story('A'));
+```
+
+### `start()`
+
+Start story, it's to be moved
+
+```javascript
+mist('div').story('A').start();
+mist('div').story('A').move(function() { /** your process on A story */ });
 ```
 
 ## LICENSE
