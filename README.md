@@ -191,11 +191,6 @@ _param_ | _type_
 succeed | `() => void`
 be      | success as `boolean`
 
-```javascript
-mist('div').story('A').move(function() { /** your process on A story */ }) ||
-mist('div').story('B').move(function() { /** your process on B story */ });
-```
-
 ### `next(story): story`
 
 Connect story to next
@@ -203,10 +198,6 @@ Connect story to next
 _param_ | _type_
 ------- | ------------
 story   | next `story`
-
-```javascript
-mist('div').story('A').next(mist('div').story('B'));
-```
 
 ### `prev(story): story`
 
@@ -216,18 +207,9 @@ _param_ | _type_
 ------- | ------------
 story   | prev `story`
 
-```javascript
-mist('div').story('B').prev(mist('div').story('A'));
-```
-
 ### `start()`
 
 Start story, it's to be moved
-
-```javascript
-mist('div').story('A').start();
-mist('div').story('A').move(function() { /** your process on A story */ });
-```
 
 ## LICENSE
 
