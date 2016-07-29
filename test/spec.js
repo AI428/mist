@@ -2,231 +2,108 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    var statement = mist('body');
-
-    var size = statement.elements().length;
-
-    var f = document.querySelector('footer');
     var h = document.querySelector('header');
 
-    /*
-     * @summary Mist.Statemen
-     */
     describe('Mist.Statement', function() {
 
-        /*
-         * @summary Statement.a()
-         */
-        it('a', function() {
+        it('Selector',
 
-            expect(statement.a()).toBe(document.body);
-        });
+            function() {
 
-        /*
-         * @summary Statement.any()
-         */
-        it('any', function() {
+                var statement = mist('body');
 
-            var q = '> header,> footer';
-
-            expect(statement.any(q).a()).toBe(h);
-        });
-
-        /*
-         * @summary Statement.elements()
-         */
-        it('elements', function() {
-
-            expect(statement.elements().length).toBe(1);
-            expect(statement.elements().pop()).toBe(document.body);
-        });
-
-        /*
-         * @summary Statement.last()
-         */
-        it('last', function() {
-
-            var q = '> header,> footer';
-
-            expect(statement.any(q).last()).toBe(f);
-        });
-
-        /*
-         * @summary Statement.not()
-         */
-        it('not', function() {
-
-            var q = '> *';
-
-            expect(statement.any(q).not('header').last()).toBe(f);
-        });
-
-        /*
-         * @summary Statement.story()
-         */
-        it('story', function() {
-
-            statement.story('A')
-                .next(statement.story('B'))
-                .next(statement.story('C'));
-
-            expect(function() {
-
-                statement.story('A').on('click');
-
-            }).toThrowError('Forbidden, story has not started yet');
-
-            expect(function() {
-
-                statement.scene.start('A');
-
-                statement.story('A').on('click');
-                statement.story('C').on('click');
-
-            }).toThrowError('Forbidden, "A" > "C" story');
-
-            expect(function() {
-
-                statement.scene.start('A');
-
-                statement.story('A').on('click');
-                statement.story('B').on('click');
-                statement.story('C').on('click');
-
-                statement.scene.end();
-
-            }).not.toThrow();
-        });
-
-        /*
-         * @summary Statement.th()
-         */
-        it('th', function() {
-
-            var q = '> *';
-
-            expect(statement.any(q).th(1, size).pop().a()).toBe(h);
-        });
-    });
-
-    /*
-     * @summary Mist.Style
-     */
-    describe('Mist.Style', function() {
-
-        var m = {
-
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden'
-        };
-
-        /*
-         * @summary Style.add()
-         */
-        it('add', function(done) {
-
-            statement.style.add({}, m).then(function() {
-
-                var css = getComputedStyle(statement.a());
-
-                // is apply
-
-                expect(css.backfaceVisibility).toEqual('hidden');
-
-                // lazy response
-
-                done();
+                expect(statement.any('> footer,> header').selector()).toEqual('body> footer,body> header');
+                expect(statement.not('> footer,> header').selector()).toEqual('body:not(> footer),body:not(> header)');
             });
-        });
 
-        /*
-         * @summary Style.get()
-         */
-        it('get', function() {
+        it('Using Modular CSS',
 
-            expect(statement.style.get()).toEqual(m);
-        });
+            function() {
 
-        /*
-         * @summary Style.pulse()
-         */
-        it('pulse', function(done) {
+                var statement = mist('header');
 
-            var d = 1000 / 60;
-            var n = 0;
+                statement.set({
+                    background: 'red'
+                }, {
+                    color: function() {
+                        return 'blue';
+                    }
+                });
 
-            var t = Date.now() + d;
+                var computed;
 
-            statement.style.pulse(d).add({
+                // --
 
-                opacity: function() {
+                computed = getComputedStyle(h);
 
-                    return ++n;
-                }
+                expect(computed.backgroundColor).toBe('rgb(255, 0, 0)');
+                expect(computed.color).toBe('rgb(0, 0, 255)');
 
-            }).when(function(s) {
+                statement.clear();
 
-                s.pulse(d).stop();
+                computed = getComputedStyle(h);
 
-                if (n > 0) {
+                expect(computed.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+                expect(computed.color).toBe('rgb(0, 0, 0)');
 
-                    expect(Date.now()).toBeGreaterThan(t);
+                // --
 
-                    var css = getComputedStyle(statement.a());
+                var statement = mist('body> *');
 
-                    // apply
+                statement.setAll({
+                    background: 'red'
+                }, {
+                    color: function(element, i, all) {
 
-                    expect(css.opacity).toEqual('1');
+                        expect(element).toEqual(jasmine.any(Element));
+                        expect(i).toEqual(jasmine.any(Number));
+                        expect(all).toEqual(jasmine.any(Array));
 
-                    // lazy response
+                        return 'blue';
+                    }
+                });
 
-                    done();
-                }
+                // --
+
+                computed = getComputedStyle(h);
+
+                expect(computed.backgroundColor).toBe('rgb(255, 0, 0)');
+                expect(computed.color).toBe('rgb(0, 0, 255)');
+
+                statement.clearAll();
+
+                computed = getComputedStyle(h);
+
+                expect(computed.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+                expect(computed.color).toBe('rgb(0, 0, 0)');
             });
-        });
 
-        /*
-         * @summary Style.set()
-         */
-        it('set', function(done) {
+        it('Timing Control',
 
-            statement.style.set({}, {}).then(function() {
+            function(done) {
 
-                var s = getComputedStyle(statement.a());
+                var dur = 100;
 
-                // apply
+                var statement = mist('header');
 
-                expect(s.backfaceVisibility).toEqual('visible');
+                statement.set({
+                    background: 'red'
+                }).time(dur).clear();
 
-                // lazy response
+                // --
 
-                done();
+                setTimeout(
+
+                    function() {
+
+                        var computed = getComputedStyle(h);
+
+                        expect(computed.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+                        expect(computed.color).toBe('rgb(0, 0, 0)');
+
+                        done();
+
+                    }, dur);
             });
-        });
-
-        /*
-         * @summary Style.time()
-         */
-        it('time', function(done) {
-
-            var d = 1000 / 60;
-
-            var t = Date.now() + d;
-
-            statement.style.time(d).add(m).when(function() {
-
-                expect(Date.now()).toBeGreaterThan(t);
-
-                var css = getComputedStyle(statement.a());
-
-                // apply
-
-                expect(css.backfaceVisibility).toEqual('hidden');
-
-                // lazy response
-
-                done();
-            });
-        });
     });
 });
