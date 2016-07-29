@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>MIST, Motion Design in Modular CSS</title>
+    <style>
+        body {
+            backface-visibility: hidden;
+        }
+
+        main {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate3d(-50%, -50%, 0);
+        }
+
+        main> div {
+            border-radius: 50%;
+            height: 4em;
+            margin: -2em 0 0 -2em;
+            opacity: 0;
+            position: absolute;
+            width: 4em;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </main>
+    <script src='../dist/mist.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // modular css
+
+            var show = {
+                opacity: 1
+            };
+
+            mist('main> div').set(show).setAll({
+
+                background: function() {
+
+                    // vivid color
+
+                    return 'hsl(' + (Math.random() * 360).toFixed(0) + ', 66%, 66%)';
+                },
+
+                transform: function(element, i, all) {
+
+                    var n = Math.random() * 16;
+
+                    var r = (Math.PI * 2 / -all.length) * i;
+
+                    var y = (Math.sin(r) * n).toFixed(2);
+                    var x = (Math.cos(r) * n).toFixed(2);
+
+                    // random position
+
+                    return 'translate3d(' + x + 'em, ' + y + 'em, 0) scale(0)';
+                },
+
+                transition: function() {
+
+                    var n = Math.random() * 2;
+
+                    return n + 's cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                }
+
+            }).time(1000).clear();
+        });
+    </script>
+</body>
+
+</html>
