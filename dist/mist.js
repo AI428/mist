@@ -45,233 +45,75 @@ var Mist;
     var o = Element.prototype;
     o.closest = o.closest
         || function (selector) {
-            var response = this;
-            while (response) {
-                if (response.matches(selector))
+            var s = this;
+            while (s) {
+                if (s.matches(selector))
                     break;
-                response = response.parentElement;
+                s = s.parentElement;
             }
-            return response;
+            return s;
         };
 })();
 var Mist;
 (function (Mist) {
-    var Recognizer;
-    (function (Recognizer) {
-        var Summary = (function () {
-            function Summary(event) {
-                this.event = event;
-                this.move = { x: 0, y: 0 };
-                this.mpms = 0;
-                this.passed = 0;
-                var response;
-                var s = this;
-                if (event instanceof MouseEvent) {
-                    response = event;
-                }
-                else if (event instanceof TouchEvent) {
-                    response = event.changedTouches[0];
-                }
-                s.set(response);
-            }
-            Summary.prototype.diff = function (event) {
-                var s = this;
-                var response = new Summary(event);
-                var passed = event.timeStamp - s.event.timeStamp;
-                response.passed = passed;
-                var x = response.page.x - s.page.x;
-                var y = response.page.y - s.page.y;
-                response.move = { x: x, y: y };
-                response.mpms = passed ? Math.sqrt(x * x + y * y) / passed : 0;
-                return response;
-            };
-            Summary.prototype.measure = function (element) {
-                var r = element.getBoundingClientRect();
-                var x = this.client.x - r.left;
-                var y = this.client.y - r.top;
-                return { x: x, y: y };
-            };
-            Summary.prototype.set = function (response) {
-                this.client = {
-                    x: response.clientX,
-                    y: response.clientY
-                };
-                this.page = {
-                    x: response.pageX,
-                    y: response.pageY
-                };
-            };
-            return Summary;
-        }());
-        Recognizer.Summary = Summary;
-    })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
-})(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Recognizer;
-    (function (Recognizer) {
-        var Swipe = (function () {
-            function Swipe(emitter) {
-                this.emitter = emitter;
-                this.end();
-                this.move();
-            }
-            Swipe.prototype.end = function () {
-                var s = this;
-                new Mist.Emission(s.emitter, 'panend').when(function (response) {
-                    if (s.sess) {
-                        var r = s.prev.diff(response.event);
-                        if (Swipe.passed > r.passed) {
-                            s.emitter.emit('swipe', r);
-                            var x = r.move.x * r.move.x;
-                            var y = r.move.y * r.move.y;
-                            if (x < y) {
-                                if (r.move.y < 0)
-                                    s.emitter.emit('swipeup', r);
-                                if (r.move.y > 0)
-                                    s.emitter.emit('swipedown', r);
-                            }
-                            else {
-                                if (r.move.x < 0)
-                                    s.emitter.emit('swipeleft', r);
-                                if (r.move.x > 0)
-                                    s.emitter.emit('swiperight', r);
-                            }
-                        }
-                        s.sess = false;
-                    }
-                });
-            };
-            Swipe.prototype.move = function () {
-                var s = this;
-                new Mist.Emission(s.emitter, 'panmove').when(function (response) {
-                    if (!s.sess) {
-                        if (Swipe.mpms < response.mpms) {
-                            s.prev = response;
-                            s.sess = true;
-                        }
-                    }
-                });
-            };
-            Swipe.mpms = 0.8;
-            Swipe.passed = 64;
-            return Swipe;
-        }());
-        Recognizer.Swipe = Swipe;
-    })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
-})(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Wrapper;
-    (function (Wrapper) {
-        var Voker = (function () {
-            function Voker(component$) {
-                this.component$ = component$;
-                var s = this;
-                var _loop_1 = function(name_1) {
-                    if (component$[name_1] instanceof Function) {
-                        s[name_1] = function () {
-                            var o = [];
-                            for (var _i = 0; _i < arguments.length; _i++) {
-                                o[_i - 0] = arguments[_i];
-                            }
-                            return s.compose$(component$[name_1].bind(component$), o);
-                        };
-                    }
-                    else {
-                        Object.defineProperty(s, name_1, {
-                            get: s.accessor$.bind(s, component$[name_1])
-                        });
-                    }
-                };
-                for (var name_1 in component$) {
-                    _loop_1(name_1);
-                }
-            }
-            Voker.prototype.accessor$ = function (o) {
-                return o;
-            };
-            Voker.prototype.compose$ = function (composer, o) {
-                return composer.apply(composer, o);
-            };
-            return Voker;
-        }());
-        Wrapper.Voker = Voker;
-    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
-})(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Wrapper;
-    (function (Wrapper) {
-        var Story = (function (_super) {
-            __extends(Story, _super);
-            function Story(statement, name$) {
-                _super.call(this, statement);
-                this.name$ = name$;
-            }
-            Story.prototype.next = function (story) {
-                var n = this.name$;
-                var s = this.component$.scene;
-                s.connect(n, story.name$);
-                return story;
-            };
-            Story.prototype.prev = function (story) {
-                return story.next(this);
-            };
-            Story.prototype.accessor$ = function (o) {
-                this.proceed();
-                return o;
-            };
-            Story.prototype.compose$ = function (composer, o) {
-                this.proceed();
-                return composer.apply(composer, o);
-            };
-            Story.prototype.proceed = function () {
-                var n = this.name$;
-                var s = this.component$.scene;
-                if (!s.pos)
-                    throw new Error("Forbidden, story has not started yet");
-                if (!s.move(n))
-                    throw new Error("Forbidden, \"" + s.pos + "\" > \"" + n + "\" story");
-            };
-            return Story;
-        }(Wrapper.Voker));
-        Wrapper.Story = Story;
-    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
-})(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Scene = (function () {
-        function Scene(statement) {
+    var Emitter = (function () {
+        function Emitter(statement) {
             this.statement = statement;
-            this.conns = {};
+            this.emits = {};
+            this.obss = {};
         }
-        Scene.prototype.connect = function (s, e) {
-            this.conns[s] || (this.conns[s] = {});
-            this.conns[s][e] = e;
+        Emitter.customize = function (name, options) {
+            if (options === void 0) { options = {}; }
+            var e = document.createEvent('CustomEvent');
+            e.initCustomEvent(name, options.bubbles || true, options.cancelable || true, options.detail);
+            return e;
         };
-        Scene.prototype.end = function () {
-            this.pos = null;
+        Emitter.prototype.add = function (name, listener) {
+            this.obss[name] || (this.obss[name] = []);
+            this.obss[name].push(listener);
+            this.on(name);
         };
-        Scene.prototype.move = function (name) {
-            var response = false;
-            var s = this;
-            var conns = s.conns[s.pos] || {};
-            if (s.pos == name) {
-                response = true;
+        Emitter.prototype.emit = function (name, response) {
+            for (var i in this.obss[name]) {
+                this.obss[name][i](response);
             }
-            else if (conns[name]) {
-                response = true;
-                s.pos = name;
+        };
+        Emitter.prototype.remove = function (name, listener) {
+            var o = this.obss[name];
+            function composer() {
+                var i = o.indexOf(listener);
+                i < 0 || o.splice(i, 1);
+            }
+            o && listener ? composer() : o = null;
+        };
+        Emitter.prototype.on = function (name) {
+            var _this = this;
+            var o = this.emits;
+            o[name] || document.addEventListener(name, o[name] = function (e) {
+                var element = e.target;
+                if (element instanceof Element) {
+                    if (element.closest(_this.selector())) {
+                        _this.emit(name, e instanceof CustomEvent ?
+                            e.detail :
+                            e);
+                    }
+                }
+            });
+        };
+        Emitter.prototype.selector = function () {
+            var response;
+            var s = this.statement;
+            if (s instanceof Mist.Statement) {
+                response = s.selector();
+            }
+            else {
+                response = s;
             }
             return response;
         };
-        Scene.prototype.start = function (name) {
-            this.pos = name;
-        };
-        return Scene;
+        return Emitter;
     }());
-    Mist.Scene = Scene;
+    Mist.Emitter = Emitter;
 })(Mist || (Mist = {}));
 var Mist;
 (function (Mist) {
@@ -415,213 +257,90 @@ var Mist;
 })(Mist || (Mist = {}));
 var Mist;
 (function (Mist) {
-    var Wrapper;
-    (function (Wrapper) {
-        var Pulser = (function (_super) {
-            __extends(Pulser, _super);
-            function Pulser(component, dur$) {
-                if (dur$ === void 0) { dur$ = 0; }
-                _super.call(this, component);
-                this.dur$ = dur$;
-                this.id$ = 0;
-            }
-            Pulser.prototype.stop = function () {
-                clearTimeout(this.id$);
-            };
-            Pulser.prototype.compose$ = function (composer, o) {
-                var s = this;
-                s.stop();
-                return new Mist.Promise(function (succeed, erred) {
-                    function responsor() {
-                        try {
-                            succeed(composer.apply(composer, o));
-                            !s.dur$ || (s.id$ = setTimeout(responsor, s.dur$));
-                        }
-                        catch (e) {
-                            erred(e);
-                        }
-                    }
-                    s.id$ = setTimeout(responsor, s.dur$);
-                });
-            };
-            return Pulser;
-        }(Wrapper.Voker));
-        Wrapper.Pulser = Pulser;
-    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
-})(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Wrapper;
-    (function (Wrapper) {
-        var Timer = (function (_super) {
-            __extends(Timer, _super);
-            function Timer(component, dur$) {
-                if (dur$ === void 0) { dur$ = 0; }
-                _super.call(this, component);
-                this.dur$ = dur$;
-                this.id$ = 0;
-            }
-            Timer.prototype.stop = function () {
-                clearTimeout(this.id$);
-            };
-            Timer.prototype.compose$ = function (composer, o) {
-                var s = this;
-                s.stop();
-                return new Mist.Promise(function (succeed, erred) {
-                    function responsor() {
-                        try {
-                            succeed(composer.apply(composer, o));
-                        }
-                        catch (e) {
-                            erred(e);
-                        }
-                    }
-                    s.id$ = setTimeout(responsor, s.dur$);
-                });
-            };
-            return Timer;
-        }(Wrapper.Voker));
-        Wrapper.Timer = Timer;
-    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
-})(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Frame = (function () {
-        function Frame() {
-        }
-        Frame.at = function (responsor) {
-            this.txs.push(responsor);
-            this.tx();
-        };
-        Frame.tx = function () {
-            var _this = this;
-            this.txd || (function () {
-                _this.txd = true;
-                var s = _this;
-                var txr = [];
-                (function composer() {
-                    var i = 0;
-                    var responsor;
-                    while (responsor = txr.shift()) {
-                        responsor();
-                    }
-                    while (responsor = s.txs.shift()) {
-                        i = txr.push(responsor);
-                    }
-                    s.txd = i > 0;
-                    s.txd && requestAnimationFrame(composer);
-                })();
-            })();
-        };
-        Frame.txs = [];
-        return Frame;
-    }());
-    Mist.Frame = Frame;
-})(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Value = (function (_super) {
-        __extends(Value, _super);
-        function Value(composite) {
-            var _this = this;
+    var Emission = (function (_super) {
+        __extends(Emission, _super);
+        function Emission(emitter, name) {
             _super.call(this, function (succeed, erred) {
-                _this.xr = function () {
-                    _this.xd || (function () {
-                        _this.xd = true;
-                        Mist.Frame.at(function () {
-                            var responsor;
-                            try {
-                                succeed(_this.composite);
-                            }
-                            catch (e) {
-                                erred(e);
-                            }
-                            while (responsor = _this.xs.shift()) {
-                                responsor(_this.composite);
-                            }
-                            _this.xd = false;
-                        });
-                    })();
-                };
-            });
-            this.composite = composite;
-            this.xs = [];
-        }
-        Value.prototype.compose = function (composer) {
-            var _this = this;
-            return new Mist.Promise(function (responsor) {
-                Mist.Frame.at(function () {
-                    _this.composite = composer(_this.composite);
-                    _this.xs.push(responsor);
-                    _this.xr();
+                emitter.add(name, function (response) {
+                    try {
+                        succeed(response);
+                    }
+                    catch (e) {
+                        erred(e);
+                    }
                 });
             });
-        };
-        return Value;
+            this.emitter = emitter;
+            this.name = name;
+        }
+        return Emission;
     }(Mist.Promise));
-    Mist.Value = Value;
+    Mist.Emission = Emission;
 })(Mist || (Mist = {}));
 var Mist;
 (function (Mist) {
     var Style = (function () {
         function Style(statement) {
-            var _this = this;
             this.statement = statement;
-            this.value = new Mist.Value({});
-            this.value.when(function (o) {
-                var response = [];
-                for (var name_2 in o) {
-                    response.push(hycase(name_2) + ':' + o[name_2]);
-                }
-                _this.create().innerHTML = statement.selector()
-                    + '{'
-                    + response.join(';')
-                    + '}';
-            });
+            this.value = {};
         }
-        Style.prototype.add = function () {
-            var _this = this;
-            var css = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                css[_i - 0] = arguments[_i];
-            }
-            return this.value.compose(function (o) { return _this.compose(assign(css), o); }).then(function () { return _this; });
+        Style.prototype.clear = function () {
+            this.value = {};
+            this.apply();
         };
-        Style.prototype.get = function () {
-            var response = {};
-            var s = this;
-            for (var name_3 in s.value.composite) {
-                response[name_3] = s.value.composite[name_3];
-            }
-            return response;
-        };
-        Style.prototype.pulse = function (dur) {
-            return Mist.Component.create(Mist.Wrapper.Pulser, this, dur);
+        Style.prototype.clearAll = function () {
+            this.statement.elements().map(function (element) {
+                Mist.Component.create(Mist.Statement, element).style.clear();
+            });
         };
         Style.prototype.set = function () {
-            var _this = this;
             var css = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 css[_i - 0] = arguments[_i];
             }
-            return this.value.compose(function () { return _this.compose(assign(css)); }).then(function () { return _this; });
-        };
-        Style.prototype.time = function (dur) {
-            return Mist.Component.create(Mist.Wrapper.Timer, this, dur);
-        };
-        Style.prototype.compose = function (css, response) {
-            if (response === void 0) { response = {}; }
-            var s = this;
-            for (var name_4 in css) {
-                var p = css[name_4];
+            var o = this.value;
+            var response = assign(css);
+            for (var name_1 in response) {
+                var p = response[name_1];
                 if (p instanceof Function) {
-                    response[name_4] = p();
+                    o[name_1] = p(o);
                 }
                 else {
-                    response[name_4] = p;
+                    o[name_1] = p;
                 }
             }
-            return response;
+            this.apply();
+        };
+        Style.prototype.setAll = function () {
+            var css = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                css[_i - 0] = arguments[_i];
+            }
+            var response = assign(css);
+            this.statement.elements().map(function (element, i, all) {
+                var o = {};
+                for (var name_2 in response) {
+                    var p = response[name_2];
+                    if (p instanceof Function) {
+                        o[name_2] = p(element, i, all);
+                    }
+                    else {
+                        o[name_2] = p;
+                    }
+                }
+                Mist.Component.create(Mist.Statement, element).style.set(o);
+            });
+        };
+        Style.prototype.apply = function () {
+            var o = this.value;
+            var response = [];
+            for (var name_3 in o) {
+                response.push(hycase(name_3) + ':' + o[name_3]);
+            }
+            this.create().innerHTML = this.statement.selector()
+                + '{'
+                + response.join(';')
+                + '}';
         };
         Style.prototype.create = function () {
             if (!this.e) {
@@ -640,8 +359,8 @@ var Mist;
         var response = {};
         for (var _i = 0, o_1 = o; _i < o_1.length; _i++) {
             var s = o_1[_i];
-            for (var name_5 in s) {
-                response[name_5] = s[name_5];
+            for (var name_4 in s) {
+                response[name_4] = s[name_4];
             }
         }
         return response;
@@ -654,26 +373,152 @@ var Mist;
 })(Mist || (Mist = {}));
 var Mist;
 (function (Mist) {
+    var Story = (function () {
+        function Story(statement) {
+            this.statement = statement;
+            this.conns = {};
+        }
+        Story.prototype.connect = function (s, e) {
+            this.conns[s] || (this.conns[s] = {});
+            this.conns[s][e] = e;
+        };
+        Story.prototype.move = function (name) {
+            var response = false;
+            var s = this;
+            var conns = s.conns[s.pos] || {};
+            if (conns[name]) {
+                s.pos = name;
+                response = true;
+            }
+            return response;
+        };
+        Story.prototype.start = function (name) {
+            this.pos = name;
+        };
+        return Story;
+    }());
+    Mist.Story = Story;
+})(Mist || (Mist = {}));
+var Mist;
+(function (Mist) {
+    var Wrapper;
+    (function (Wrapper) {
+        var Voker = (function () {
+            function Voker(component$) {
+                this.component$ = component$;
+                var s = this;
+                for (var name_5 in component$) {
+                    if (component$[name_5] instanceof Function) {
+                        s[name_5] = s.composer$.bind(s, name_5);
+                    }
+                    else {
+                        Object.defineProperty(s, name_5, {
+                            get: s.accessor$.bind(s, name_5)
+                        });
+                    }
+                }
+            }
+            Voker.prototype.accessor$ = function (name) {
+                return this.component$[name];
+            };
+            Voker.prototype.composer$ = function (name) {
+                var o = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    o[_i - 1] = arguments[_i];
+                }
+                var c = this.component$;
+                var m = this.component$[name];
+                return m.apply(c, o);
+            };
+            return Voker;
+        }());
+        Wrapper.Voker = Voker;
+    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
+})(Mist || (Mist = {}));
+var Mist;
+(function (Mist) {
+    var Wrapper;
+    (function (Wrapper) {
+        var Story = (function (_super) {
+            __extends(Story, _super);
+            function Story(statement, name$) {
+                _super.call(this, statement);
+                this.name$ = name$;
+                this.story$ = Mist.Component.create(Mist.Story, statement);
+            }
+            Story.prototype.move = function (succeed) {
+                var s = this.story$;
+                var n = this.name$;
+                var response = s.move(n);
+                if (response)
+                    succeed();
+                return response;
+            };
+            Story.prototype.next = function (story) {
+                var s = this.story$;
+                var n = this.name$;
+                s.connect(n, story.name$);
+                return story;
+            };
+            Story.prototype.prev = function (story) {
+                return story.next(this);
+            };
+            Story.prototype.start = function () {
+                var s = this.story$;
+                var n = this.name$;
+                s.start(n);
+            };
+            return Story;
+        }(Wrapper.Voker));
+        Wrapper.Story = Story;
+    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
+})(Mist || (Mist = {}));
+var Mist;
+(function (Mist) {
+    var Wrapper;
+    (function (Wrapper) {
+        var Timer = (function (_super) {
+            __extends(Timer, _super);
+            function Timer(component, dur$) {
+                if (dur$ === void 0) { dur$ = 0; }
+                _super.call(this, component);
+                this.dur$ = dur$;
+                this.id$ = 0;
+            }
+            Timer.prototype.composer$ = function (name) {
+                var o = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    o[_i - 1] = arguments[_i];
+                }
+                var s = this;
+                return new Wrapper.Defer(s.component$, new Mist.Promise(function (succeed, erred) {
+                    var c = s.component$;
+                    var m = s.component$[name];
+                    function responsor() {
+                        try {
+                            succeed(m.apply(c, o));
+                        }
+                        catch (e) {
+                            erred(e);
+                        }
+                    }
+                    clearTimeout(s.id$);
+                    s.id$ = setTimeout(responsor, s.dur$);
+                }));
+            };
+            return Timer;
+        }(Wrapper.Voker));
+        Wrapper.Timer = Timer;
+    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
+})(Mist || (Mist = {}));
+var Mist;
+(function (Mist) {
     var Statement = (function () {
         function Statement(statement) {
             this.statement = statement;
             this.emitter = new Mist.Emitter(this);
-            this.scene = new Mist.Scene(this);
             this.style = new Mist.Style(this);
-            new Mist.Recognizer.Pan(this.emitter);
-            new Mist.Recognizer.Swipe(this.emitter);
         }
-        Statement.prototype.a = function () {
-            var response;
-            var s = this.statement;
-            if (s instanceof Element) {
-                response = s;
-            }
-            else {
-                response = document.querySelector(s);
-            }
-            return response;
-        };
         Statement.prototype.any = function (selector) {
             return Mist.Component.create(Statement, this.selector().split(',').map(function (s) {
                 return selector.split(',').map(function (term) {
@@ -681,6 +526,18 @@ var Mist;
                         + term.trim();
                 }).join();
             }).join());
+        };
+        Statement.prototype.clear = function () {
+            var s = this.style;
+            var m = this.style.clear;
+            m.apply(s);
+            return this;
+        };
+        Statement.prototype.clearAll = function () {
+            var s = this.style;
+            var m = this.style.clearAll;
+            m.apply(s);
+            return this;
         };
         Statement.prototype.elements = function () {
             var response;
@@ -690,17 +547,6 @@ var Mist;
             }
             else {
                 response = [].map.call(document.querySelectorAll(s), function (element) { return element; });
-            }
-            return response;
-        };
-        Statement.prototype.last = function () {
-            var response;
-            var s = this.statement;
-            if (s instanceof Element) {
-                response = s;
-            }
-            else {
-                response = document.querySelector(s.match(/[^,]*$/).concat('last-of-type').join(':'));
             }
             return response;
         };
@@ -725,20 +571,32 @@ var Mist;
             }
             return response;
         };
+        Statement.prototype.set = function () {
+            var css = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                css[_i - 0] = arguments[_i];
+            }
+            var s = this.style;
+            var m = this.style.set;
+            m.apply(s, css);
+            return this;
+        };
+        Statement.prototype.setAll = function () {
+            var css = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                css[_i - 0] = arguments[_i];
+            }
+            var s = this.style;
+            var m = this.style.setAll;
+            m.apply(s, css);
+            return this;
+        };
         Statement.prototype.story = function (name) {
             return Mist.Component.create(Mist.Wrapper.Story, this, name);
         };
-        Statement.prototype.th = function (s, e) {
-            var response = [];
-            for (var n = s; n <= e; n++) {
-                response.push(this.any(Statement.nth
-                    + '('
-                    + n
-                    + ')'));
-            }
-            return response;
+        Statement.prototype.time = function (dur) {
+            return Mist.Component.create(Mist.Wrapper.Timer, this, dur);
         };
-        Statement.nth = ':nth-of-type';
         return Statement;
     }());
     Mist.Statement = Statement;
@@ -762,160 +620,51 @@ var Mist;
             })());
     }
 })(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Emitter = (function () {
-        function Emitter(statement) {
-            this.statement = statement;
-            this.emits = {};
-            this.obss = {};
-        }
-        Emitter.customize = function (name, options) {
-            if (options === void 0) { options = {}; }
-            var e = document.createEvent('CustomEvent');
-            e.initCustomEvent(name, options.bubbles || true, options.cancelable || true, options.detail);
-            return e;
-        };
-        Emitter.prototype.add = function (name, listener) {
-            this.obss[name] || (this.obss[name] = []);
-            this.obss[name].push(listener);
-            this.on(name);
-        };
-        Emitter.prototype.emit = function (name, response) {
-            for (var i in this.obss[name]) {
-                this.obss[name][i](response);
-            }
-        };
-        Emitter.prototype.remove = function (name, listener) {
-            var o = this.obss[name];
-            function composer() {
-                var i = o.indexOf(listener);
-                i < 0 || o.splice(i, 1);
-            }
-            o && listener ? composer() : o = null;
-        };
-        Emitter.prototype.on = function (name) {
-            var _this = this;
-            var o = this.emits;
-            o[name] || document.addEventListener(name, o[name] = function (e) {
-                var element = e.target;
-                if (element instanceof Element) {
-                    if (element.closest(_this.selector())) {
-                        _this.emit(name, e instanceof CustomEvent ?
-                            e.detail :
-                            e);
-                    }
-                }
-            });
-        };
-        Emitter.prototype.selector = function () {
-            var response;
-            var s = this.statement;
-            if (s instanceof Mist.Statement) {
-                response = s.selector();
-            }
-            else {
-                response = s;
-            }
-            return response;
-        };
-        return Emitter;
-    }());
-    Mist.Emitter = Emitter;
-})(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Emission = (function (_super) {
-        __extends(Emission, _super);
-        function Emission(emitter, name) {
-            _super.call(this, function (succeed, erred) {
-                emitter.add(name, function (response) {
-                    try {
-                        succeed(response);
-                    }
-                    catch (e) {
-                        erred(e);
-                    }
-                });
-            });
-            this.emitter = emitter;
-            this.name = name;
-        }
-        return Emission;
-    }(Mist.Promise));
-    Mist.Emission = Emission;
-})(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Recognizer;
-    (function (Recognizer) {
-        var Pan = (function () {
-            function Pan(emitter) {
-                this.emitter = emitter;
-                this.end();
-                this.move();
-                this.start();
-            }
-            Pan.prototype.end = function () {
-                var s = this;
-                function responsor(e) {
-                    if (s.sess) {
-                        var r = s.prev.diff(e);
-                        s.emitter.emit('pan', r);
-                        s.emitter.emit('panend', r);
-                        s.sess = false;
-                    }
-                }
-                new Mist.Emission(Mist.Component.create(Mist.Emitter, '*'), 'mouseup').when(responsor);
-                new Mist.Emission(s.emitter, 'touchend').when(prevent).when(responsor);
-            };
-            Pan.prototype.move = function () {
-                var s = this;
-                function responsor(e) {
-                    if (s.sess) {
-                        var r = s.prev.diff(e);
-                        s.emitter.emit('panmove', r);
-                        if (r.move.x < 0)
-                            s.emitter.emit('panleft', r);
-                        if (r.move.x > 0)
-                            s.emitter.emit('panright', r);
-                        if (r.move.y < 0)
-                            s.emitter.emit('panup', r);
-                        if (r.move.y > 0)
-                            s.emitter.emit('pandown', r);
-                        s.prev = r;
-                    }
-                }
-                new Mist.Emission(s.emitter, 'mousemove').when(responsor);
-                new Mist.Emission(s.emitter, 'touchmove').when(prevent).when(responsor);
-            };
-            Pan.prototype.start = function () {
-                var s = this;
-                function responsor(e) {
-                    var r = new Recognizer.Summary(e);
-                    s.emitter.emit('panstart', r);
-                    s.prev = r;
-                    s.sess = true;
-                }
-                new Mist.Emission(s.emitter, 'mousedown').when(responsor);
-                new Mist.Emission(s.emitter, 'touchstart').when(prevent).when(responsor);
-            };
-            return Pan;
-        }());
-        Recognizer.Pan = Pan;
-        function prevent(e) {
-            e.preventDefault();
-            return e;
-        }
-    })(Recognizer = Mist.Recognizer || (Mist.Recognizer = {}));
-})(Mist || (Mist = {}));
 /*!
  * @copyright AI428
- * @description Modular CSS in JS
+ * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.7.0
+ * @version 0.8.0
  */
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);
 }
+var Mist;
+(function (Mist) {
+    var Wrapper;
+    (function (Wrapper) {
+        var Defer = (function (_super) {
+            __extends(Defer, _super);
+            function Defer(component, commit$) {
+                _super.call(this, component);
+                this.commit$ = commit$;
+            }
+            Defer.prototype.catch = function (err) {
+                return new Defer(this.component$, this.commit$.catch(err));
+            };
+            Defer.prototype.composer$ = function (name) {
+                var o = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    o[_i - 1] = arguments[_i];
+                }
+                var s = this;
+                return new Defer(s.component$, s.commit$.when(function (response) {
+                    var r;
+                    if (response instanceof Wrapper.Voker) {
+                        r = response[name].apply(response, o);
+                    }
+                    else {
+                        r = s.component$[name].apply(s.component$, o);
+                    }
+                    if (r instanceof Defer) {
+                        return r.commit$;
+                    }
+                    return r;
+                }));
+            };
+            return Defer;
+        }(Wrapper.Voker));
+        Wrapper.Defer = Defer;
+    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
+})(Mist || (Mist = {}));

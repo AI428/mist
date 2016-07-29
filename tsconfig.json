@@ -10,30 +10,24 @@
         "target": "es5"
     },
     "filesGlob": [
-        "src/mist/recognizer/*.ts",
-        "src/mist/wrapper/*.ts",
+        "src/mist.ts",
         "src/mist/*.ts",
-        "src/mist.ts"
+        "src/mist/wrapper/*.ts"
     ],
     "files": [
-        "src/mist/recognizer/pan.ts",
-        "src/mist/recognizer/summary.ts",
-        "src/mist/recognizer/swipe.ts",
-        "src/mist/wrapper/pulser.ts",
-        "src/mist/wrapper/story.ts",
-        "src/mist/wrapper/timer.ts",
-        "src/mist/wrapper/voker.ts",
+        "src/mist.ts",
         "src/mist/component.ts",
         "src/mist/element.ts",
         "src/mist/emission.ts",
         "src/mist/emitter.ts",
-        "src/mist/frame.ts",
         "src/mist/promise.ts",
-        "src/mist/scene.ts",
         "src/mist/statement.ts",
+        "src/mist/story.ts",
         "src/mist/style.ts",
-        "src/mist/value.ts",
-        "src/mist.ts"
+        "src/mist/wrapper/defer.ts",
+        "src/mist/wrapper/story.ts",
+        "src/mist/wrapper/timer.ts",
+        "src/mist/wrapper/voker.ts"
     ],
     "scripts": {
         "postbuild": "uglifyjs dist/mist.js --comments -c -m -o dist/mist.min.js"

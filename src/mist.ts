@@ -1,9 +1,9 @@
 /*!
  * @copyright AI428
- * @description Modular CSS in JS
+ * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.7.0
+ * @version 0.8.0
  */
 
 /// <reference path='mist/component.ts'/>

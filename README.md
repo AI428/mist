@@ -1,266 +1,156 @@
-![mist.svg](https://rawgit.com/AI428/mist/master/img/icon.png)
+![mist.svg](https://rawgit.com/AI428/mist/master/doc/img/icon.png)
 
 [![npm version](https://badge.fury.io/js/mist.js.svg)](https://badge.fury.io/js/mist.js)
 
 # MIST
 
-> _Modular CSS in JS_
+> _Motion Design in Modular CSS_
 
-Mist is a modular CSS library that uses JavaScript.
+Mist is a motion design library that uses modular CSS
+
+## QUICK START
 
 ```
 npm install mist.js --save
 ```
 
-## MAKE MODULAR CSS
+## FEATURES
 
-First, a CSS in a primitive object.
+- _Using Modular CSS_
+- _Using Style Tag_
+- _Timing Control_
 
-```javascript
+TL;DR [demo](//github.com/AI428/mist/master/doc)
 
-var center = {
+## SUPPORTED BROWSER
 
-  left: '50%',
-  position: 'absolute',
-  top: '50%',
-  transform: 'translate3d(-50%, -50%, 0)'
-};
-```
+- _Chrome_
+- _Edge_
+- _Firefox_
+- _IE_
+- _Safari_
 
-Next, select what you want to style in the CSS selector or `Element`. This is referred to as the `statement`.
+## USAGE
 
-```javascript
-
-var statement = mist('div');
-
-// After only pass the objects
-
-statement.style.set(center);
-```
-
-This can be pass more than one object, if you want to overwrite only specific properties, is as follows.
+Make modular CSS
 
 ```javascript
-
-statement.style.set(center, {
-
-  position: 'relative'
-});
-```
-
-It's same as follows.
-
-```javascript
-
-statement.style.set(center);
-statement.style.add({ position: 'relative' });
-```
-
-### _If you want to define a more interactive modular CSS_
-
-If you want to define a more interactive modular CSS, pass the `Function` to the value of CSS. `Function` is evaluated just to pass.
-
-```javascript
-
 var vivid = {
 
   background: function() {
 
-    var r = Math.random();
-    var n = Math.ceil(r * 255);
+    var h = (Math.random() * 360).toFixed(0);
 
-    return `rgb(${n},${n},${n})`;
+    return `hsl(${h}, 50%, 50%)`;
   }
-};
-
-statement.style.set(vivid);
+}
 ```
 
-### _If you want timing control_
-
-Validation, etc., if you want to apply for a few seconds CSS, you need timing control.
+Design motion
 
 ```javascript
-
-var redden = {
-
-  background: 'red'
-};
-
-// Only 3 seconds if you want to red background
-
-statement.style.set(redden).then(
-
-  function(style) {
-
-    style.time(3000).set({});
-  }
-);
+mist('div')
+  .set(vivid).time(1000)
+  .set(vivid).time(1000).clear();
 ```
 
-It can also be unflag.
+## API
 
-```javascript
+### `mist(statement): new`
 
-// At 3 seconds intervals
+New instance
 
-statement.style.pulse(3000).set(redden).when(
+_param_   | _type_
+--------- | ----------------------------
+statement | selector `string`, `element`
+new       | new `mist`
 
-  function(style) {
+### `any(selector): new`
 
-    style.time(1500).set({});
-  }
-);
-```
+Same as :any selector
 
-If you want to stop the pulser, is as follows.
+_param_  | _type_
+-------- | ----------
+selector | `string`
+new      | new `mist`
 
-```javascript
+### `not(selector): new`
 
-var pulser = statement.style.pulse(3000);
+Same as :not selector
 
-pulser.stop();
-```
+_param_  | _type_
+-------- | ----------
+selector | `string`
+new      | new `mist`
 
-## SELECT WHAT YOU WANT TO STYLE
+### `clear(): self`
 
-### `any`
+Clear modular CSS
 
-This like a `:matches` of CSS Selectors Level 4.
+### `clearAll(): self`
 
-```javascript
+Clear modular CSS each elements
 
-var statement = mist('a, b').any('.c, .d');
-var statement = mist('a.c, a.d, b.c, b.d'); // same as
-```
+### `on(name): promise`
 
-### `not`
+Listen event emission
 
-This like a `:not` of CSS Selectors Level 4.
+_param_ | _type_
+------- | -------------------------
+name    | `string`
+promise | [see](#using-the-promise)
 
-```javascript
+### `set(...css): self`
 
-var statement = mist('a, b').not('.c, .d');
-var statement = mist('a:not(.c), a:not(.d), b:not(.c), b:not(.d)'); // same as
-```
+Set modular CSS
 
-### `th`
+_param_ | _type_
+------- | ---------------------------------------------------
+css     | `{ "name": string }`, `{ "name": (now) => string }`
 
-If you select multiple times `:nth-of-type`, to use.
+### `setAll(...css): self`
 
-```javascript
+Set modular CSS each elements
 
-var statements = mist('a').th(1, 2); // pass start, end number
-var statements = [
-  mist('a:nth-of-type(1)'),
-  mist('a:nth-of-type(2)')
-]; // same as
-```
+_param_ | _type_
+------- | ---------------------------------------------------------------
+css     | `{ "name": string }`, `{ "name": (element, i, all) => string }`
 
-## USING THE EVENT
+### `time(dur): self`
 
-### `on`
+Delay execution
 
-If you define a more interactive modular CSS using the event, to use.
-
-```javascript
-
-var promise = mist('a').on('click');
-
-promise.then(
-
-  function(event) {
-
-    // your process
-  }
-);
-`
-```
+_param_ | _type_
+------- | ---------------------
+dur     | milliseconds `number`
 
 ## USING THE PROMISE
 
-This like a [Promise / A+](//promisesaplus.com/). The results of the css updates and event control handled async. Here, explaining features this library is extended.
+This library's promise like a [Promise / A+](//promisesaplus.com/), it's extended functions
 
-### `resume`
+### `resume()`
 
-The fullfilled or rejected the promise back to pending.
+The fullfilled or rejected promise back to pending
 
 ```javascript
-
-var promise = mist('a').on('click');
-
-promise.then(
-
-  function(event) {
-
-    // If you want to reuse the callback function, to use
-
-    promise.resume();
-  }
-);
+mist('div').on('click').then(function(e) { /** your process */ });
+mist('div').on('click').resume();
 ```
 
-### `when`
+### `when(success, err?): promise`
 
-If you want to reuse the callback function, to use.
+If you want to reuse callback function, to use
 
-```javascript
-
-var promise = mist('a').on('click');
-
-promise.when(function(e) { /** your process */ });
-promise.then(function(e) { /** your process */ promise.resume() }); // same as
-```
-
-## USE THE STORY
-
-Login, prevention double-press of the button, etc., if you want to control in another, to use.
+_param_ | _type_
+------- | -------------------
+success | `(response) => any`
+err     | `(response) => any`
 
 ```javascript
-
-// Build scene A > B > C
-
-statement.story('A')
-  .next(statement.story('B'))
-  .next(statement.story('C'));
-
-statement.story('C')
-  .prev(statement.story('B'))
-  .prev(statement.story('A')); // same as
-
-// Throw error, because story has not started yet
-
-statement.story('A').style.set({});
-
-// Story A has started
-
-statement.scene.start('A');
-
-// Not throw error, because story has started
-
-statement.story('A').style.set({});
-```
-
-If you move to the next story, just call the method or property.
-
-```javascript
-
-// Move to the story B
-
-statement.story('B').style.set({});
-
-// However, do not go back to the story A, throw error
-
-statement.story('A').style.set({});
-```
-
-If you end the story, is as follows.
-
-```javascript
-
-statement.scene.end();
+mist('div').on('click').when(function(e) { /** your process */ });
+mist('div').on('click').then(function(e) { /** your process */ mist('div').on('click').resume(); }); // same as
 ```
 
 ## LICENSE
 
-This is released under the [MIT](//opensource.org/licenses/MIT). © AI428
+[MIT](//opensource.org/licenses/MIT) © AI428

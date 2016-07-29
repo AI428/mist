@@ -3,16 +3,18 @@
     "bugs": {
         "url": "https://github.com/AI428/mist/issues"
     },
-    "description": "Modular CSS in JS",
+    "description": "Motion Design in Modular CSS",
     "devDependencies": {
         "typescript": ">=1.8.10",
         "uglify-js": ">=2.6.2"
     },
     "keywords": [
         "css",
+        "design",
         "js",
         "mist",
         "modular",
+        "motion",
         "style",
         "typescript"
     ],
@@ -24,5 +26,5 @@
         "url": "https://github.com/AI428/mist"
     },
     "typings": "dist/mist",
-    "version": "0.7.0"
+    "version": "0.8.0"
 }
