@@ -20,40 +20,40 @@ namespace Mist {
                     if (component$[name] instanceof Function) {
 
                         // composer
-                        s[name] = function(...o: any[]) {
+                        s[name] = s.composer$.bind(
+                            s, name);
 
-                            return s.compose$(
-                                component$[name].bind(
-                                    component$), o);
-                        };
                     } else {
 
                         Object.defineProperty(
                             s, name, {
                                 get: s.accessor$.bind(
-                                    s, component$[name])
+                                    s, name)
                             });
                     }
                 }
             }
 
             /**
-            * @param {} o
+            * @param {} name
             * @summary for override
             */
-            protected accessor$(o: any) {
+            protected accessor$(name: string) {
 
-                return o; // passthru
+                return this.component$[name];
             }
 
             /**
-            * @param {} composer
+            * @param {} name
             * @param {} o
             * @summary for override
             */
-            protected compose$(composer: any, o: any[]) {
+            protected composer$(name: string, ...o: any[]) {
 
-                return composer.apply(composer, o);
+                var c = this.component$;
+                var m = this.component$[name];
+
+                return m.apply(c, o);
             }
         }
     }
