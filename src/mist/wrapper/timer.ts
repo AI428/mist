@@ -11,9 +11,6 @@ namespace Mist {
         */
         export class Timer extends Voker {
 
-            /**
-            * @access private
-            */
             private id$: number = 0;
 
             /**
@@ -27,52 +24,47 @@ namespace Mist {
             }
 
             /**
-            * @summary for reuse
-            */
-            stop() {
-
-                clearTimeout(this.id$);
-            }
-
-
-            /**
-            * @param {} composer
+            * @param {} name
             * @param {} o
             */
-            protected compose$(composer: any, o: any[]) {
+            protected composer$(name: string, ...o: any[]) {
 
                 var s = this;
 
-                // ser
-
-                s.stop();
-
                 // {} response
 
-                return new Promise(
+                return new Defer(
 
-                    function(
+                    s.component$, new Promise(
 
-                        succeed,
-                        erred
-                    ) {
+                        function(
 
-                        function responsor() {
+                            succeed,
+                            erred
+                        ) {
 
-                            try {
-                                // commit response
-                                succeed(composer.apply(composer, o));
+                            var c = s.component$;
+                            var m = s.component$[name];
 
-                            } catch (e) {
+                            function responsor() {
 
-                                // fail response
-                                erred(e);
+                                try {
+                                    // commit response
+                                    succeed(m.apply(c, o));
+
+                                } catch (e) {
+
+                                    // fail response
+                                    erred(e);
+                                }
                             }
-                        }
 
-                        // lazy response
-                        s.id$ = setTimeout(responsor, s.dur$);
-                    });
+                            // ser
+                            clearTimeout(s.id$);
+
+                            // lazy response
+                            s.id$ = setTimeout(responsor, s.dur$);
+                        }));
             }
         }
     }
