@@ -50,9 +50,7 @@ var vivid = {
 Design motion
 
 ```javascript
-mist('div')
-  .set(vivid).time(1000)
-  .set(vivid).time(1000).clear();
+mist('div').set(vivid).time(1000).set(vivid).time(1000).clear();
 ```
 
 ### `mist(statement): new`
@@ -165,11 +163,7 @@ mist('div').on('click').then(function(e) { /** your process */ mist('div').on('c
 This library's story like a state machine
 
 ```javascript
-var m = mist('div');
-
-m.story('A')
-  .next(m.story('B'))
-  .next(m.story('A')).start();
+mist('div').story('A').next(mist('div').story('B')).next(mist('div').story('A')).start();
 ```
 
 Every time you click, the process move to a another story
@@ -179,8 +173,8 @@ mist('*').on('click').when(function() {
 
   // connect to B > A > B > A > ...
 
-  m.story('A').move(function() { /** your process on A story */ }) ||
-  m.story('B').move(function() { /** your process on B story */ });
+  mist('div').story('A').move(function() { /** your process on A story */ }) ||
+  mist('div').story('B').move(function() { /** your process on B story */ });
 });
 ```
 
@@ -207,11 +201,7 @@ _param_ | _type_
 story   | next `story`
 
 ```javascript
-var m = mist('div');
-
-m.story('A')
-  .next(m.story('B'))
-  .next(m.story('C'));
+mist('div').story('A').next(mist('div').story('B')).next(mist('div').story('C'));
 ```
 
 ### `prev(story): story`
@@ -223,11 +213,7 @@ _param_ | _type_
 story   | prev `story`
 
 ```javascript
-var m = mist('div');
-
-m.story('C')
-  .prev(m.story('B'))
-  .prev(m.story('A'));
+mist('div').story('C').prev(mist('div').story('B')).prev(mist('div').story('A'));
 ```
 
 ### `start()`
