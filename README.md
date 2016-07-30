@@ -21,7 +21,7 @@ npm install mist.js --save
 - _State Control_
 - _Timing Control_
 
-TL;DR [demo](//github.com/AI428/mist/tree/master/doc)
+TL;DR [demo](//codepen.io/AI428/pen/dXjVKg)
 
 ## SUPPORTED BROWSER
 
