@@ -69,8 +69,6 @@ mist('div')
   .clear();
 ```
 
-For more information
-
 <br>
 
 ### `mist(statement): new`
@@ -85,6 +83,16 @@ New instance
 <br>
 
 ## API
+
+-   [_any_](#anyselector-new)
+-   [_not_](#notselector-new)
+-   [_clear_](#clear-self)
+-   [_clearAll_](#clearall-self)
+-   [_on_](#onname-promise)
+-   [_set_](#setcss-self)
+-   [_setAll_](#setallcss-self)
+-   [_story_](#storyname-story)
+-   [_time_](#timedur-self)
 
 <br>
 
@@ -191,7 +199,7 @@ misty.on('click').then(
 
   function(e) {
 
-    /** your process */
+    /* your process */
 
     misty.on('click').resume();
   });
@@ -209,24 +217,11 @@ If you want to reuse callback function, to use
 | err     | `(response) => any` |
 
 ```javascript
-var misty = mist('div');
-
-misty.on('click').when(
+mist('div').on('click').when(
 
   function(e) {
 
-    /** your process */
-  });
-
-// same as
-
-misty.on('click').then(
-
-  function(e) {
-
-    /** your process */
-
-    misty.on('click').resume();
+    /* your process */
   });
 ```
 
@@ -239,10 +234,11 @@ This library's story like a state machine
 ```javascript
 var misty = mist('div');
 
-// rotation story
-misty.story('A').next(
-  misty.story('B')).next(
-    misty.story('A')).start();
+var A = misty.story('A');
+var B = misty.story('B');
+
+// connect story
+A.next(B).next(A).start();
 ```
 
 Every time you click, the process move to a another story
@@ -250,13 +246,22 @@ Every time you click, the process move to a another story
 ```javascript
 mist('*').on('click').when(
 
+  // move to alt A, B
   function() {
 
-    // connect to B, A, B, ...
-    misty.story('A').move(function() {
-      /** your process on A story */ }) ||
-    misty.story('B').move(function() {
-      /** your process on B story */ });
+    misty.story('A').move(
+
+      function() {
+
+        /* your process */
+      }) ||
+
+    misty.story('B').move(
+    
+      function() {
+
+        /* your process */
+      });
 });
 ```
 
