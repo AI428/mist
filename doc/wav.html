@@ -14,14 +14,14 @@
 
         .wav> div {
             float: left;
-            height: 4em;
-            width: .5em
+            height: 8em;
+            width: 1em;
         }
 
         .wav> div> i {
             bottom: 0;
             position: absolute;
-            width: .5em;
+            width: 1em;
         }
 
         .wav> div> i:before {
@@ -99,23 +99,23 @@
 
                     height: function(element) {
 
-                        var t = parseInt(getComputedStyle(element).height);
-                        var b = t / split;
+                        var h = parseInt(getComputedStyle(element).height);
+                        var l = h / split;
 
                         // pseudo response
 
                         mist(element).any(':before').set({
 
-                            bottom: t + 'px',
+                            bottom: h + 'px',
                             transition: 'none'
 
                         }).time(s).set({
 
-                            bottom: b + 'px',
-                            transition: speed + 'ms steps(' + t + ')'
+                            bottom: l + 'px',
+                            transition: speed + 'ms steps(' + h + ')'
                         });
 
-                        return b + 'px';
+                        return l + 'px';
                     },
 
                     transition: e + 'ms'
