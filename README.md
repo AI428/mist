@@ -193,15 +193,15 @@ This library's promise like a [Promise / A+](//promisesaplus.com/), it's extende
 The fullfilled or rejected promise back to pending
 
 ```javascript
-var misty = mist('div');
+var promise = mist('div').on('click');
 
-misty.on('click').then(
+promise.then(
 
   function(e) {
 
     /* your process */
 
-    misty.on('click').resume();
+    promise.resume();
   });
 ```
 
@@ -234,6 +234,7 @@ This library's story like a state machine
 ```javascript
 var misty = mist('div');
 
+// make story
 var A = misty.story('A');
 var B = misty.story('B');
 
@@ -246,22 +247,13 @@ Every time you click, the process move to a another story
 ```javascript
 mist('*').on('click').when(
 
-  // move to alt A, B
   function() {
 
-    misty.story('A').move(
-
-      function() {
-
-        /* your process */
-      }) ||
-
-    misty.story('B').move(
-    
-      function() {
-
-        /* your process */
-      });
+    // move to alternate
+    misty.story('A').move(function() {
+      /* your process */ }) ||
+    misty.story('B').move(function() {
+      /* your process */ });
 });
 ```
 
