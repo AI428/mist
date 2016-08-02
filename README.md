@@ -23,7 +23,7 @@ Mist is a motion design library that uses modular CSS
 -   _State Control_
 -   _Timing Control_
 
-TL;DR [demo](//codepen.io/AI428/pen/dXjVKg)
+TL;DR [demo](//codepen.io/collection/DNzaQb/)
 
 <br>
 
