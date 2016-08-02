@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>MIST, Motion Design in Modular CSS</title>
+    <style>
+        main {
+            backface-visibility: hidden;
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate3d(-50%, -50%, 0);
+        }
+
+        .wav> div {
+            float: left;
+            height: 4em;
+            width: .5em
+        }
+
+        .wav> div> i {
+            bottom: 0;
+            position: absolute;
+            width: .5em;
+        }
+
+        .wav> div> i:before {
+            background: inherit;
+            content: '';
+            height: 1px;
+            position: absolute;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <main class='wav'>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+    </main>
+    <script src='../dist/mist.js'></script>
+    <script>
+        window.addEventListener('load', function() {
+
+            var r = document.querySelector('.wav> div').getBoundingClientRect();
+
+            var mh = r.height;
+
+            var speed = 500;
+            var split = 5;
+
+            var s = speed / split;
+            var e = speed;
+
+            var statement = mist('.wav> div> i');
+
+            (function responsor() {
+
+                statement.setAll({
+
+                    height: function(element) {
+
+                        return (Math.random() * 100).toFixed(2) + '%';
+                    },
+
+                    transition: s + 'ms cubic-bezier(0.95, 0.05, 0.795, 0.035)'
+
+                }).time(s).setAll({
+
+                    background: function(element, i) {
+
+                        var r = element.getBoundingClientRect();
+
+                        return 'hsl(' + i + ', ' + ((r.height / mh) * 100).toFixed(2) + '%, 66%)';
+                    },
+
+                    height: function(element) {
+
+                        var t = parseInt(getComputedStyle(element).height);
+                        var b = t / split;
+
+                        // pseudo response
+
+                        mist(element).any(':before').set({
+
+                            bottom: t + 'px',
+                            transition: 'none'
+
+                        }).time(s).set({
+
+                            bottom: b + 'px',
+                            transition: speed + 'ms steps(' + t + ')'
+                        });
+
+                        return b + 'px';
+                    },
+
+                    transition: e + 'ms'
+                });
+
+                setTimeout(responsor, speed);
+            })();
+        });
+    </script>
+</body>
+
+</html>
