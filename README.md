@@ -235,10 +235,12 @@ This library's story like a state machine
 var misty = mist('div');
 
 // make story
+
 var A = misty.story('A');
 var B = misty.story('B');
 
 // connect story
+
 A.next(B).next(A).start();
 ```
 
@@ -250,10 +252,14 @@ mist('*').on('click').when(
   function() {
 
     // move to alternate
-    misty.story('A').move(function() {
-      /* your process */ }) ||
-    misty.story('B').move(function() {
-      /* your process */ });
+
+    A.move(function() {
+
+        /* your process */ }) ||
+
+    B.move(function() {
+
+        /* your process */ });
 });
 ```
 
