@@ -15,6 +15,7 @@
         .wav> div {
             float: left;
             height: 4em;
+            overflow: hidden;
             width: .5em;
         }
 
@@ -73,15 +74,43 @@
     <script>
         window.addEventListener('load', function() {
 
-            var m = document.querySelector('.wav> div').getBoundingClientRect().height;
+            var S = 500;
+            var T = 5;
 
-            var s = 500;
-            var t = 5;
+            var A = S / T;
+            var R = S;
 
-            // timing
+            var Y = (function() {
 
-            var a = s / t;
-            var r = s;
+                var n = document.querySelector('.wav> div');
+                var r = n.getBoundingClientRect();
+
+                return r.height;
+            })();
+
+            function sat(e) {
+
+                var r = e.getBoundingClientRect();
+                var h = r.height;
+
+                return ((h / Y) * 100).toFixed(2);
+            }
+
+            function topper(e, h, l) {
+
+                // for pseudo
+
+                mist(e).any(':before').set({
+
+                    bottom: h + 'px',
+                    transition: 0
+
+                }).time(A).set({
+
+                    bottom: l + 'px',
+                    transition: R + 'ms steps(' + h + ')'
+                });
+            }
 
             (function responsor() {
 
@@ -89,47 +118,41 @@
 
                     height: function() {
 
+                        // long response
+
                         return (Math.random() * 100).toFixed(2) + '%';
                     },
 
-                    transition: a + 'ms cubic-bezier(0.95, 0.05, 0.795, 0.035)'
+                    transition: A + 'ms cubic-bezier(0.95, 0.05, 0.795, 0.035)'
 
-                }).time(a).setAll({
+                }).time(A).setAll({
 
                     background: function(e, i) {
 
-                        // random color
+                        // vivid color
 
-                        return 'hsl(' + i + ', ' + ((e.getBoundingClientRect().height / m) * 100).toFixed(2) + '%, 66%)';
+                        return 'hsl(' + i + ', ' + sat(e) + '%, 66%)';
                     },
 
                     height: function(e) {
 
-                        var h = e.getBoundingClientRect().height.toFixed(0);
-                        var l = h / t;
+                        var r = e.getBoundingClientRect();
+                        var h = r.height.toFixed(0);
+                        var l = h / T;
 
                         // for pseudo
 
-                        mist(e).any(':before').set({
+                        topper(e, h, l);
 
-                            bottom: h + 'px',
-                            transition: 0
-
-                        }).time(a).set({
-
-                            bottom: l + 'px',
-                            transition: r + 'ms steps(' + h + ')'
-                        });
-
-                        // low response
+                        // short response
 
                         return l + 'px';
                     },
 
-                    transition: r + 'ms'
+                    transition: R + 'ms'
                 });
 
-                setTimeout(responsor, s);
+                setTimeout(responsor, S);
             })();
         });
     </script>
