@@ -14,14 +14,14 @@
 
         .wav> div {
             float: left;
-            height: 8em;
-            width: 1em;
+            height: 4em;
+            width: .5em;
         }
 
         .wav> div> i {
             bottom: 0;
             position: absolute;
-            width: 1em;
+            width: .5em;
         }
 
         .wav> div> i:before {
@@ -60,68 +60,76 @@
         <div><i></i></div>
         <div><i></i></div>
         <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
+        <div><i></i></div>
     </main>
     <script src='../dist/mist.js'></script>
     <script>
         window.addEventListener('load', function() {
 
-            var r = document.querySelector('.wav> div').getBoundingClientRect();
+            var m = document.querySelector('.wav> div').getBoundingClientRect().height;
 
-            var mh = r.height;
+            var s = 500;
+            var t = 5;
 
-            var speed = 500;
-            var split = 5;
+            // timing
 
-            var s = speed / split;
-            var e = speed;
-
-            var statement = mist('.wav> div> i');
+            var a = s / t;
+            var r = s;
 
             (function responsor() {
 
-                statement.setAll({
+                mist('.wav> div> i').setAll({
 
-                    height: function(element) {
+                    height: function() {
 
                         return (Math.random() * 100).toFixed(2) + '%';
                     },
 
-                    transition: s + 'ms cubic-bezier(0.95, 0.05, 0.795, 0.035)'
+                    transition: a + 'ms cubic-bezier(0.95, 0.05, 0.795, 0.035)'
 
-                }).time(s).setAll({
+                }).time(a).setAll({
 
-                    background: function(element, i) {
+                    background: function(e, i) {
 
-                        var r = element.getBoundingClientRect();
+                        // random color
 
-                        return 'hsl(' + i + ', ' + ((r.height / mh) * 100).toFixed(2) + '%, 66%)';
+                        return 'hsl(' + i + ', ' + ((e.getBoundingClientRect().height / m) * 100).toFixed(2) + '%, 66%)';
                     },
 
-                    height: function(element) {
+                    height: function(e) {
 
-                        var h = parseInt(getComputedStyle(element).height);
-                        var l = h / split;
+                        var h = e.getBoundingClientRect().height.toFixed(0);
+                        var l = h / t;
 
-                        // pseudo response
+                        // for pseudo
 
-                        mist(element).any(':before').set({
+                        mist(e).any(':before').set({
 
                             bottom: h + 'px',
-                            transition: 'none'
+                            transition: 0
 
-                        }).time(s).set({
+                        }).time(a).set({
 
                             bottom: l + 'px',
-                            transition: speed + 'ms steps(' + h + ')'
+                            transition: r + 'ms steps(' + h + ')'
                         });
+
+                        // low response
 
                         return l + 'px';
                     },
 
-                    transition: e + 'ms'
+                    transition: r + 'ms'
                 });
 
-                setTimeout(responsor, speed);
+                setTimeout(responsor, s);
             })();
         });
     </script>
