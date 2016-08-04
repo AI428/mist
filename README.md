@@ -185,7 +185,7 @@ promise.then(
 
   function(e) {
 
-    /* your process */
+    // your process
 
     promise.resume();
   });
@@ -206,7 +206,7 @@ mist('div').on('click').when(
 
   function(e) {
 
-    /* your process */
+    // your process
   });
 ```
 
@@ -244,13 +244,13 @@ mist('*').on('click').when(
 
       function() {
 
-        /* your process */
+        // your process
       }) ||
     B.move(
 
       function() {
 
-        /* your process */
+        // your process
       });
 });
 ```
