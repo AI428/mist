@@ -106,7 +106,7 @@ _param_  | _type_
 selector | `string`
 new      | new `mist`
 
-Same as **:any** selector
+Same as :any selector
 
 ### _`not( selector ): new`_
 
@@ -115,7 +115,7 @@ _param_  | _type_
 selector | `string`
 new      | new `mist`
 
-Same as **:not** selector
+Same as :not selector
 
 ### _`clear(): self`_
 
