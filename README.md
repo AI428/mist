@@ -37,7 +37,6 @@ Make modular CSS
 
 ```javascript
 
-// modular
 var vivid = {
 
   background: function() {
@@ -54,7 +53,6 @@ Design motion
 
 ```javascript
 
-// motion
 mist('div')
 
   // set color, wait 1s
@@ -219,18 +217,13 @@ This library's story like a state machine
 var misty = mist('div');
 
 // make story
+misty.story('A')
 
-var A = misty.story('A');
-var B = misty.story('B');
-
-// connect story
-A
+  // connect to A story
+  .next(misty.story('B'))
 
   // connect to B story
-  .next(B)
-
-  // connect to B story
-  .next(A)
+  .next(misty.story('A'))
 
   // start A story
   .start();
@@ -239,17 +232,18 @@ A
 Every time you click, the process move to a another story
 
 ```javascript
+
 mist('*').on('click').when(
 
   function() {
 
     // try move to
-    A.move(
+    misty.story('A').move(
 
       function() {
         // your process
       }) ||
-    B.move(
+    misty.story('B').move(
 
       function() {
         // your process
