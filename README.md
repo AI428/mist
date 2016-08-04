@@ -8,47 +8,43 @@
 
 Mist is a motion design library that uses modular CSS
 
-<br>
+## Quick start
 
-## QUICK START
+```
+npm install mist.js --save
+```
 
-    npm install mist.js --save
+## Features
 
-<br>
-
-## FEATURES
-
--   _Using Modular CSS_
--   _Using Style Tag_
--   _State Control_
--   _Timing Control_
+- _Using Modular CSS_
+- _Using Style Tag_
+- _State Control_
+- _Timing Control_
 
 TL;DR [demo](//codepen.io/collection/DNzaQb/)
 
-<br>
+## Supported browser
 
-## SUPPORTED BROWSER
+- _Chrome_
+- _Edge_
+- _Firefox_
+- _IE_
+- _Safari_
 
--   _Chrome_
--   _Edge_
--   _Firefox_
--   _IE_
--   _Safari_
-
-<br>
-
-## USAGE
+## Usage
 
 Make modular CSS
 
 ```javascript
+
+// modular
 var vivid = {
 
   background: function() {
 
     var h = (Math.random() * 360).toFixed(0);
 
-    // random color
+    // vivid color
     return `hsl(${h}, 50%, 50%)`;
   }
 }
@@ -57,142 +53,132 @@ var vivid = {
 Design motion
 
 ```javascript
+
+// motion
 mist('div')
 
-  // set random color, wait 1s
+  // set color, wait 1s
   .set(vivid).time(1000)
 
-  // set random color, wait 1s
+  // set color, wait 1s
   .set(vivid).time(1000)
 
   // clear style
   .clear();
 ```
 
-<br>
+Repeat this two-step, to build an interaction
 
-### `mist(statement): new`
+### _`mist( statement ): new`_
+
+_param_   | _type_
+--------- | ----------------------------
+statement | selector `string`, `element`
+new       | new `mist`
 
 New instance
 
-| _param_   | _type_                       |
-| --------- | ---------------------------- |
-| statement | selector `string`, `element` |
-| new       | new `mist`                   |
-
-<br>
-
 ## API
 
--   [_any_](#anyselector-new)
--   [_not_](#notselector-new)
--   [_clear_](#clear-self)
--   [_clearAll_](#clearall-self)
--   [_on_](#onname-promise)
--   [_set_](#setcss-self)
--   [_setAll_](#setallcss-self)
--   [_story_](#storyname-story)
--   [_time_](#timedur-self)
+- _Selector_
 
-<br>
+  - [_any_](#any-selector-new)
+  - [_not_](#not-selector-new)
 
-### `any(selector): new`
+- _Using Modular CSS, Style Tag_
 
-Same as :any selector
+  - [_clear_](#clear-self)
+  - [_clearAll_](#clearall-self)
+  - [_set_](#set-css-self)
+  - [_setAll_](#setall-css-self)
 
-| _param_  | _type_     |
-| -------- | ---------- |
-| selector | `string`   |
-| new      | new `mist` |
+- _State Control_
 
-<br>
+  - [_story_](#story-name-story)
 
-### `not(selector): new`
+- _Timing Control_
 
-Same as :not selector
+  - [_on_](#on-name-promise)
+  - [_time_](#time-dur-self)
 
-| _param_  | _type_     |
-| -------- | ---------- |
-| selector | `string`   |
-| new      | new `mist` |
+### _`any( selector ): new`_
 
-<br>
+_param_  | _type_
+-------- | ----------
+selector | `string`
+new      | new `mist`
 
-### `clear(): self`
+Same as **:any** selector
+
+### _`not( selector ): new`_
+
+_param_  | _type_
+-------- | ----------
+selector | `string`
+new      | new `mist`
+
+Same as **:not** selector
+
+### _`clear(): self`_
 
 Clear modular CSS
 
-<br>
-
-### `clearAll(): self`
+### _`clearAll(): self`_
 
 Clear modular CSS each elements
 
-<br>
+### _`set( ...css ): self`_
 
-### `on(name): promise`
-
-Listen event emission
-
-| _param_ | _type_                    |
-| ------- | ------------------------- |
-| name    | `string`                  |
-| promise | [see](#using-the-promise) |
-
-<br>
-
-### `set(...css): self`
+_param_ | _type_
+------- | ---------------------------------------------------
+css     | `{ "name": string }`, `{ "name": (now) => string }`
 
 Set modular CSS
 
-| _param_ | _type_                                              |
-| ------- | --------------------------------------------------- |
-| css     | `{ "name": string }`, `{ "name": (now) => string }` |
+### _`setAll( ...css ): self`_
 
-<br>
-
-### `setAll(...css): self`
+_param_ | _type_
+------- | ---------------------------------------------------------------
+css     | `{ "name": string }`, `{ "name": (element, i, all) => string }`
 
 Set modular CSS each elements
 
-| _param_ | _type_                                                          |
-| ------- | --------------------------------------------------------------- |
-| css     | `{ "name": string }`, `{ "name": (element, i, all) => string }` |
+### _`story( name ): story`_
 
-<br>
-
-### `story(name): story`
+_param_ | _type_
+------- | -------------------
+name    | `string`
+story   | [see](#using-story)
 
 Make story
 
-| _param_ | _type_                  |
-| ------- | ----------------------- |
-| name    | `string`                |
-| story   | [see](#using-the-story) |
+### _`on( name ): promise`_
 
-<br>
+_param_ | _type_
+------- | ---------------------
+name    | `string`
+promise | [see](#using-promise)
 
-### `time(dur): self`
+Listen event emission
+
+### _`time( dur ): self`_
+
+_param_ | _type_
+------- | ---------------------
+dur     | milliseconds `number`
 
 Delay execution
 
-| _param_ | _type_                |
-| ------- | --------------------- |
-| dur     | milliseconds `number` |
-
-<br>
-
-## USING THE PROMISE
+## Using promise
 
 This library's promise like a [Promise / A+](//promisesaplus.com/), it's extended functions
 
-<br>
-
-### `resume()`
+### _`resume()`_
 
 The fullfilled or rejected promise back to pending
 
 ```javascript
+
 var promise = mist('div').on('click');
 
 promise.then(
@@ -205,18 +191,17 @@ promise.then(
   });
 ```
 
-<br>
+### _`when( success, err? ): promise`_
 
-### `when(success, err?): promise`
+_param_ | _type_
+------- | -------------------
+success | `(response) => any`
+err     | `(response) => any`
 
 If you want to reuse callback function, to use
 
-| _param_ | _type_              |
-| ------- | ------------------- |
-| success | `(response) => any` |
-| err     | `(response) => any` |
-
 ```javascript
+
 mist('div').on('click').when(
 
   function(e) {
@@ -225,13 +210,12 @@ mist('div').on('click').when(
   });
 ```
 
-<br>
-
-## USING THE STORY
+## Using story
 
 This library's story like a state machine
 
 ```javascript
+
 var misty = mist('div');
 
 // make story
@@ -241,67 +225,67 @@ var B = misty.story('B');
 
 // connect story
 
-A.next(B).next(A).start();
+A
+  .next(B)
+  .next(A).start();
 ```
 
 Every time you click, the process move to a another story
 
 ```javascript
+
 mist('*').on('click').when(
 
   function() {
 
     // move to alternate
 
-    A.move(function() {
+    A.move(
 
-        /* your process */ }) ||
+      function() {
 
-    B.move(function() {
+        /* your process */
+      }) ||
+    B.move(
 
-        /* your process */ });
+      function() {
+
+        /* your process */
+      });
 });
 ```
 
-<br>
+Help in double transmission prevention, etc
 
-### `move(succeed): be`
+### _`move( succeed ): be`_
+
+_param_ | _type_
+------- | --------------------
+succeed | `() => void`
+be      | success as `boolean`
 
 Move story
 
-| _param_ | _type_               |
-| ------- | -------------------- |
-| succeed | `() => void`         |
-| be      | success as `boolean` |
+### _`next( story ): story`_
 
-<br>
-
-### `next(story): story`
+_param_ | _type_
+------- | ------------
+story   | next `story`
 
 Connect story to next
 
-| _param_ | _type_       |
-| ------- | ------------ |
-| story   | next `story` |
+### _`prev( story ): story`_
 
-<br>
-
-### `prev(story): story`
+_param_ | _type_
+------- | ------------
+story   | prev `story`
 
 Connect story to prev
 
-| _param_ | _type_       |
-| ------- | ------------ |
-| story   | prev `story` |
-
-<br>
-
-### `start()`
+### _`start()`_
 
 Start story, it's to be moved
 
-<br>
-
-## LICENSE
+## License
 
 [MIT](//opensource.org/licenses/MIT) © AI428
