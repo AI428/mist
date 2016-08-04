@@ -82,24 +82,24 @@ New instance
 
 - _Selector_
 
-  - [_any_](#any-selector-new)
-  - [_not_](#not-selector-new)
+  - [_any_](#any-selector--new)
+  - [_not_](#not-selector--new)
 
 - _Using Modular CSS, Style Tag_
 
   - [_clear_](#clear-self)
   - [_clearAll_](#clearall-self)
-  - [_set_](#set-css-self)
-  - [_setAll_](#setall-css-self)
+  - [_set_](#set-css--self)
+  - [_setAll_](#setall-css--self)
 
 - _State Control_
 
-  - [_story_](#story-name-story)
+  - [_story_](#story-name--story)
 
 - _Timing Control_
 
-  - [_on_](#on-name-promise)
-  - [_time_](#time-dur-self)
+  - [_on_](#on-name--promise)
+  - [_time_](#time-dur--self)
 
 ### _`any( selector ): new`_
 
@@ -224,32 +224,34 @@ var A = misty.story('A');
 var B = misty.story('B');
 
 // connect story
-
 A
+
+  // connect to B story
   .next(B)
-  .next(A).start();
+
+  // connect to B story
+  .next(A)
+
+  // start A story
+  .start();
 ```
 
 Every time you click, the process move to a another story
 
 ```javascript
-
 mist('*').on('click').when(
 
   function() {
 
-    // move to alternate
-
+    // try move to
     A.move(
 
       function() {
-
         // your process
       }) ||
     B.move(
 
       function() {
-
         // your process
       });
 });
