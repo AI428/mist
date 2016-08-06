@@ -625,7 +625,7 @@ var Mist;
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.1
+ * @version 0.8.2
  */
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);
