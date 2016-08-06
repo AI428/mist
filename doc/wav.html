@@ -15,7 +15,6 @@
         .wav> div {
             float: left;
             height: 4em;
-            overflow: hidden;
             width: .5em;
         }
 
@@ -89,9 +88,6 @@
                 return r.height;
             })();
 
-            /**
-             * @param {} e
-             */
             function sat(e) {
 
                 var r = e.getBoundingClientRect();
@@ -100,11 +96,6 @@
                 return ((h / Y) * 100).toFixed(2);
             }
 
-            /**
-             * @param {} e
-             * @param {} h
-             * @param {} l
-             */
             function topper(e, h, l) {
 
                 // for pseudo
@@ -148,8 +139,6 @@
                         var r = e.getBoundingClientRect();
                         var h = r.height.toFixed(0);
                         var l = h / T;
-
-                        // for pseudo
 
                         topper(e, h, l);
 

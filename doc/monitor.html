@@ -9,7 +9,11 @@
             left: 50%;
             position: absolute;
             top: 50%;
-            margin: -8em 0 0 -8em;
+            transform: translate3d(-50%, -50%, 0);
+        }
+
+        .monitor {
+            height: 16em;
             width: 16em;
         }
 
@@ -17,8 +21,6 @@
             cursor: pointer;
             float: left;
             height: 1em;
-            overflow: hidden;
-            user-select: none;
             width: 1em;
         }
 
@@ -52,8 +54,6 @@
                 y: 0
             };
 
-            // position
-
             (function() {
 
                 var f = document.createDocumentFragment();
@@ -76,19 +76,11 @@
                 document.querySelector('.monitor').appendChild(f);
             })();
 
-            /**
-             * @param {} x
-             * @param {} y
-             */
             function pos(x, y) {
 
                 return '#d-' + x + '-' + y;
             }
 
-            /**
-             * @param {} x
-             * @param {} y
-             */
             function cross(x, y) {
 
                 var s = S * 2;
@@ -122,53 +114,6 @@
                 })();
             }
 
-            /**
-             * @param {} x
-             * @param {} y
-             */
-            function square(x, y) {
-
-                var s = S * 2;
-                var t = T;
-
-                // modular
-                var css = {
-
-                    background: 'hsl(' + (R.x * 360).toFixed(0) + ', 66%, 66%)'
-                };
-
-                (function responsor() {
-
-                    var response = [];
-
-                    var a = T - t;
-
-                    for (var m = x + a; m >= x - a; m--) {
-
-                        response.push(pos(m, y + a));
-                        response.push(pos(m, y - a));
-                    }
-
-                    for (var n = y + a; n >= y - a; n--) {
-
-                        response.push(pos(x + a, n));
-                        response.push(pos(x - a, n));
-                    }
-
-                    // motion
-
-                    mist(response.join()).setAll(css).time(s).clearAll();
-
-                    // loop response
-
-                    if (t-- > 0) setTimeout(responsor, S);
-                })();
-            }
-
-            /**
-             * @param {} x
-             * @param {} y
-             */
             function diamond(x, y) {
 
                 var s = S * 2;
@@ -196,6 +141,45 @@
 
                         response.push(pos(m, y + (m - x + a)));
                         response.push(pos(m, y - (m - x + a)));
+                    }
+
+                    // motion
+
+                    mist(response.join()).setAll(css).time(s).clearAll();
+
+                    // loop response
+
+                    if (t-- > 0) setTimeout(responsor, S);
+                })();
+            }
+
+            function square(x, y) {
+
+                var s = S * 2;
+                var t = T;
+
+                // modular
+                var css = {
+
+                    background: 'hsl(' + (R.x * 360).toFixed(0) + ', 66%, 66%)'
+                };
+
+                (function responsor() {
+
+                    var response = [];
+
+                    var a = T - t;
+
+                    for (var m = x + a; m >= x - a; m--) {
+
+                        response.push(pos(m, y + a));
+                        response.push(pos(m, y - a));
+                    }
+
+                    for (var n = y + a; n >= y - a; n--) {
+
+                        response.push(pos(x + a, n));
+                        response.push(pos(x - a, n));
                     }
 
                     // motion
