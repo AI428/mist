@@ -70,6 +70,7 @@
         <div><i></i></div>
         <div><i></i></div>
     </main>
+    <script src='icon.js'></script>
     <script src='../dist/mist.js'></script>
     <script>
         window.addEventListener('load', function() {
@@ -88,6 +89,9 @@
                 return r.height;
             })();
 
+            /**
+             * @param {} e
+             */
             function sat(e) {
 
                 var r = e.getBoundingClientRect();
@@ -96,6 +100,11 @@
                 return ((h / Y) * 100).toFixed(2);
             }
 
+            /**
+             * @param {} e
+             * @param {} h
+             * @param {} l
+             */
             function topper(e, h, l) {
 
                 // for pseudo
