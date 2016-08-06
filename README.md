@@ -14,6 +14,8 @@ Mist is a motion design library that uses modular CSS
 npm install mist.js --save
 ```
 
+Or [download](//github.com/AI428/mist/releases/latest)
+
 ## Features
 
 - _Using Modular CSS_
