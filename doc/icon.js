@@ -8,6 +8,7 @@
 
     a.setAttribute('alt', 'MIST');
     a.setAttribute('href', '//github.com/AI428/mist');
+    a.setAttribute('target', '_blank');
     a.setAttribute('title', 'MIST, Motion Design in Modular CSS');
 
     var i = document.createElement('img');
