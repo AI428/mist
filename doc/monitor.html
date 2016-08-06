@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>MIST, Motion Design in Modular CSS</title>
+    <style>
+        main {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            margin: -8em 0 0 -8em;
+            width: 16em;
+        }
+
+        .monitor> div {
+            cursor: pointer;
+            float: left;
+            height: 1em;
+            overflow: hidden;
+            user-select: none;
+            width: 1em;
+        }
+
+        .monitor> div> i {
+            border-radius: 50%;
+            box-shadow: 0 1px 2px #ddd;
+            height: .4em;
+            margin: .3em;
+            position: absolute;
+            transition: .1s linear;
+            width: .4em;
+        }
+    </style>
+</head>
+
+<body>
+    <main class='monitor'></main>
+    <script src='icon.js'></script>
+    <script src='../dist/mist.js'></script>
+    <script>
+        window.addEventListener('load', function() {
+
+            var monitor = mist('.monitor> div');
+
+            var T = 16;
+            var S = 1000 / T;
+
+            var L = T * T;
+            var R = {
+                x: 0,
+                y: 0
+            };
+
+            // position
+
+            (function() {
+
+                var f = document.createDocumentFragment();
+
+                for (var i = 0; i < L; i++) {
+
+                    var d = document.createElement('div');
+
+                    var x = Math.floor(i % T);
+                    var y = Math.floor(i / T);
+
+                    d.dataset.x = x;
+                    d.dataset.y = y;
+
+                    d.innerHTML = '<i id="d-' + x + '-' + y + '"></i>';
+
+                    f.appendChild(d);
+                }
+
+                document.querySelector('.monitor').appendChild(f);
+            })();
+
+            /**
+             * @param {} x
+             * @param {} y
+             */
+            function pos(x, y) {
+
+                return '#d-' + x + '-' + y;
+            }
+
+            /**
+             * @param {} x
+             * @param {} y
+             */
+            function cross(x, y) {
+
+                var s = S * 2;
+                var t = T;
+
+                // modular
+                var css = {
+
+                    boxShadow: '0 1px 2px hsl(' + (R.y * 360).toFixed(0) + ', 66%, 66%) !important'
+                };
+
+                (function responsor() {
+
+                    var response = [];
+
+                    var a = T - t;
+
+                    response.push(pos(x, y + a));
+                    response.push(pos(x, y - a));
+
+                    response.push(pos(x + a, y));
+                    response.push(pos(x - a, y));
+
+                    // motion
+
+                    mist(response.join()).setAll(css).time(s).clearAll();
+
+                    // loop response
+
+                    if (t-- > 0) setTimeout(responsor, S / 2);
+                })();
+            }
+
+            /**
+             * @param {} x
+             * @param {} y
+             */
+            function square(x, y) {
+
+                var s = S * 2;
+                var t = T;
+
+                // modular
+                var css = {
+
+                    background: 'hsl(' + (R.x * 360).toFixed(0) + ', 66%, 66%)'
+                };
+
+                (function responsor() {
+
+                    var response = [];
+
+                    var a = T - t;
+
+                    for (var m = x + a; m >= x - a; m--) {
+
+                        response.push(pos(m, y + a));
+                        response.push(pos(m, y - a));
+                    }
+
+                    for (var n = y + a; n >= y - a; n--) {
+
+                        response.push(pos(x + a, n));
+                        response.push(pos(x - a, n));
+                    }
+
+                    // motion
+
+                    mist(response.join()).setAll(css).time(s).clearAll();
+
+                    // loop response
+
+                    if (t-- > 0) setTimeout(responsor, S);
+                })();
+            }
+
+            /**
+             * @param {} x
+             * @param {} y
+             */
+            function diamond(x, y) {
+
+                var s = S * 2;
+                var t = T;
+
+                // modular
+                var css = {
+
+                    background: 'hsl(' + (R.x * 360).toFixed(0) + ', 66%, 66%)'
+                };
+
+                (function responsor() {
+
+                    var response = [];
+
+                    var a = T - t;
+
+                    for (var m = x + a; m >= x; m--) {
+
+                        response.push(pos(m, y + (m - x - a)));
+                        response.push(pos(m, y - (m - x - a)));
+                    }
+
+                    for (var m = x; m >= x - a; m--) {
+
+                        response.push(pos(m, y + (m - x + a)));
+                        response.push(pos(m, y - (m - x + a)));
+                    }
+
+                    // motion
+
+                    mist(response.join()).setAll(css).time(s).clearAll();
+
+                    // loop response
+
+                    if (t-- > 0) setTimeout(responsor, S);
+                })();
+            }
+
+            // connect story
+
+            monitor.story('A')
+                .next(monitor.story('B'))
+                .next(monitor.story('A')).start();
+
+            monitor.on('click').when(
+
+                function(e) {
+
+                    var o = e.target.closest('.monitor> div');
+
+                    var x = +o.dataset.x;
+                    var y = +o.dataset.y;
+
+                    // story based
+
+                    monitor.story('A').move(
+
+                        function() {
+
+                            diamond(x, y);
+
+                        }) || monitor.story('B').move(
+
+                        function() {
+
+                            square(x, y);
+                        });
+                });
+
+            (function responsor() {
+
+                R.x = Math.random();
+                R.y = Math.random();
+
+                var x = Math.ceil(R.x * T);
+                var y = Math.ceil(R.y * T);
+
+                cross(x, y);
+
+                setTimeout(responsor, S * y);
+            })();
+        });
+    </script>
+</body>
+
+</html>
