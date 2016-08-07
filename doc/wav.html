@@ -12,8 +12,12 @@
             transform: translate3d(-50%, -50%, 0);
         }
 
+        .wav {
+            display: flex;
+        }
+
         .wav> div {
-            float: left;
+            position: relative;
             height: 4em;
             width: .5em;
         }
@@ -21,7 +25,7 @@
         .wav> div> i {
             bottom: 0;
             position: absolute;
-            width: .5em;
+            width: 100%;
         }
 
         .wav> div> i:before {
@@ -72,87 +76,79 @@
     <script src='icon.js'></script>
     <script src='../dist/mist.js'></script>
     <script>
-        window.addEventListener('load', function() {
+        var S = 500;
+        var T = 5;
 
-            var S = 500;
-            var T = 5;
+        var A = S / T;
+        var R = S;
 
-            var A = S / T;
-            var R = S;
+        var Y = (function() {
 
-            var Y = (function() {
+            var n = document.querySelector('.wav> div');
+            var r = n.getBoundingClientRect();
 
-                var n = document.querySelector('.wav> div');
-                var r = n.getBoundingClientRect();
+            return r.height;
+        })();
 
-                return r.height;
-            })();
+        function release(e, h, l) {
 
-            function sat(e) {
+            // for release
 
-                var r = e.getBoundingClientRect();
-                var h = r.height;
+            mist(e).any(':before').set({
 
-                return ((h / Y) * 100).toFixed(2);
-            }
+                bottom: h + 'px',
+                transition: 0
 
-            function topper(e, h, l) {
+            }).time(A).set({
 
-                // for pseudo
+                bottom: l + 'px',
+                transition: R + 'ms steps(' + h + ')'
+            });
+        }
 
-                mist(e).any(':before').set({
+        (function responsor() {
 
-                    bottom: h + 'px',
-                    transition: 0
+            mist('.wav> div> i').setAll({
 
-                }).time(A).set({
+                height: function() {
 
-                    bottom: l + 'px',
-                    transition: R + 'ms steps(' + h + ')'
-                });
-            }
+                    // long response
 
-            (function responsor() {
+                    return (Math.random() * 100).toFixed(2) + '%';
+                },
 
-                mist('.wav> div> i').setAll({
+                transition: A + 'ms cubic-bezier(0.95, 0.05, 0.795, 0.035)'
 
-                    height: function() {
+            }).time(A).setAll({
 
-                        // long response
+                background: function(e, i) {
 
-                        return (Math.random() * 100).toFixed(2) + '%';
-                    },
+                    var r = e.getBoundingClientRect();
+                    var h = r.height;
 
-                    transition: A + 'ms cubic-bezier(0.95, 0.05, 0.795, 0.035)'
+                    // vivid color
 
-                }).time(A).setAll({
+                    return 'hsl(' + i + ', ' + ((h / Y) * 100).toFixed(2) + '%, 66%)';
+                },
 
-                    background: function(e, i) {
+                height: function(e) {
 
-                        // vivid color
+                    var r = e.getBoundingClientRect();
+                    var h = r.height.toFixed(0);
+                    var l = h / T;
 
-                        return 'hsl(' + i + ', ' + sat(e) + '%, 66%)';
-                    },
+                    release(e, h, l);
 
-                    height: function(e) {
+                    // short response
 
-                        var r = e.getBoundingClientRect();
-                        var h = r.height.toFixed(0);
-                        var l = h / T;
+                    return l + 'px';
+                },
 
-                        topper(e, h, l);
+                transition: R + 'ms'
+            });
 
-                        // short response
-
-                        return l + 'px';
-                    },
-
-                    transition: R + 'ms'
-                });
-
-                setTimeout(responsor, S);
-            })();
-        });
+            setTimeout(responsor, S);
+        })();
     </script>
 </body>
 

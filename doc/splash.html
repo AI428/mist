@@ -65,57 +65,54 @@
     <script src='icon.js'></script>
     <script src='../dist/mist.js'></script>
     <script>
-        window.addEventListener('load', function() {
+        var nodes = document.querySelectorAll('main> div');
 
-            var nodes = document.querySelectorAll('main> div');
+        var l = nodes.length;
 
-            var l = nodes.length;
+        var i = 0;
+        var s = 1000;
 
-            var i = 0;
-            var s = 1000;
+        // modular
 
-            // modular
+        var css = {
 
-            var css = {
+            background: function() {
 
-                background: function() {
+                // vivid color
 
-                    // vivid color
+                return 'hsl(' + (Math.random() * 360).toFixed(0) + ', 66%, 66%)';
+            },
 
-                    return 'hsl(' + (Math.random() * 360).toFixed(0) + ', 66%, 66%)';
-                },
+            transform: function() {
 
-                transform: function() {
+                var r = (Math.PI * 2 / l) * i;
 
-                    var r = (Math.PI * 2 / l) * i;
+                var n = Math.random() * 16;
 
-                    var n = Math.random() * 16;
+                // random position
 
-                    // random position
+                var y = (Math.sin(r) * n).toFixed(2);
+                var x = (Math.cos(r) * n).toFixed(2);
 
-                    var y = (Math.sin(r) * n).toFixed(2);
-                    var x = (Math.cos(r) * n).toFixed(2);
+                return 'translate3d(' + x + 'em, ' + y + 'em, 0) scale(0)';
+            },
 
-                    return 'translate3d(' + x + 'em, ' + y + 'em, 0) scale(0)';
-                },
+            transition: function() {
 
-                transition: function() {
+                return (Math.random() * 2) + 's cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            }
+        };
 
-                    return (Math.random() * 2) + 's cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                }
-            };
+        (function responsor() {
 
-            (function responsor() {
+            var e = nodes[i++] || nodes[(i = 0)];
 
-                var e = nodes[i++] || nodes[(i = 0)];
+            // motion
 
-                // motion
+            if (e) mist(e).set(css).time(s).clear();
 
-                if (e) mist(e).set(css).time(s).clear();
-
-                setTimeout(responsor, s / l);
-            })();
-        });
+            setTimeout(responsor, s / l);
+        })();
     </script>
 </body>
 
