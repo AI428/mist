@@ -1,5 +1,9 @@
+/// <reference path='../component.ts'/>
 /// <reference path='../promise.ts'/>
+/// <reference path='../statement.ts'/>
+/// <reference path='../timer.ts'/>
 
+/// <reference path='defer.ts'/>
 /// <reference path='voker.ts'/>
 
 namespace Mist {
@@ -11,16 +15,20 @@ namespace Mist {
         */
         export class Timer extends Voker {
 
-            private id$: number = 0;
+            private timer$: Mist.Timer;
 
             /**
             * @constructor
-            * @param {} component
+            * @param {} statement
             * @param {} dur
             */
-            constructor(component: any, private dur$: number = 0) {
+            constructor(statement: Statement, private dur$: number) {
 
-                super(component);
+                super(statement);
+
+                // lasting response
+
+                this.timer$ = Component.create<Mist.Timer>(Mist.Timer, statement);
             }
 
             /**
@@ -49,21 +57,17 @@ namespace Mist {
                             function responsor() {
 
                                 try {
-                                    // commit response
                                     succeed(m.apply(c, o));
 
                                 } catch (e) {
 
                                     // fail response
+
                                     erred(e);
                                 }
                             }
 
-                            // ser
-                            clearTimeout(s.id$);
-
-                            // lazy response
-                            s.id$ = setTimeout(responsor, s.dur$);
+                            s.timer$.set(responsor, s.dur$);
                         }));
             }
         }

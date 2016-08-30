@@ -11,6 +11,7 @@ interface Element {
 
 /**
 * @class Element
+* @summary for matches
 */
 (function() {
 
@@ -25,6 +26,7 @@ interface Element {
 
 /**
 * @class Element
+* @summary for closest
 */
 (function() {
 

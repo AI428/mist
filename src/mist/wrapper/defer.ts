@@ -8,6 +8,7 @@ namespace Mist {
 
         /**
         * @class Defer
+        * @summary for wrapper
         */
         export class Defer extends Voker {
 

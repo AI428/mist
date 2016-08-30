@@ -13,9 +13,6 @@ namespace Mist {
         */
         export class Story extends Voker {
 
-            /**
-            * @access private
-            */
             private story$: Mist.Story;
 
             /**

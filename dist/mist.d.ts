@@ -96,11 +96,29 @@ declare namespace Mist {
     }
 }
 declare namespace Mist {
+    class Timer {
+        private statement;
+        private id;
+        constructor(statement: Statement);
+        set(responsor: () => void, dur: number): void;
+    }
+}
+declare namespace Mist {
+    namespace Wrapper {
+        class Defer extends Voker {
+            commit$: Promise;
+            constructor(component: any, commit$: Promise);
+            catch(err: (response: any) => any): Defer;
+            protected composer$(name: string, ...o: any[]): Defer;
+        }
+    }
+}
+declare namespace Mist {
     namespace Wrapper {
         class Timer extends Voker {
             private dur$;
-            private id$;
-            constructor(component: any, dur$?: number);
+            private timer$;
+            constructor(statement: Statement, dur$: number);
             protected composer$(name: string, ...o: any[]): Defer;
         }
     }
@@ -130,17 +148,7 @@ declare namespace Mist {
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.2
+ * @version 0.8.3
  */
 declare function mist(statement: Element): Mist.Statement;
 declare function mist(statement: string): Mist.Statement;
-declare namespace Mist {
-    namespace Wrapper {
-        class Defer extends Voker {
-            commit$: Promise;
-            constructor(component: any, commit$: Promise);
-            catch(err: (response: any) => any): Defer;
-            protected composer$(name: string, ...o: any[]): Defer;
-        }
-    }
-}

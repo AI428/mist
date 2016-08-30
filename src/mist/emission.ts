@@ -5,6 +5,7 @@ namespace Mist {
 
     /**
     * @class Emission
+    * @summary for assoc
     */
     export class Emission extends Promise {
 
@@ -26,18 +27,20 @@ namespace Mist {
                     erred
                 ) {
 
-                    emitter.add(name, function(response) {
+                    emitter.add(
 
-                        try {
-                            // commit response
-                            succeed(response);
+                        name, function(response) {
 
-                        } catch (e) {
+                            try {
+                                succeed(response);
 
-                            // fail response
-                            erred(e)
-                        }
-                    });
+                            } catch (e) {
+
+                                // fail response
+
+                                erred(e)
+                            }
+                        });
                 });
         }
     }

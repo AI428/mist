@@ -7,9 +7,6 @@ namespace Mist {
     */
     export class Story {
 
-        /**
-        * @access public
-        */
         pos: string;
 
         /**

@@ -8,9 +8,6 @@ namespace Mist {
     */
     export class Style {
 
-        /**
-        * @access public
-        */
         value: any = {};
 
         /**

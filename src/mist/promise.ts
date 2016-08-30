@@ -2,6 +2,7 @@ namespace Mist {
 
     /**
     * @class Promise
+    * @summary for poly
     */
     export class Promise {
 
@@ -59,7 +60,6 @@ namespace Mist {
                         if (response.push(a) > p) {
 
                             try {
-                                // commit response
                                 succeed(response);
 
                             } catch (e) {
@@ -107,7 +107,6 @@ namespace Mist {
                                 function(response: any) {
 
                                     try {
-                                        // commit response
                                         succeed(response);
 
                                     } catch (e) {
@@ -136,7 +135,6 @@ namespace Mist {
                 this.err = function(response) {
 
                     try {
-                        // commit response
                         succeed(err(response));
 
                     } catch (e) {
@@ -179,7 +177,6 @@ namespace Mist {
                 this.success = function(response) {
 
                     try {
-                        // commit respoonse
                         succeed(success(response));
 
                     } catch (e) {
@@ -304,12 +301,8 @@ namespace Mist {
         */
         private tx() {
 
-            var responsor: () => void;
-
-            if (
-                responsor = this.txr) {
-                responsor();
-            }
+            var responsor = this.txr;
+            if (responsor) responsor();
         }
     }
 }

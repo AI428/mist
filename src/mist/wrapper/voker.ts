@@ -50,10 +50,8 @@ namespace Mist {
             */
             protected composer$(name: string, ...o: any[]) {
 
-                var c = this.component$;
-                var m = this.component$[name];
-
-                return m.apply(c, o);
+                return this.component$[name].apply(
+                    this.component$, o);
             }
         }
     }

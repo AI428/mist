@@ -24,6 +24,7 @@
         "src/mist/statement.ts",
         "src/mist/story.ts",
         "src/mist/style.ts",
+        "src/mist/timer.ts",
         "src/mist/wrapper/defer.ts",
         "src/mist/wrapper/story.ts",
         "src/mist/wrapper/timer.ts",

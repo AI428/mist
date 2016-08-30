@@ -246,10 +246,9 @@ var Mist;
             }
         };
         Promise.prototype.tx = function () {
-            var responsor;
-            if (responsor = this.txr) {
+            var responsor = this.txr;
+            if (responsor)
                 responsor();
-            }
         };
         return Promise;
     }());
@@ -426,9 +425,7 @@ var Mist;
                 for (var _i = 1; _i < arguments.length; _i++) {
                     o[_i - 1] = arguments[_i];
                 }
-                var c = this.component$;
-                var m = this.component$[name];
-                return m.apply(c, o);
+                return this.component$[name].apply(this.component$, o);
             };
             return Voker;
         }());
@@ -475,15 +472,67 @@ var Mist;
 })(Mist || (Mist = {}));
 var Mist;
 (function (Mist) {
+    var Timer = (function () {
+        function Timer(statement) {
+            this.statement = statement;
+            this.id = 0;
+        }
+        Timer.prototype.set = function (responsor, dur) {
+            clearTimeout(this.id);
+            this.id = setTimeout(responsor.bind(this.statement), dur);
+        };
+        return Timer;
+    }());
+    Mist.Timer = Timer;
+})(Mist || (Mist = {}));
+var Mist;
+(function (Mist) {
+    var Wrapper;
+    (function (Wrapper) {
+        var Defer = (function (_super) {
+            __extends(Defer, _super);
+            function Defer(component, commit$) {
+                _super.call(this, component);
+                this.commit$ = commit$;
+            }
+            Defer.prototype.catch = function (err) {
+                return new Defer(this.component$, this.commit$.catch(err));
+            };
+            Defer.prototype.composer$ = function (name) {
+                var o = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    o[_i - 1] = arguments[_i];
+                }
+                var s = this;
+                return new Defer(s.component$, s.commit$.when(function (response) {
+                    var r;
+                    if (response instanceof Wrapper.Voker) {
+                        r = response[name].apply(response, o);
+                    }
+                    else {
+                        r = s.component$[name].apply(s.component$, o);
+                    }
+                    if (r instanceof Defer) {
+                        return r.commit$;
+                    }
+                    return r;
+                }));
+            };
+            return Defer;
+        }(Wrapper.Voker));
+        Wrapper.Defer = Defer;
+    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
+})(Mist || (Mist = {}));
+var Mist;
+(function (Mist) {
     var Wrapper;
     (function (Wrapper) {
         var Timer = (function (_super) {
             __extends(Timer, _super);
-            function Timer(component, dur$) {
-                if (dur$ === void 0) { dur$ = 0; }
-                _super.call(this, component);
+            function Timer(statement, dur$) {
+                _super.call(this, statement);
                 this.dur$ = dur$;
-                this.id$ = 0;
+                this.timer$ = Mist.Component.create(Mist.Timer, statement);
             }
             Timer.prototype.composer$ = function (name) {
                 var o = [];
@@ -502,8 +551,7 @@ var Mist;
                             erred(e);
                         }
                     }
-                    clearTimeout(s.id$);
-                    s.id$ = setTimeout(responsor, s.dur$);
+                    s.timer$.set(responsor, s.dur$);
                 }));
             };
             return Timer;
@@ -625,46 +673,8 @@ var Mist;
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.2
+ * @version 0.8.3
  */
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);
 }
-var Mist;
-(function (Mist) {
-    var Wrapper;
-    (function (Wrapper) {
-        var Defer = (function (_super) {
-            __extends(Defer, _super);
-            function Defer(component, commit$) {
-                _super.call(this, component);
-                this.commit$ = commit$;
-            }
-            Defer.prototype.catch = function (err) {
-                return new Defer(this.component$, this.commit$.catch(err));
-            };
-            Defer.prototype.composer$ = function (name) {
-                var o = [];
-                for (var _i = 1; _i < arguments.length; _i++) {
-                    o[_i - 1] = arguments[_i];
-                }
-                var s = this;
-                return new Defer(s.component$, s.commit$.when(function (response) {
-                    var r;
-                    if (response instanceof Wrapper.Voker) {
-                        r = response[name].apply(response, o);
-                    }
-                    else {
-                        r = s.component$[name].apply(s.component$, o);
-                    }
-                    if (r instanceof Defer) {
-                        return r.commit$;
-                    }
-                    return r;
-                }));
-            };
-            return Defer;
-        }(Wrapper.Voker));
-        Wrapper.Defer = Defer;
-    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
-})(Mist || (Mist = {}));
