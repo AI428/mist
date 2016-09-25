@@ -3,32 +3,42 @@
 
 <head>
     <meta charset='utf-8'>
+    <meta name="desription" content="Behavior test">
     <title>MIST, Motion Design in Modular CSS</title>
+
+    <!---->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+
+    <!---->
+    <script src='../dist/mist.js'></script>
     <style>
         main {
+            height: 64px;
             left: 50%;
+            overflow: hidden;
             position: absolute;
-            top: 50%;
             transform: translate3d(-50%, -50%, 0);
+            top: 50%;
+            width: 448px;
         }
 
         .wav {
             display: flex;
         }
 
-        .wav> div {
+        .wav>div {
+            height: 100%;
             position: relative;
-            height: 4em;
-            width: .5em;
+            width: calc(100% / 32);
         }
 
-        .wav> div> i {
+        .wav>div>i {
             bottom: 0;
             position: absolute;
             width: 100%;
         }
 
-        .wav> div> i:before {
+        .wav>div>i:before {
             background: inherit;
             content: '';
             height: 1px;
@@ -73,81 +83,66 @@
         <div><i></i></div>
         <div><i></i></div>
     </main>
-    <script src='icon.js'></script>
-    <script src='../dist/mist.js'></script>
     <script>
-        var S = 500;
-        var T = 5;
+        (function() {
 
-        var A = S / T;
-        var R = S;
+            var head = document.querySelector('.wav').clientHeight;
 
-        var Y = (function() {
-
-            var n = document.querySelector('.wav> div');
-            var r = n.getBoundingClientRect();
-
-            return r.height;
-        })();
-
-        function release(e, h, l) {
-
-            // for release
-
-            mist(e).any(':before').set({
-
-                bottom: h + 'px',
-                transition: 0
-
-            }).time(A).set({
-
-                bottom: l + 'px',
-                transition: R + 'ms steps(' + h + ')'
-            });
-        }
-
-        (function responsor() {
-
-            mist('.wav> div> i').setAll({
+            var attacks = 100;
+            var attack = {
 
                 height: function() {
 
-                    // long response
-
-                    return (Math.random() * 100).toFixed(2) + '%';
+                    return Math.random() * 100 + '%';
                 },
 
-                transition: A + 'ms cubic-bezier(0.95, 0.05, 0.795, 0.035)'
+                transition: `${attacks}ms cubic-bezier(0.95, 0.05, 0.795, 0.035)`
+            };
 
-            }).time(A).setAll({
+            var steps = 4;
+            var releases = 500;
+            var release = {
 
-                background: function(e, i) {
+                background: function(element, i) {
 
-                    var r = e.getBoundingClientRect();
-                    var h = r.height;
+                    var response = element.getBoundingClientRect();
 
-                    // vivid color
-
-                    return 'hsl(' + i + ', ' + ((h / Y) * 100).toFixed(2) + '%, 66%)';
+                    return `hsl(${i}, ${((response.height / head) * 100)}%, 66%)`;
                 },
 
-                height: function(e) {
+                height: function(element) {
 
-                    var r = e.getBoundingClientRect();
-                    var h = r.height.toFixed(0);
-                    var l = h / T;
+                    var response = element.getBoundingClientRect();
 
-                    release(e, h, l);
+                    var min = response.height / steps;
 
-                    // short response
+                    mist(element).any(':before').set({
+                        bottom: `${response.height}px`,
+                        transition: 0
+                    }).time(attacks).set({
+                        bottom: `${min}px`,
+                        transition: `${releases}ms steps(${response.height.toFixed(0)})`
+                    });
 
-                    return l + 'px';
+                    return `${min}px`;
                 },
 
-                transition: R + 'ms'
-            });
+                transition: `${releases}ms`
+            };
 
-            setTimeout(responsor, S);
+            setInterval(
+
+                function() {
+
+                    mist('.wav> div> i').setAll(
+                        attack
+                    ).time(
+                        attacks
+                    ).setAll(
+                        release
+                    );
+
+                }, 500);
         })();
     </script>
 </body>

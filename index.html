@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="desription" content="Mist is a motion design library that uses modular CSS">
+    <meta name="keywords" content="css,design,js,mist,modular,motion,style,typescript">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!---->
+    <title>MIST, Motion Design in Modular CSS</title>
+
+    <!---->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.min.js">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/milligram/1.1.0/milligram.min.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Marcellus|Open+Sans+Condensed:300">
+
+    <!---->
+    <script src="dist/mist.min.js"></script>
+    <style>
+        body {
+            color: #313131;
+            font-family: 'Open Sans Condensed', sans-serif;
+            font-size: 24px;
+            min-height: 100%;
+            position: absolute;
+            width: 100%;
+        }
+
+        em {
+            color: #adadad;
+        }
+
+        footer,
+        header {
+            margin: auto;
+            max-width: 448px;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        header>figure {
+            background: url(doc/icon.svg) no-repeat center;
+            background-size: contain;
+            height: 224px;
+        }
+
+        p {
+            font-family: 'Marcellus', serif;
+            line-height: 1.618em;
+        }
+
+        small {
+            color: #56555e;
+        }
+
+        main,
+        .screens {
+            left: 0;
+            height: 100%;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: -1;
+        }
+
+        .screens>div {
+            height: 1em;
+            position: absolute;
+            width: 1em;
+        }
+
+        #typemode>span {
+            animation-fill-mode: forwards;
+            color: transparent;
+        }
+
+        @keyframes typemode {
+            from {
+                background: #313131;
+            }
+            to {
+                color: #313131;
+                background: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section class="screens">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </section>
+    </main>
+    <header>
+        <figure></figure>
+        <h1>MIST</h1>
+        <p><em>Motion Design in Modular CSS</em></p>
+        <p id="typemode">Mist is a motion design library that uses modular CSS</p>
+        <p><a id="repository" class="button" href="#">GITHUB</a> <a id="latest" class="button button-outline" href="#">GET LATEST</a></p>
+    </header>
+    <footer>
+        <small>Liberate all, in code</small>
+        <h6>MIT &copy; AI428</h6>
+    </footer>
+    <script>
+        fetch('package.json').then(
+            function(response) {
+                return response.json();
+            }
+        ).then(
+            function(response) {
+                var r = document.getElementById('repository');
+                r.href = response.repository.url;
+                var l = document.getElementById('latest');
+                l.href = response.repository.url + '/releases/latest';
+            }
+        );
+    </script>
+    <script>
+        (function() {
+
+            var t = document.getElementById('typemode');
+
+            t.innerHTML = t.innerText.split('').map(
+
+                function(s) {
+
+                    return '<span>' + s + '</span>';
+
+                }).join('');
+
+            mist('#typemode > span').setAll({
+
+                animation: function(element, i) {
+
+                    return 'typemode 33ms ' + (i * 33) + 'ms';
+                }
+            });
+        })();
+    </script>
+    <script>
+        (function() {
+
+            var css = {
+
+                background: function(element, i, all) {
+
+                    // vivid
+                    return 'hsl(' + (360 / all.length) * i + ', 66%, 66%)';
+                },
+
+                transform: function(element) {
+
+                    var r = [
+                        // x px
+                        Math.random(),
+                        // y px
+                        Math.random(),
+                        // z px
+                        Math.random(),
+                        // rad
+                        Math.random() * 2 * Math.PI
+                    ];
+
+                    var p = element.parentElement;
+
+                    var t = [
+                        // x px
+                        r[0] * p.clientWidth,
+                        // y px
+                        r[1] * p.clientHeight,
+                        // z px
+                        0
+                    ];
+
+                    return 'translate3d(' + t.join('px,') + ') rotate3d(' + r.join() + 'rad) scale(' + (r[0] + r[1]) + ')';
+                }
+            };
+
+            var ease = {
+                transition: '264ms ease'
+            };
+
+            mist('.screens > div').setAll(css);
+
+            // reaction
+
+            mist('*').on('click').when(
+
+                function(e) {
+
+                    var s = document.querySelector('.screens');
+
+                    s.classList.contains('hide') ?
+                        mist('.screens > div').setAll(css, ease).time(132).clear() :
+                        mist('.screens > div').set(ease, {
+                            // hidden
+                            height: 0
+                        });
+
+                    s.classList.toggle('hide');
+                });
+        })();
+    </script>
+</body>
+
+</html>
