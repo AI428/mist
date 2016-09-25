@@ -1,4 +1,4 @@
-![mist.svg](https://rawgit.com/AI428/mist/master/doc/img/icon.png)
+![mist.svg](https://rawgit.com/AI428/mist/master/doc/icon.png)
 
 [![npm version](https://badge.fury.io/js/mist.js.svg)](https://badge.fury.io/js/mist.js)
 
