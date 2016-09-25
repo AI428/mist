@@ -1,0 +1,34 @@
+{
+    "atom": {
+        "rewriteTsconfig": true
+    },
+    "compilerOptions": {
+        "declaration": true,
+        "noImplicitAny": true,
+        "outFile": "dist/mist.js",
+        "removeComments": true,
+        "target": "es5"
+    },
+    "filesGlob": [
+        "src/mist.ts",
+        "src/mist/*.ts",
+        "src/mist/wrapper/*.ts"
+    ],
+    "files": [
+        "src/mist.ts",
+        "src/mist/component.ts",
+        "src/mist/element.ts",
+        "src/mist/emission.ts",
+        "src/mist/emitter.ts",
+        "src/mist/promise.ts",
+        "src/mist/statement.ts",
+        "src/mist/style.ts",
+        "src/mist/timer.ts",
+        "src/mist/wrapper/defer.ts",
+        "src/mist/wrapper/timer.ts",
+        "src/mist/wrapper/voker.ts"
+    ],
+    "scripts": {
+        "postbuild": "uglifyjs dist/mist.js --comments -c -m -o dist/mist.min.js"
+    }
+}

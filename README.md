@@ -1,93 +1,210 @@
-<img alt='MIST' src='https://github.com/AI428/mist/blob/master/logos/mist.png' width='400'>
+![mist.svg](https://rawgit.com/AI428/mist/master/doc/img/icon.png)
+
+[![npm version](https://badge.fury.io/js/mist.js.svg)](https://badge.fury.io/js/mist.js)
 
 # MIST
-> _A JavaScript framework for the reactive style_
 
-This is a solution for the development of CSS library.
+> _Motion Design in Modular CSS_
 
-In order to control CSS, Do you use such heavy weight library of `Angular`, `jQuery` and `React`? With `MIST`, you can define the reactive style without defile the DOM.
+Mist is a motion design library that uses modular CSS
 
-## USAGE
-### INSTALL
-[Get](https://github.com/AI428/mist/releases) the latest version.
+## Quick start
 
-```html
-<script src=mist.min.js></script>
+```
+npm install mist.js --save
 ```
 
-### DEFINE CLASS
-Any selector or element style define. The following code is a class that red the elements when you click. It's still non-existent class.
+Or [download](//github.com/AI428/mist/releases/latest)
 
-```js
-mist('*').on('click').then(
+## Features
 
-  function() {
+- _Using Modular CSS_
+- _Using Style Tag_
+- _Timing Control_
 
-    mist('.redden').style.set({
+TL;DR [demo](//codepen.io/collection/DNzaQb/)
 
-      background: 'red'
-    });
+## Supported browser
+
+- _Chrome_
+- _Edge_
+- _Firefox_
+- _IE_
+- _Safari_
+
+## Usage
+
+Make modular CSS
+
+```javascript
+
+var vivid = {
+
+  background: function() {
+
+    var h = (Math.random() * 360).toFixed(0);
+
+    // vivid color
+    return `hsl(${h}, 50%, 50%)`;
   }
-);
+}
 ```
 
-### ADD THIS
-Add this class to any selector.
+Design motion
 
-```js
-mist('any selector').class.add('redden');
+```javascript
+
+mist('div')
+
+  // set color, wait 1s
+  .set(vivid).time(1000)
+
+  // set color, wait 1s
+  .set(vivid).time(1000)
+
+  // clear style
+  .clear();
 ```
 
-So, try red flashes the element to use this class. The following code will flashes at one second intervals.
+Repeat this two-step, to build an interaction
 
-```js
-mist('any selector').class.pulse(1000).toggle('redden');
+### _`mist( statement ): new`_
+
+_param_   | _type_
+--------- | ----------------------------
+statement | selector `string`, `element`
+new       | new `mist`
+
+New instance
+
+## API
+
+- _Selector_
+
+  - [_any_](#any-selector--new)
+  - [_not_](#not-selector--new)
+
+- _Using Modular CSS, Style Tag_
+
+  - [_clear_](#clear-self)
+  - [_clearAll_](#clearall-self)
+  - [_set_](#set-css--self)
+  - [_setAll_](#setall-css--self)
+
+- _Timing Control_
+
+  - [_on_](#on-name--promise)
+  - [_time_](#time-dur--self)
+
+### _`any( selector ): new`_
+
+_param_  | _type_
+-------- | ----------
+selector | `string`
+new      | new `mist`
+
+Same as :any selector
+
+### _`not( selector ): new`_
+
+_param_  | _type_
+-------- | ----------
+selector | `string`
+new      | new `mist`
+
+Same as :not selector
+
+### _`clear(): self`_
+
+Clear modular CSS
+
+### _`clearAll(): self`_
+
+Clear modular CSS each elements
+
+### _`set( ...css ): self`_
+
+_param_ | _type_
+------- | ---------------------------------------------------
+css     | `{ "name": string }`, `{ "name": (now) => string }`
+
+Set modular CSS
+
+### _`setAll( ...css ): self`_
+
+_param_ | _type_
+------- | ---------------------------------------------------------------
+css     | `{ "name": string }`, `{ "name": (element, i, all) => string }`
+
+Set modular CSS each elements
+
+### _`story( name ): story`_
+
+_param_ | _type_
+------- | -------------------
+name    | `string`
+story   | [see](#using-story)
+
+Make story
+
+### _`on( name ): promise`_
+
+_param_ | _type_
+------- | ---------------------
+name    | `string`
+promise | [see](#using-promise)
+
+Listen event emission
+
+### _`time( dur ): self`_
+
+_param_ | _type_
+------- | ---------------------
+dur     | milliseconds `number`
+
+Delay execution
+
+## Using promise
+
+This library's promise like a [Promise / A+](//promisesaplus.com/), it's extended functions
+
+### _`resume()`_
+
+The fullfilled or rejected promise back to pending
+
+```javascript
+
+var promise = mist('div').on('click');
+
+promise.then(
+
+  function(e) {
+
+    // your process
+
+    promise.resume();
+  });
 ```
 
-### REMOVE THIS
-You can also remove this.
+### _`when( success, err? ): promise`_
 
-```js
-mist('any selector').class.remove('redden');
+_param_ | _type_
+------- | -------------------
+success | `(response) => any`
+err     | `(response) => any`
+
+If you want to reuse callback function, to use
+
+```javascript
+
+mist('div').on('click').when(
+
+  function(e) {
+
+    // your process
+  });
 ```
 
-Run after one second, it can also be that.
+## License
 
-```js
-mist('any selector').class.time(1000).remove('redden');
-```
-
-Turn off in one second after you add this class, such as the combination can also. `add()` respond `Promise` that notice the success of the method.
-
-```js
-var statement = mist('any selector');
-
-statement.class.add('redden').then(
-
-  function() {
-
-    statement.class.time(1000).remove('redden');
-  }
-);
-```
-
-### REACT TO STYLE
-The style, in addition to string, you can pass a function or `Mist`.`Promise` that like Promise / A+.
-
-Function is evaluated just to pass the element. `Mist`.`Promise` in the response value, such as `on()`, is evaluated each time the callback function is called. A combination of these to develop a CSS library. Code to red the elements, it can be rewritten as follows.
-
-```js
-mist('.redden').style.set({
-
-  background: mist('*').on('click').then(
-
-    function() {
-
-      return 'red';
-    }
-  )
-});
-```
-
-## LICENSE
-This is released under the [MIT](//opensource.org/licenses/MIT). © AI428
+[MIT](//opensource.org/licenses/MIT) © AI428
