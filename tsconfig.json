@@ -22,11 +22,9 @@
         "src/mist/emitter.ts",
         "src/mist/promise.ts",
         "src/mist/statement.ts",
-        "src/mist/story.ts",
         "src/mist/style.ts",
         "src/mist/timer.ts",
         "src/mist/wrapper/defer.ts",
-        "src/mist/wrapper/story.ts",
         "src/mist/wrapper/timer.ts",
         "src/mist/wrapper/voker.ts"
     ],

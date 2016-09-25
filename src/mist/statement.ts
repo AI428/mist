@@ -71,9 +71,6 @@ namespace Mist {
                     }).join());
         }
 
-        /**
-        * @summary
-        */
         clear(): Statement {
 
             var s = this.style;
@@ -85,9 +82,6 @@ namespace Mist {
             return this;
         }
 
-        /**
-        * @summary
-        */
         clearAll(): Statement {
 
             var s = this.style;
@@ -99,9 +93,6 @@ namespace Mist {
             return this;
         }
 
-        /**
-        * @summary
-        */
         elements(): Element[] {
 
             var response: Element[];
@@ -148,9 +139,6 @@ namespace Mist {
             return new Emission(this.emitter, name);
         }
 
-        /**
-        * @summary
-        */
         selector(): string {
 
             var response: string;

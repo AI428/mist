@@ -23,18 +23,12 @@ namespace Mist {
         constructor(private statement: Statement) {
         }
 
-        /**
-        * @summary
-        */
         clear() {
 
             this.value = {};
             this.apply();
         }
 
-        /**
-        * @summary
-        */
         clearAll() {
 
             this.statement.elements().map(

@@ -29,7 +29,7 @@ var Mist;
     function ser(conv) {
         return JSON.stringify(conv.map(function (v) {
             return v instanceof Object ?
-                v.sessions || (v.sessions = sessions++) :
+                v.sessid || (v.sessid = sessions++) :
                 v;
         }));
     }
@@ -372,31 +372,18 @@ var Mist;
 })(Mist || (Mist = {}));
 var Mist;
 (function (Mist) {
-    var Story = (function () {
-        function Story(statement) {
+    var Timer = (function () {
+        function Timer(statement) {
             this.statement = statement;
-            this.conns = {};
+            this.id = 0;
         }
-        Story.prototype.connect = function (s, e) {
-            this.conns[s] || (this.conns[s] = {});
-            this.conns[s][e] = e;
+        Timer.prototype.set = function (responsor, dur) {
+            clearTimeout(this.id);
+            this.id = setTimeout(responsor.bind(this.statement), dur);
         };
-        Story.prototype.move = function (name) {
-            var response = false;
-            var s = this;
-            var conns = s.conns[s.pos] || {};
-            if (conns[name]) {
-                s.pos = name;
-                response = true;
-            }
-            return response;
-        };
-        Story.prototype.start = function (name) {
-            this.pos = name;
-        };
-        return Story;
+        return Timer;
     }());
-    Mist.Story = Story;
+    Mist.Timer = Timer;
 })(Mist || (Mist = {}));
 var Mist;
 (function (Mist) {
@@ -431,59 +418,6 @@ var Mist;
         }());
         Wrapper.Voker = Voker;
     })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
-})(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Wrapper;
-    (function (Wrapper) {
-        var Story = (function (_super) {
-            __extends(Story, _super);
-            function Story(statement, name$) {
-                _super.call(this, statement);
-                this.name$ = name$;
-                this.story$ = Mist.Component.create(Mist.Story, statement);
-            }
-            Story.prototype.move = function (succeed) {
-                var s = this.story$;
-                var n = this.name$;
-                var response = s.move(n);
-                if (response)
-                    succeed();
-                return response;
-            };
-            Story.prototype.next = function (story) {
-                var s = this.story$;
-                var n = this.name$;
-                s.connect(n, story.name$);
-                return story;
-            };
-            Story.prototype.prev = function (story) {
-                return story.next(this);
-            };
-            Story.prototype.start = function () {
-                var s = this.story$;
-                var n = this.name$;
-                s.start(n);
-            };
-            return Story;
-        }(Wrapper.Voker));
-        Wrapper.Story = Story;
-    })(Wrapper = Mist.Wrapper || (Mist.Wrapper = {}));
-})(Mist || (Mist = {}));
-var Mist;
-(function (Mist) {
-    var Timer = (function () {
-        function Timer(statement) {
-            this.statement = statement;
-            this.id = 0;
-        }
-        Timer.prototype.set = function (responsor, dur) {
-            clearTimeout(this.id);
-            this.id = setTimeout(responsor.bind(this.statement), dur);
-        };
-        return Timer;
-    }());
-    Mist.Timer = Timer;
 })(Mist || (Mist = {}));
 var Mist;
 (function (Mist) {
@@ -673,7 +607,7 @@ var Mist;
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.3
+ * @version 0.8.4
  */
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);

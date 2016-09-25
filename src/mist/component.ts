@@ -52,7 +52,7 @@ namespace Mist {
 
                 function(v) {
                     return v instanceof Object ?
-                        v.sessions || (v.sessions = sessions++) :
+                        v.sessid || (v.sessid = sessions++) :
                         v;
                 }));
     }

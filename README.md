@@ -20,7 +20,6 @@ Or [download](//github.com/AI428/mist/releases/latest)
 
 - _Using Modular CSS_
 - _Using Style Tag_
-- _State Control_
 - _Timing Control_
 
 TL;DR [demo](//codepen.io/collection/DNzaQb/)
@@ -91,10 +90,6 @@ New instance
   - [_clearAll_](#clearall-self)
   - [_set_](#set-css--self)
   - [_setAll_](#setall-css--self)
-
-- _State Control_
-
-  - [_story_](#story-name--story)
 
 - _Timing Control_
 
@@ -209,80 +204,6 @@ mist('div').on('click').when(
     // your process
   });
 ```
-
-## Using story
-
-This library's story like a state machine
-
-```javascript
-
-var misty = mist('div');
-
-// make story
-misty.story('A')
-
-  // connect to A story
-  .next(misty.story('B'))
-
-  // connect to B story
-  .next(misty.story('A'))
-
-  // start A story
-  .start();
-```
-
-Every time you click, the process move to a another story
-
-```javascript
-
-mist('*').on('click').when(
-
-  function() {
-
-    // try move to
-    misty.story('A').move(
-
-      function() {
-        // your process
-      }) ||
-    misty.story('B').move(
-
-      function() {
-        // your process
-      });
-});
-```
-
-Help in double transmission prevention, etc
-
-### _`move( succeed ): be`_
-
-_param_ | _type_
-------- | --------------------
-succeed | `() => void`
-be      | success as `boolean`
-
-Move story
-
-### _`next( story ): story`_
-
-_param_ | _type_
-------- | ------------
-story   | next `story`
-
-Connect story to next
-
-### _`prev( story ): story`_
-
-_param_ | _type_
-------- | ------------
-story   | prev `story`
-
-Connect story to prev
-
-### _`start()`_
-
-Start story, it's to be moved
 
 ## License
 

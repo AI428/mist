@@ -62,14 +62,11 @@ declare namespace Mist {
     }
 }
 declare namespace Mist {
-    class Story {
+    class Timer {
         private statement;
-        pos: string;
-        private conns;
+        private id;
         constructor(statement: Statement);
-        connect(s: string, e: string): void;
-        move(name: string): boolean;
-        start(name: string): void;
+        set(responsor: () => void, dur: number): void;
     }
 }
 declare namespace Mist {
@@ -80,27 +77,6 @@ declare namespace Mist {
             protected accessor$(name: string): any;
             protected composer$(name: string, ...o: any[]): any;
         }
-    }
-}
-declare namespace Mist {
-    namespace Wrapper {
-        class Story extends Voker {
-            name$: string;
-            private story$;
-            constructor(statement: Statement, name$: string);
-            move(succeed: () => void): boolean;
-            next(story: Story): Story;
-            prev(story: Story): Story;
-            start(): void;
-        }
-    }
-}
-declare namespace Mist {
-    class Timer {
-        private statement;
-        private id;
-        constructor(statement: Statement);
-        set(responsor: () => void, dur: number): void;
     }
 }
 declare namespace Mist {
@@ -148,7 +124,7 @@ declare namespace Mist {
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.3
+ * @version 0.8.4
  */
 declare function mist(statement: Element): Mist.Statement;
 declare function mist(statement: string): Mist.Statement;
