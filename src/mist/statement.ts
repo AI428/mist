@@ -3,7 +3,6 @@
 /// <reference path='emitter.ts'/>
 /// <reference path='style.ts'/>
 
-/// <reference path='wrapper/story.ts'/>
 /// <reference path='wrapper/timer.ts'/>
 
 namespace Mist {
@@ -184,15 +183,6 @@ namespace Mist {
 
             // passthru
             return this;
-        }
-
-        /**
-        * @param {} name
-        * @summary lazy responsor
-        */
-        story(name: string): any {
-
-            return Component.create(Wrapper.Story, this, name);
         }
 
         /**

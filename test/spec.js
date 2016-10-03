@@ -115,7 +115,6 @@ document.addEventListener('DOMContentLoaded',
                                     .toBe('rgb(0, 0, 0)');
 
                                 done();
-
                             }, dur);
                     });
             });

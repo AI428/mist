@@ -379,7 +379,9 @@ var Mist;
         }
         Timer.prototype.set = function (responsor, dur) {
             clearTimeout(this.id);
-            this.id = setTimeout(responsor.bind(this.statement), dur);
+            this.id = setTimeout(function () {
+                requestAnimationFrame(responsor.bind(this.statement));
+            }, dur);
         };
         return Timer;
     }());
@@ -573,9 +575,6 @@ var Mist;
             m.apply(s, css);
             return this;
         };
-        Statement.prototype.story = function (name) {
-            return Mist.Component.create(Mist.Wrapper.Story, this, name);
-        };
         Statement.prototype.time = function (dur) {
             return Mist.Component.create(Mist.Wrapper.Timer, this, dur);
         };
@@ -607,7 +606,7 @@ var Mist;
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.4
+ * @version 0.8.5
  */
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);

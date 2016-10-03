@@ -28,8 +28,12 @@ namespace Mist {
 
             // lazy response
 
-            this.id = setTimeout(responsor.bind(
-                this.statement), dur);
+            this.id = setTimeout(
+                function() {
+                    requestAnimationFrame(
+                        responsor.bind(this.statement)
+                    );
+                }, dur);
         }
     }
 }
