@@ -35,7 +35,6 @@ TL;DR [demo](//codepen.io/collection/DNzaQb/)
 Make modular CSS
 
 ```javascript
-
 var vivid = {
 
   background: function() {
@@ -51,7 +50,6 @@ var vivid = {
 Design motion
 
 ```javascript
-
 mist('div')
 
   // set color, wait 1s
@@ -171,7 +169,6 @@ This library's promise like a [Promise / A+](//promisesaplus.com/), it's extende
 The fullfilled or rejected promise back to pending
 
 ```javascript
-
 var promise = mist('div').on('click');
 
 promise.then(
@@ -194,7 +191,6 @@ err     | `(response) => any`
 If you want to reuse callback function, to use
 
 ```javascript
-
 mist('div').on('click').when(
 
   function(e) {

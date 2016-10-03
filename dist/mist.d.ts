@@ -115,7 +115,6 @@ declare namespace Mist {
         selector(): string;
         set(...css: any[]): Statement;
         setAll(...css: any[]): Statement;
-        story(name: string): any;
         time(dur: number): any;
     }
 }
@@ -124,7 +123,7 @@ declare namespace Mist {
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.4
+ * @version 0.8.5
  */
 declare function mist(statement: Element): Mist.Statement;
 declare function mist(statement: string): Mist.Statement;
