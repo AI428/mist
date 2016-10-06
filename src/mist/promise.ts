@@ -2,7 +2,6 @@ namespace Mist {
 
     /**
     * @class Promise
-    * @summary for poly
     */
     export class Promise {
 
@@ -149,9 +148,6 @@ namespace Mist {
             });
         }
 
-        /**
-        * @summary
-        */
         resume() {
 
             this.txd = false;

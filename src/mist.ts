@@ -3,7 +3,7 @@
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.5
+ * @version 0.8.6
  */
 
 /// <reference path='mist/component.ts'/>

@@ -258,8 +258,7 @@
                     s.classList.contains('hide') ?
                         mist('.screens > div').setAll(css, ease).time(132).clear() :
                         mist('.screens > div').set(ease, {
-                            // hidden
-                            height: 0
+                            height: 0 // hidden
                         });
 
                     s.classList.toggle('hide');

@@ -37,7 +37,6 @@ namespace Mist {
                             } catch (e) {
 
                                 // fail response
-
                                 erred(e)
                             }
                         });

@@ -51,18 +51,16 @@ namespace Mist {
                             erred
                         ) {
 
-                            var c = s.component$;
-                            var m = s.component$[name];
-
                             function responsor() {
 
                                 try {
-                                    succeed(m.apply(c, o));
+                                    succeed(
+                                        s.component$[name].apply(
+                                            s.component$, o));
 
                                 } catch (e) {
 
                                     // fail response
-
                                     erred(e);
                                 }
                             }
