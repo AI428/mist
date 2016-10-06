@@ -123,7 +123,7 @@ declare namespace Mist {
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.5
+ * @version 0.8.6
  */
 declare function mist(statement: Element): Mist.Statement;
 declare function mist(statement: string): Mist.Statement;

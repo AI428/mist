@@ -64,6 +64,8 @@ mist('div')
 
 Repeat this two-step, to build an interaction
 
+--------------------------------------------------------------------------------
+
 ### _`mist( statement ): new`_
 
 _param_   | _type_
@@ -92,6 +94,8 @@ New instance
   - [_on_](#on-name--promise)
   - [_time_](#time-dur--self)
 
+--------------------------------------------------------------------------------
+
 ### _`any( selector ): new`_
 
 _param_  | _type_
@@ -100,6 +104,8 @@ selector | `string`
 new      | new `mist`
 
 Same as :any selector
+
+--------------------------------------------------------------------------------
 
 ### _`not( selector ): new`_
 
@@ -110,13 +116,19 @@ new      | new `mist`
 
 Same as :not selector
 
+--------------------------------------------------------------------------------
+
 ### _`clear(): self`_
 
 Clear modular CSS
 
+--------------------------------------------------------------------------------
+
 ### _`clearAll(): self`_
 
 Clear modular CSS each elements
+
+--------------------------------------------------------------------------------
 
 ### _`set( ...css ): self`_
 
@@ -126,6 +138,8 @@ css     | `{ "name": string }`, `{ "name": (now) => string }`
 
 Set modular CSS
 
+--------------------------------------------------------------------------------
+
 ### _`setAll( ...css ): self`_
 
 _param_ | _type_
@@ -134,14 +148,7 @@ css     | `{ "name": string }`, `{ "name": (element, i, all) => string }`
 
 Set modular CSS each elements
 
-### _`story( name ): story`_
-
-_param_ | _type_
-------- | -------------------
-name    | `string`
-story   | [see](#using-story)
-
-Make story
+--------------------------------------------------------------------------------
 
 ### _`on( name ): promise`_
 
@@ -151,6 +158,8 @@ name    | `string`
 promise | [see](#using-promise)
 
 Listen event emission
+
+--------------------------------------------------------------------------------
 
 ### _`time( dur ): self`_
 
@@ -171,15 +180,15 @@ The fullfilled or rejected promise back to pending
 ```javascript
 var promise = mist('div').on('click');
 
-promise.then(
+promise.then((e) => {
 
-  function(e) {
+  // your process
 
-    // your process
-
-    promise.resume();
-  });
+  promise.resume();
+});
 ```
+
+--------------------------------------------------------------------------------
 
 ### _`when( success, err? ): promise`_
 
@@ -191,12 +200,10 @@ err     | `(response) => any`
 If you want to reuse callback function, to use
 
 ```javascript
-mist('div').on('click').when(
+mist('div').on('click').when((e) => {
 
-  function(e) {
-
-    // your process
-  });
+  // your process
+});
 ```
 
 ## License
