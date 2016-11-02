@@ -3,268 +3,167 @@
 
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1990 12:00:00 GMT" />
     <meta name="desription" content="Mist is a motion design library that uses modular CSS">
     <meta name="keywords" content="css,design,js,mist,modular,motion,style,typescript">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <!---->
     <title>MIST, Motion Design in Modular CSS</title>
-    <!---->
+
+    <!-- insert links -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.min.js">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/milligram/1.1.0/milligram.min.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Marcellus|Open+Sans+Condensed:300">
-    <!---->
+    <link rel="stylesheet" href="doc/main.css">
+
+    <!-- insert scripts -->
     <script src="dist/mist.min.js"></script>
-    <style>
-        body {
-            color: #313131;
-            font-family: 'Open Sans Condensed', sans-serif;
-            font-size: 24px;
-            min-height: 100%;
-            position: absolute;
-            width: 100%;
-        }
-
-        em {
-            color: #adadad;
-        }
-
-        footer,
-        header {
-            margin: auto;
-            max-width: 448px;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        header>figure {
-            background: url(doc/icon.svg) no-repeat center;
-            background-size: contain;
-            height: 224px;
-        }
-
-        p {
-            font-family: 'Marcellus', serif;
-            line-height: 1.618em;
-        }
-
-        small {
-            color: #56555e;
-        }
-
-        main,
-        .screens {
-            left: 0;
-            height: 100%;
-            overflow: hidden;
-            position: absolute;
-            top: 0;
-            width: 100%;
-            z-index: -1;
-        }
-
-        .screens>div {
-            height: 1em;
-            position: absolute;
-            width: 1em;
-        }
-
-        #typemode>span {
-            animation-fill-mode: forwards;
-            color: transparent;
-        }
-
-        @keyframes typemode {
-            from {
-                background: #313131;
-            }
-            to {
-                color: #313131;
-                background: none;
-            }
-        }
-    </style>
 </head>
 
 <body>
+    <header>
+        <section class="screens"></section>
+        <section class="container">
+            <figure></figure>
+            <h1>MIST</h1>
+            <h6><em>Motion Design in Modular CSS</em></h6>
+            <h4 id="types">Mist is a motion design library that uses modular CSS.</h4>
+            <nav>
+                <a id="repository" class="button" href="#">GITHUB</a>
+                <a id="latest" class="button button-outline" href="#">GET LATEST</a>
+            </nav>
+        </section>
+    </header>
     <main>
-        <section class="screens">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+        <section class="container">
+            <div class="demos">
+                <div id="vivid"></div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <p>Press the button. The color has changed twice? This is implemented in the following code.</p>
+                    <h5>Make modular CSS</h5>
+                    <p>First, to prepare the style in primitive objects. Style values can be passed a string, number, function. In the case of function like <mark>var vivid</mark>, it's evaluated just before, the return value is passed.</p>
+                    <h5>Design motion</h5>
+                    <p>To build a motion by changing the style with timing control API. <mark>on()</mark> listen event emission, <mark>time()</mark> wait milliseconds for delay execution. It's easy to change the style. <mark>set()</mark> sets modular CSS,
+                        <mark>clear()</mark> clear the set.</p>
+                    <p>Repeat this two-step, to build an interaction. Specification of each API, please refer to the <a id="docs" href="#">documentation</a>.</p>
+                </div>
+                <div class="column column-50">
+                    <pre><code class='vivid'></code></pre>
+                </div>
+            </div>
+            <script>
+                (function(d) {
+                    fetch('doc/demos.vivid.js').then(
+                        function(response) {
+                            return response.text();
+                        }
+                    ).then(
+                        function(response) {
+                            d.querySelector('code.vivid').innerHTML = response;
+                        }
+                    );
+                })(document);
+            </script>
+        </section>
+        <section class="container">
+            <div class="demos">
+                <div id="multi"></div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <p>Press the button. After the scale, it should be a little rotation. This is implemented in the following code.</p>
+                    <h5>Using multiple values</h5>
+                    <p>If you want to add to the current style, pass a function like a <mark>var rotate</mark>. The current style is passed from the first argument.</p>
+                    <p>In combination with the timing control API, you can build complex animations easily, and dynamically.</p>
+                </div>
+                <div class="column column-50">
+                    <pre><code class='multi'></code></pre>
+                </div>
+            </div>
+            <script>
+                (function(d) {
+                    fetch('doc/demos.multi.js').then(
+                        function(response) {
+                            return response.text();
+                        }
+                    ).then(
+                        function(response) {
+                            d.querySelector('code.multi').innerHTML = response;
+                        }
+                    );
+                })(document);
+            </script>
+        </section>
+        <section class="container">
+            <div id="eases" class="demos">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <p>When you press the button, the color in the order will change. To do this, you need to apply different style in each element.</p>
+                    <h5>Targeting each element</h5>
+                    <p>If you want to apply different style, you can use some of the style API. <mark>setAll()</mark> sets modular CSS each element, <mark>clearAll()</mark> clear the set. When you pass a function to the style value like <mark>var ease</mark>,
+                        element, index, array of all the elements are passed.</p>
+                </div>
+                <div class="column column-50">
+                    <pre><code class='eases'></code></pre>
+                </div>
+            </div>
+            <script>
+                (function(d) {
+                    fetch('doc/demos.eases.js').then(
+                        function(response) {
+                            return response.text();
+                        }
+                    ).then(
+                        function(response) {
+                            d.querySelector('code.eases').innerHTML = response;
+                        }
+                    );
+                })(document);
+            </script>
         </section>
     </main>
-    <header>
-        <figure></figure>
-        <h1>MIST</h1>
-        <p><em>Motion Design in Modular CSS</em></p>
-        <p id="typemode">Mist is a motion design library that uses modular CSS</p>
-        <p><a id="repository" class="button" href="#">GITHUB</a> <a id="latest" class="button button-outline" href="#">GET LATEST</a></p>
-    </header>
     <footer>
-        <small>Liberate all, in code</small>
-        <h6>MIT &copy; AI428</h6>
+        <section class="container">
+            <small><i>Liberate all, in code</i></small>
+            <h6>MIT &copy; AI428</h6>
+        </section>
     </footer>
     <script>
-        fetch('package.json').then(
-            function(response) {
-                return response.json();
-            }
-        ).then(
-            function(response) {
-                var r = document.getElementById('repository');
-                r.href = response.repository.url;
-                var l = document.getElementById('latest');
-                l.href = response.repository.url + '/releases/latest';
-            }
-        );
+        (function(d) {
+            var f = d.createDocumentFragment();
+            for (var i = 64; i--;) f.appendChild(d.createElement('div'));
+            d.querySelector('.screens').appendChild(f);
+        })(document);
     </script>
     <script>
-        (function() {
-
-            var t = document.getElementById('typemode');
-
-            t.innerHTML = t.innerText.split('').map(
-
-                function(s) {
-
-                    return '<span>' + s + '</span>';
-
-                }).join('');
-
-            mist('#typemode > span').setAll({
-
-                animation: function(element, i) {
-
-                    return 'typemode 33ms ' + (i * 33) + 'ms';
+        (function(d) {
+            fetch('package.json').then(
+                function(response) {
+                    return response.json();
                 }
-            });
-        })();
-    </script>
-    <script>
-        (function() {
-
-            var css = {
-
-                background: function(element, i, all) {
-
-                    // vivid
-                    return 'hsl(' + (360 / all.length) * i + ', 66%, 66%)';
-                },
-
-                transform: function(element) {
-
-                    var r = [
-                        // x px
-                        Math.random(),
-                        // y px
-                        Math.random(),
-                        // z px
-                        Math.random(),
-                        // rad
-                        Math.random() * 2 * Math.PI
-                    ];
-
-                    var p = element.parentElement;
-
-                    var t = [
-                        // x px
-                        r[0] * p.clientWidth,
-                        // y px
-                        r[1] * p.clientHeight,
-                        // z px
-                        0
-                    ];
-
-                    return 'translate3d(' + t.join('px,') + ') rotate3d(' + r.join() + 'rad) scale(' + (r[0] + r[1]) + ')';
+            ).then(
+                function(response) {
+                    d.getElementById('repository').href = response.repository.url;
+                    d.getElementById('latest').href = response.repository.url + '/releases/latest';
+                    d.getElementById('docs').href = response.repository.url + '#api';
                 }
-            };
-
-            var ease = {
-                transition: '264ms ease'
-            };
-
-            mist('.screens > div').setAll(css);
-
-            // reaction
-
-            mist('*').on('click').when(
-
-                function(e) {
-
-                    var s = document.querySelector('.screens');
-
-                    s.classList.contains('hide') ?
-                        mist('.screens > div').setAll(css, ease).time(132).clear() :
-                        mist('.screens > div').set(ease, {
-                            height: 0 // hidden
-                        });
-
-                    s.classList.toggle('hide');
-                });
-        })();
+            );
+        })(document);
     </script>
+    <script src="doc/screens.js"></script>
+    <script src="doc/types.js"></script>
+    <script src="doc/demos.vivid.js"></script>
+    <script src="doc/demos.multi.js"></script>
+    <script src="doc/demos.eases.js"></script>
 </body>
 
 </html>
