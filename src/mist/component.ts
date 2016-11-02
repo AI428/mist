@@ -10,6 +10,8 @@ namespace Mist {
         /**
         * @param {} component
         * @param {} o
+        * @returns {}
+        * @summary for all components
         */
         static create<T>(component: any, ...o: any[]): T {
 

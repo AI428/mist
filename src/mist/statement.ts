@@ -2,6 +2,7 @@
 /// <reference path='emission.ts'/>
 /// <reference path='emitter.ts'/>
 /// <reference path='style.ts'/>
+/// <reference path='timer.ts'/>
 
 /// <reference path='wrapper/timer.ts'/>
 
@@ -23,6 +24,11 @@ namespace Mist {
         style: Style;
 
         /**
+        * @access public
+        */
+        timer: Timer;
+
+        /**
         * @constructor
         * @param {} statement
         */
@@ -42,10 +48,12 @@ namespace Mist {
 
             this.emitter = new Emitter(this);
             this.style = new Style(this);
+            this.timer = new Timer(this);
         }
 
         /**
         * @param {} selector
+        * @returns {}
         */
         any(selector: string): Statement {
 
@@ -70,28 +78,31 @@ namespace Mist {
                     }).join());
         }
 
+        /**
+        * @returns {}
+        */
         clear(): Statement {
 
-            var s = this.style;
-            var m = this.style.clear;
-
-            m.apply(s);
+            this.style.clear();
 
             // passthru
             return this;
         }
 
+        /**
+        * @returns {}
+        */
         clearAll(): Statement {
 
-            var s = this.style;
-            var m = this.style.clearAll;
-
-            m.apply(s);
+            this.style.clearAll();
 
             // passthru
             return this;
         }
 
+        /**
+        * @returns {}
+        */
         elements(): Element[] {
 
             var response: Element[];
@@ -113,11 +124,11 @@ namespace Mist {
 
         /**
         * @param {} selector
+        * @returns {}
         */
         not(selector: string): Statement {
 
             // lasting response
-
             return this.any(selector.split(',').map(
 
                 function(s) {
@@ -132,12 +143,40 @@ namespace Mist {
 
         /**
         * @param {} name
+        * @returns {}
         */
         on(name: string): Emission {
 
             return new Emission(this.emitter, name);
         }
 
+        /**
+        * @returns {}
+        */
+        pause(): Statement {
+
+            this.style.pause();
+            this.timer.pause();
+
+            // passthru
+            return this;
+        }
+
+        /**
+        * @returns {}
+        */
+        resume(): Statement {
+
+            this.style.resume();
+            this.timer.resume();
+
+            // passthru
+            return this;
+        }
+
+        /**
+        * @returns {}
+        */
         selector(): string {
 
             var response: string;
@@ -159,6 +198,7 @@ namespace Mist {
 
         /**
         * @param {} css
+        * @returns {}
         */
         set(...css: any[]): Statement {
 
@@ -173,6 +213,7 @@ namespace Mist {
 
         /**
         * @param {} css
+        * @returns {}
         */
         setAll(...css: any[]): Statement {
 
@@ -187,6 +228,7 @@ namespace Mist {
 
         /**
         * @param {} dur
+        * @returns {}
         * @summary lazy responsor
         */
         time(dur: number): any {

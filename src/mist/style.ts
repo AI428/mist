@@ -8,7 +8,8 @@ namespace Mist {
     */
     export class Style {
 
-        value: any = {};
+        main: any = {};
+        mask: any = {};
 
         /**
         * @access private
@@ -25,8 +26,11 @@ namespace Mist {
 
         clear() {
 
-            this.value = {};
-            this.apply();
+            this.main = {};
+            this.mask = {};
+
+            // clear
+            this.modify();
         }
 
         clearAll() {
@@ -40,20 +44,81 @@ namespace Mist {
                 });
         }
 
+        modify() {
+
+            this.node().innerHTML = [
+
+                this.inner(this.main),
+                this.inner(this.mask)
+
+            ].join('');
+        }
+
+        pause() {
+
+            this.statement.elements().map(
+
+                function(e) {
+
+                    // lasting response
+                    var s = Component.create<Statement>(Statement, e).style;
+
+                    var o = getComputedStyle(e);
+
+                    s.mask = {};
+                    s.mask.background = o.background;
+                    s.mask.borderBottom = o.borderBottom;
+                    s.mask.borderLeft = o.borderLeft;
+                    s.mask.borderRadius = o.borderRadius;
+                    s.mask.borderRight = o.borderRight;
+                    s.mask.borderSpacing = o.borderSpacing;
+                    s.mask.borderTop = o.borderTop;
+                    s.mask.bottom = o.bottom;
+                    s.mask.boxShadow = o.boxShadow;
+                    s.mask.color = o.color;
+                    s.mask.fill = o.fill;
+                    s.mask.font = o.font;
+                    s.mask.left = o.left;
+                    s.mask.margin = o.margin;
+                    s.mask.opacity = o.opacity;
+                    s.mask.outline = o.outline;
+                    s.mask.padding = o.padding;
+                    s.mask.right = o.right;
+                    s.mask.stroke = o.stroke;
+                    s.mask.top = o.top;
+                    s.mask.transform = o.transform;
+                    s.mask.transition = 'none';
+                    s.modify();
+                });
+        }
+
+        resume() {
+
+            this.statement.elements().map(
+
+                function(e) {
+
+                    // lasting response
+                    var s = Component.create<Statement>(Statement, e).style;
+
+                    s.mask = {};
+                    s.modify();
+                });
+        }
+
         /**
         * @param {} css
         */
         set(...css: any[]) {
 
-            var o = this.value;
-
             var response = assign(css);
+
+            var o = this.main;
 
             for (let name in response) {
 
                 var p = response[name];
 
-                // mapped
                 if (p instanceof Function) {
                     // a response
                     o[name] = p(o);
@@ -63,7 +128,7 @@ namespace Mist {
                 }
             }
 
-            this.apply();
+            this.modify();
         }
 
         /**
@@ -83,7 +148,6 @@ namespace Mist {
 
                         var p = response[name];
 
-                        // mapped
                         if (p instanceof Function) {
                             // a response
                             o[name] = p(element, i, all);
@@ -101,19 +165,17 @@ namespace Mist {
         /**
         * @access private
         */
-        private apply() {
-
-            var o = this.value;
+        private inner(css: any) {
 
             var response: string[] = [];
 
             // format response
-            for (let name in o) {
-                response.push(hycase(name) + ':' + o[name]);
+            for (let name in css) {
+                response.push(hycase(name) + ':' + css[name]);
             }
 
             // inner response
-            this.create().innerHTML = this.statement.selector()
+            return this.statement.selector()
                 + '{'
                 + response.join(';')
                 + '}'
@@ -123,7 +185,7 @@ namespace Mist {
         /**
         * @access private
         */
-        private create() {
+        private node() {
 
             if (!this.e) {
 
@@ -167,9 +229,7 @@ namespace Mist {
     function hycase(name: string) {
 
         return name.replace(/[A-Z]/g,
-
             function(m) {
-
                 // hy response
                 return '-' + m.toLowerCase();
             });

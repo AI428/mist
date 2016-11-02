@@ -15,8 +15,6 @@ namespace Mist {
         */
         export class Timer extends Voker {
 
-            private timer$: Mist.Timer;
-
             /**
             * @constructor
             * @param {} statement
@@ -25,22 +23,18 @@ namespace Mist {
             constructor(statement: Statement, private dur$: number) {
 
                 super(statement);
-
-                // lasting response
-
-                this.timer$ = Component.create<Mist.Timer>(Mist.Timer, statement);
             }
 
             /**
             * @param {} name
             * @param {} o
+            * @summary override
             */
             protected composer$(name: string, ...o: any[]) {
 
                 var s = this;
 
                 // {} response
-
                 return new Defer(
 
                     s.component$, new Promise(
@@ -65,7 +59,7 @@ namespace Mist {
                                 }
                             }
 
-                            s.timer$.set(responsor, s.dur$);
+                            s.component$.timer.set(responsor, s.dur$);
                         }));
             }
         }

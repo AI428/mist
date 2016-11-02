@@ -1,0 +1,91 @@
+body {
+    color: #444;
+    font-family: 'Marcellus', serif;
+    font-size: 16px;
+    width: 100%;
+}
+
+footer, h1 {
+    font-family: 'Open Sans Condensed', sans-serif;
+}
+
+footer, header {
+    box-shadow: 0 1px 2px #eee;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+}
+
+em {
+    color: #aaa;
+}
+
+header figure {
+    background: url(icon.svg) no-repeat center;
+    background-size: contain;
+    height: 224px;
+}
+
+main {
+    overflow: hidden;
+}
+
+mark {
+    background: #666;
+    border-radius: 4px;
+    color: #eee;
+    padding: 0 .618em;
+    white-space: nowrap;
+}
+
+p {
+    color: #666;
+    line-height: 1.618em;
+}
+
+pre {
+    color: #006ab6;
+    margin: 0;
+    overflow-x: auto;
+}
+
+.container {
+    margin: 1.618em auto;
+    max-width: 1024px;
+}
+
+header .container {
+    max-width: 448px;
+}
+
+.demos {
+    align-items: center;
+    display: flex;
+    height: 16em;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+}
+
+.demos>div {
+    box-shadow: 0 1px 2px #ccc;
+    cursor: pointer;
+    height: 4em;
+    margin: 1em;
+    position: relative;
+    width: 4em;
+}
+
+.screens {
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    z-index: -1;
+}
+
+.screens>div {
+    height: 1em;
+    position: absolute;
+    width: 1em;
+}

@@ -21,9 +21,9 @@ var Mist;
             }
             return this.responses[m][n];
         };
-        Component.responses = {};
         return Component;
     }());
+    Component.responses = {};
     Mist.Component = Component;
     var sessions = 0;
     function ser(conv) {
@@ -259,7 +259,7 @@ var Mist;
     var Emission = (function (_super) {
         __extends(Emission, _super);
         function Emission(emitter, name) {
-            _super.call(this, function (succeed, erred) {
+            var _this = _super.call(this, function (succeed, erred) {
                 emitter.add(name, function (response) {
                     try {
                         succeed(response);
@@ -268,9 +268,10 @@ var Mist;
                         erred(e);
                     }
                 });
-            });
-            this.emitter = emitter;
-            this.name = name;
+            }) || this;
+            _this.emitter = emitter;
+            _this.name = name;
+            return _this;
         }
         return Emission;
     }(Mist.Promise));
@@ -281,15 +282,60 @@ var Mist;
     var Style = (function () {
         function Style(statement) {
             this.statement = statement;
-            this.value = {};
+            this.main = {};
+            this.mask = {};
         }
         Style.prototype.clear = function () {
-            this.value = {};
-            this.apply();
+            this.main = {};
+            this.mask = {};
+            this.modify();
         };
         Style.prototype.clearAll = function () {
             this.statement.elements().map(function (element) {
                 Mist.Component.create(Mist.Statement, element).style.clear();
+            });
+        };
+        Style.prototype.modify = function () {
+            this.node().innerHTML = [
+                this.inner(this.main),
+                this.inner(this.mask)
+            ].join('');
+        };
+        Style.prototype.pause = function () {
+            this.statement.elements().map(function (e) {
+                var s = Mist.Component.create(Mist.Statement, e).style;
+                var o = getComputedStyle(e);
+                s.mask = {};
+                s.mask.background = o.background;
+                s.mask.borderBottom = o.borderBottom;
+                s.mask.borderLeft = o.borderLeft;
+                s.mask.borderRadius = o.borderRadius;
+                s.mask.borderRight = o.borderRight;
+                s.mask.borderSpacing = o.borderSpacing;
+                s.mask.borderTop = o.borderTop;
+                s.mask.bottom = o.bottom;
+                s.mask.boxShadow = o.boxShadow;
+                s.mask.color = o.color;
+                s.mask.fill = o.fill;
+                s.mask.font = o.font;
+                s.mask.left = o.left;
+                s.mask.margin = o.margin;
+                s.mask.opacity = o.opacity;
+                s.mask.outline = o.outline;
+                s.mask.padding = o.padding;
+                s.mask.right = o.right;
+                s.mask.stroke = o.stroke;
+                s.mask.top = o.top;
+                s.mask.transform = o.transform;
+                s.mask.transition = 'none';
+                s.modify();
+            });
+        };
+        Style.prototype.resume = function () {
+            this.statement.elements().map(function (e) {
+                var s = Mist.Component.create(Mist.Statement, e).style;
+                s.mask = {};
+                s.modify();
             });
         };
         Style.prototype.set = function () {
@@ -297,8 +343,8 @@ var Mist;
             for (var _i = 0; _i < arguments.length; _i++) {
                 css[_i - 0] = arguments[_i];
             }
-            var o = this.value;
             var response = assign(css);
+            var o = this.main;
             for (var name_1 in response) {
                 var p = response[name_1];
                 if (p instanceof Function) {
@@ -308,7 +354,7 @@ var Mist;
                     o[name_1] = p;
                 }
             }
-            this.apply();
+            this.modify();
         };
         Style.prototype.setAll = function () {
             var css = [];
@@ -330,18 +376,17 @@ var Mist;
                 Mist.Component.create(Mist.Statement, element).style.set(o);
             });
         };
-        Style.prototype.apply = function () {
-            var o = this.value;
+        Style.prototype.inner = function (css) {
             var response = [];
-            for (var name_3 in o) {
-                response.push(hycase(name_3) + ':' + o[name_3]);
+            for (var name_3 in css) {
+                response.push(hycase(name_3) + ':' + css[name_3]);
             }
-            this.create().innerHTML = this.statement.selector()
+            return this.statement.selector()
                 + '{'
                 + response.join(';')
                 + '}';
         };
-        Style.prototype.create = function () {
+        Style.prototype.node = function () {
             if (!this.e) {
                 var s = document.createElement('style');
                 var t = document.createTextNode('');
@@ -377,12 +422,26 @@ var Mist;
             this.statement = statement;
             this.id = 0;
         }
+        Timer.prototype.pause = function () {
+        };
+        Timer.prototype.resume = function () {
+        };
         Timer.prototype.set = function (responsor, dur) {
             var _this = this;
             clearTimeout(this.id);
             requestAnimationFrame(function () {
-                _this.id = setTimeout(responsor.bind(_this.statement), dur);
+                _this.id = setTimeout(function () {
+                    _this.pause = function () { };
+                    _this.resume = function () { };
+                    responsor.bind(_this.statement)();
+                }, dur);
             });
+            var s = Date.now();
+            this.pause = function () {
+                var e = Date.now();
+                clearTimeout(_this.id);
+                _this.resume = _this.set.bind(_this, responsor, dur - (e - s));
+            };
         };
         return Timer;
     }());
@@ -429,8 +488,9 @@ var Mist;
         var Defer = (function (_super) {
             __extends(Defer, _super);
             function Defer(component, commit$) {
-                _super.call(this, component);
-                this.commit$ = commit$;
+                var _this = _super.call(this, component) || this;
+                _this.commit$ = commit$;
+                return _this;
             }
             Defer.prototype.catch = function (err) {
                 return new Defer(this.component$, this.commit$.catch(err));
@@ -467,9 +527,9 @@ var Mist;
         var Timer = (function (_super) {
             __extends(Timer, _super);
             function Timer(statement, dur$) {
-                _super.call(this, statement);
-                this.dur$ = dur$;
-                this.timer$ = Mist.Component.create(Mist.Timer, statement);
+                var _this = _super.call(this, statement) || this;
+                _this.dur$ = dur$;
+                return _this;
             }
             Timer.prototype.composer$ = function (name) {
                 var o = [];
@@ -486,7 +546,7 @@ var Mist;
                             erred(e);
                         }
                     }
-                    s.timer$.set(responsor, s.dur$);
+                    s.component$.timer.set(responsor, s.dur$);
                 }));
             };
             return Timer;
@@ -501,6 +561,7 @@ var Mist;
             this.statement = statement;
             this.emitter = new Mist.Emitter(this);
             this.style = new Mist.Style(this);
+            this.timer = new Mist.Timer(this);
         }
         Statement.prototype.any = function (selector) {
             return Mist.Component.create(Statement, this.selector().split(',').map(function (s) {
@@ -511,15 +572,11 @@ var Mist;
             }).join());
         };
         Statement.prototype.clear = function () {
-            var s = this.style;
-            var m = this.style.clear;
-            m.apply(s);
+            this.style.clear();
             return this;
         };
         Statement.prototype.clearAll = function () {
-            var s = this.style;
-            var m = this.style.clearAll;
-            m.apply(s);
+            this.style.clearAll();
             return this;
         };
         Statement.prototype.elements = function () {
@@ -542,6 +599,16 @@ var Mist;
         };
         Statement.prototype.on = function (name) {
             return new Mist.Emission(this.emitter, name);
+        };
+        Statement.prototype.pause = function () {
+            this.style.pause();
+            this.timer.pause();
+            return this;
+        };
+        Statement.prototype.resume = function () {
+            this.style.resume();
+            this.timer.resume();
+            return this;
         };
         Statement.prototype.selector = function () {
             var response;
@@ -605,7 +672,7 @@ var Mist;
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.6
+ * @version 0.8.7
  */
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);

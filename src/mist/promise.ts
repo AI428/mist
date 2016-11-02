@@ -39,6 +39,7 @@ namespace Mist {
 
         /**
         * @param {} commits
+        * @returns {}
         */
         static all(commits: Promise[]): Promise {
 
@@ -86,6 +87,7 @@ namespace Mist {
 
         /**
         * @param {} commits
+        * @returns {}
         */
         static race(commits: Promise[]): Promise {
 
@@ -120,6 +122,7 @@ namespace Mist {
 
         /**
         * @param {} err
+        * @returns {}
         */
         catch(err: (response: any) => any): Promise {
 
@@ -157,6 +160,7 @@ namespace Mist {
         /**
         * @param {} success
         * @param {} err
+        * @returns {}
         */
         then(success: (response: any) => any, err?: (response: any) => any): Promise {
 
@@ -190,6 +194,7 @@ namespace Mist {
         /**
         * @param {} success
         * @param {} err
+        * @returns {}
         */
         when(success: (response: any) => any, err?: (response: any) => any): Promise {
 

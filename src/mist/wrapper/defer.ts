@@ -24,6 +24,7 @@ namespace Mist {
 
             /**
             * @param {} err
+            * @returns {}
             */
             catch(err: (response: any) => any): Defer {
 
@@ -33,16 +34,17 @@ namespace Mist {
             /**
             * @param {} name
             * @param {} o
+            * @summary override
             */
             protected composer$(name: string, ...o: any[]) {
 
                 var s = this;
 
                 // {} response
-
                 return new Defer(
 
-                    s.component$, s.commit$.when(
+                    s.component$,
+                    s.commit$.when(
 
                         function(response) {
 

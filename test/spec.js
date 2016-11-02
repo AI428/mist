@@ -1,121 +1,86 @@
 'use strict';
 
-document.addEventListener('DOMContentLoaded',
+document.addEventListener('DOMContentLoaded', () => {
 
-    function() {
+    var h = document.querySelector('header');
 
-        var h = document.querySelector('header');
+    /**
+     * @summary for mist.statement
+     */
+    describe('mist.statement', () => {
 
-        describe('Mist.Statement',
+        it('selector', () => {
 
-            function() {
+            var statement = mist('body');
 
-                it('Selector',
+            var q = '>footer,>header';
 
-                    function() {
+            expect(statement.any(q).selector()).toEqual('body>footer,body>header');
+            expect(statement.not(q).selector()).toEqual('body:not(>footer),body:not(>header)');
+        });
 
-                        var statement = mist('body');
+        it('using modular css', () => {
 
-                        expect(statement.any('> footer,> header').selector())
-                            .toEqual('body> footer,body> header');
+            // a response
 
-                        expect(statement.not('> footer,> header').selector())
-                            .toEqual('body:not(> footer),body:not(> header)');
-                    });
+            var statement = mist('header');
 
-                it('Using Modular CSS',
+            statement.set({
 
-                    function() {
-
-                        var statement = mist('header');
-
-                        statement.set({
-                            background: 'red'
-                        }, {
-                            color: function() {
-                                return 'blue';
-                            }
-                        });
-
-                        var computed;
-
-                        computed = getComputedStyle(h);
-
-                        expect(computed.backgroundColor)
-                            .toBe('rgb(255, 0, 0)');
-
-                        expect(computed.color)
-                            .toBe('rgb(0, 0, 255)');
-
-                        statement.clear();
-
-                        computed = getComputedStyle(h);
-
-                        expect(computed.backgroundColor)
-                            .toBe('rgba(0, 0, 0, 0)');
-                        expect(computed.color)
-                            .toBe('rgb(0, 0, 0)');
-
-                        var statement = mist('body> *');
-
-                        statement.setAll({
-                            background: 'red'
-                        }, {
-                            color: function(element, i, all) {
-
-                                expect(element)
-                                    .toEqual(jasmine.any(Element));
-                                expect(i)
-                                    .toEqual(jasmine.any(Number));
-                                expect(all)
-                                    .toEqual(jasmine.any(Array));
-
-                                return 'blue';
-                            }
-                        });
-
-                        computed = getComputedStyle(h);
-
-                        expect(computed.backgroundColor)
-                            .toBe('rgb(255, 0, 0)');
-                        expect(computed.color)
-                            .toBe('rgb(0, 0, 255)');
-
-                        statement.clearAll();
-
-                        computed = getComputedStyle(h);
-
-                        expect(computed.backgroundColor)
-                            .toBe('rgba(0, 0, 0, 0)');
-                        expect(computed.color)
-                            .toBe('rgb(0, 0, 0)');
-                    });
-
-                it('Timing Control',
-
-                    function(done) {
-
-                        var dur = 100;
-
-                        var statement = mist('header');
-
-                        statement.set({
-                            background: 'red'
-                        }).time(dur).clear();
-
-                        setTimeout(
-
-                            function() {
-
-                                var computed = getComputedStyle(h);
-
-                                expect(computed.backgroundColor)
-                                    .toBe('rgba(0, 0, 0, 0)');
-                                expect(computed.color)
-                                    .toBe('rgb(0, 0, 0)');
-
-                                done();
-                            }, dur);
-                    });
+                background: 'red'
+            }, {
+                color: () => 'blue'
             });
+
+            expect(getComputedStyle(h).color).toBe('rgb(0, 0, 255)');
+
+            statement.clear();
+
+            expect(getComputedStyle(h).color).toBe('rgb(0, 0, 0)');
+
+            // [] response
+
+            var statement = mist('body>*');
+
+            statement.setAll({
+
+                background: 'red'
+            }, {
+                color: (e, i, a) => {
+
+                    expect(e).toEqual(jasmine.any(Element));
+                    expect(i).toEqual(jasmine.any(Number));
+                    expect(a).toEqual(jasmine.any(Array));
+
+                    return 'blue';
+                }
+            });
+
+            expect(getComputedStyle(h).color).toBe('rgb(0, 0, 255)');
+
+            statement.clearAll();
+
+            expect(getComputedStyle(h).color).toBe('rgb(0, 0, 0)');
+        });
+
+        it('timing control', (done) => {
+
+            var css = {
+                background: 'red'
+            };
+
+            var dur = 100;
+            var statement = mist('header');
+
+            statement.set(css).time(dur).clear();
+
+            setTimeout(() => {
+
+                expect(getComputedStyle(h).color).toBe('rgb(0, 0, 0)');
+
+                done();
+
+            }, dur);
+        });
     });
+});
