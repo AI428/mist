@@ -6,7 +6,7 @@
     "description": "Motion Design in Modular CSS",
     "devDependencies": {
         "typescript": "^1.8.10",
-        "uglify-js": "^2.6.2"
+        "uglify-js": "^2.7.3"
     },
     "keywords": [
         "css",
@@ -25,5 +25,5 @@
         "url": "https://github.com/AI428/mist"
     },
     "typings": "dist/mist",
-    "version": "0.8.6"
+    "version": "0.8.7"
 }

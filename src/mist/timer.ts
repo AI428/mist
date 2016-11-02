@@ -16,6 +16,12 @@ namespace Mist {
         constructor(private statement: Statement) {
         }
 
+        pause() {
+        }
+
+        resume() {
+        }
+
         /**
         * @param {} responsor
         * @param {} dur
@@ -28,13 +34,33 @@ namespace Mist {
 
             // lazy response
 
-            requestAnimationFrame(
-                (
-                ) => {
-                    this.id = setTimeout(responsor.bind(
-                        this.statement), dur
-                    );
-                });
+            requestAnimationFrame(() => {
+
+                this.id = setTimeout(() => {
+
+                    this.pause = () => { };
+                    this.resume = () => { };
+
+                    responsor.bind(this.statement)();
+
+                }, dur);
+            });
+
+            var s = Date.now();
+
+            this.pause = () => {
+
+                var e = Date.now();
+
+                // ser
+
+                clearTimeout(this.id);
+
+                // lazy response
+
+                this.resume = this.set.bind(
+                    this, responsor, dur - (e - s));
+            };
         }
     }
 }

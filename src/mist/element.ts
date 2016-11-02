@@ -5,6 +5,7 @@ interface Element {
 
     /**
     * @param {} selector
+    * @returns {}
     */
     mozMatchesSelector: (selector: string) => boolean;
 }

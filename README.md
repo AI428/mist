@@ -126,7 +126,7 @@ Clear modular CSS
 
 ### _`clearAll(): self`_
 
-Clear modular CSS each elements
+Clear modular CSS each element
 
 --------------------------------------------------------------------------------
 
@@ -146,7 +146,7 @@ _param_ | _type_
 ------- | ---------------------------------------------------------------
 css     | `{ "name": string }`, `{ "name": (element, i, all) => string }`
 
-Set modular CSS each elements
+Set modular CSS each element
 
 --------------------------------------------------------------------------------
 

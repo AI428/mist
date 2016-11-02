@@ -12,7 +12,7 @@
     "filesGlob": [
         "src/mist.ts",
         "src/mist/*.ts",
-        "src/mist/wrapper/*.ts"
+        "src/mist/*/*.ts"
     ],
     "files": [
         "src/mist.ts",

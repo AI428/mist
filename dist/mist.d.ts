@@ -50,15 +50,19 @@ declare namespace Mist {
 declare namespace Mist {
     class Style {
         private statement;
-        value: any;
+        main: any;
+        mask: any;
         private e;
         constructor(statement: Statement);
         clear(): void;
         clearAll(): void;
+        modify(): void;
+        pause(): void;
+        resume(): void;
         set(...css: any[]): void;
         setAll(...css: any[]): void;
-        private apply();
-        private create();
+        private inner(css);
+        private node();
     }
 }
 declare namespace Mist {
@@ -66,6 +70,8 @@ declare namespace Mist {
         private statement;
         private id;
         constructor(statement: Statement);
+        pause(): void;
+        resume(): void;
         set(responsor: () => void, dur: number): void;
     }
 }
@@ -93,7 +99,6 @@ declare namespace Mist {
     namespace Wrapper {
         class Timer extends Voker {
             private dur$;
-            private timer$;
             constructor(statement: Statement, dur$: number);
             protected composer$(name: string, ...o: any[]): Defer;
         }
@@ -104,6 +109,7 @@ declare namespace Mist {
         private statement;
         emitter: Emitter;
         style: Style;
+        timer: Timer;
         constructor(statement: Element);
         constructor(statement: string);
         any(selector: string): Statement;
@@ -112,6 +118,8 @@ declare namespace Mist {
         elements(): Element[];
         not(selector: string): Statement;
         on(name: string): Emission;
+        pause(): Statement;
+        resume(): Statement;
         selector(): string;
         set(...css: any[]): Statement;
         setAll(...css: any[]): Statement;
@@ -123,7 +131,7 @@ declare namespace Mist {
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.6
+ * @version 0.8.7
  */
 declare function mist(statement: Element): Mist.Statement;
 declare function mist(statement: string): Mist.Statement;

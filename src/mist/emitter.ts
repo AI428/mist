@@ -33,7 +33,7 @@ namespace Mist {
         /**
         * @param {} name
         * @param {} options
-        * @return {}
+        * @returns {}
         */
         static customize(name: string, options: any = {}): Event {
 
