@@ -113,6 +113,7 @@ declare namespace Mist {
         constructor(statement: Element);
         constructor(statement: string);
         any(selector: string): Statement;
+        call(responsor: () => void): Statement;
         clear(): Statement;
         clearAll(): Statement;
         elements(): Element[];
@@ -131,7 +132,7 @@ declare namespace Mist {
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.7
+ * @version 0.8.8
  */
 declare function mist(statement: Element): Mist.Statement;
 declare function mist(statement: string): Mist.Statement;

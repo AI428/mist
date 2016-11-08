@@ -4,7 +4,7 @@
 
 > _Motion Design in Modular CSS_
 
-Mist is a motion design library that uses modular CSS
+Mist is a motion design library in modular CSS
 
 ## Quick start
 
@@ -20,7 +20,7 @@ Or [download](//github.com/AI428/mist/releases/latest)
 - _Using Style Tag_
 - _Timing Control_
 
-TL;DR [demo](//codepen.io/collection/DNzaQb/)
+TL;DR [demo](//codepen.io/collection/DNzaQb/), [site](//ai428.github.com/mist)
 
 ## Supported browser
 
@@ -36,14 +36,7 @@ Make modular CSS
 
 ```javascript
 var vivid = {
-
-  background: function() {
-
-    var h = (Math.random() * 360).toFixed(0);
-
-    // vivid color
-    return `hsl(${h}, 50%, 50%)`;
-  }
+  background: () => `hsl(${Math.random() * 360}, 50%, 50%)`
 }
 ```
 
@@ -92,7 +85,13 @@ New instance
 - _Timing Control_
 
   - [_on_](#on-name--promise)
+  - [_pause_](#pause-self)
+  - [_resume_](#resume-self)
   - [_time_](#time-dur--self)
+
+- _Utility_
+
+  - [_call_](#call-responsor--self)
 
 --------------------------------------------------------------------------------
 
@@ -103,7 +102,7 @@ _param_  | _type_
 selector | `string`
 new      | new `mist`
 
-Same as :any selector
+Same as :any, :matches selector
 
 --------------------------------------------------------------------------------
 
@@ -161,6 +160,18 @@ Listen event emission
 
 --------------------------------------------------------------------------------
 
+### _`pause(): self`_
+
+Pause CSS transition, time
+
+--------------------------------------------------------------------------------
+
+### _`resume(): self`_
+
+Resume CSS transition, time
+
+--------------------------------------------------------------------------------
+
 ### _`time( dur ): self`_
 
 _param_ | _type_
@@ -168,6 +179,16 @@ _param_ | _type_
 dur     | milliseconds `number`
 
 Delay execution
+
+--------------------------------------------------------------------------------
+
+### _`call( responsor ): self`_
+
+_param_   | _type_
+--------- | ------------
+responsor | `() => void`
+
+Call passed function
 
 ## Using promise
 
@@ -178,13 +199,13 @@ This library's promise like a [Promise / A+](//promisesaplus.com/), it's extende
 The fullfilled or rejected promise back to pending
 
 ```javascript
-var promise = mist('div').on('click');
+var emission = mist('div').on('click');
 
-promise.then((e) => {
+emission.then((e) => {
 
   // your process
 
-  promise.resume();
+  emission.resume();
 });
 ```
 

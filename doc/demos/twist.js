@@ -1,21 +1,23 @@
 (function(d) {
 
+    var dur = 1000; // milliseconds
+
     var scale = {
         transform: 'scale(2)',
-        transition: '1s ease'
+        transition: `${dur}ms ease`
     };
 
     var rotate = {
         transform: (now) => `${now.transform} rotateZ(45deg)`
     };
 
-    var statement = mist('#multi');
+    var statement = mist('#twist');
 
     statement.on('click').when(() => {
 
         statement
-            .set(scale).time(1000)
-            .set(rotate).time(1000)
+            .set(scale).time(dur)
+            .set(rotate).time(dur)
             .clear();
     });
 

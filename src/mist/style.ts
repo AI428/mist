@@ -119,6 +119,7 @@ namespace Mist {
 
                 var p = response[name];
 
+                // mapped
                 if (p instanceof Function) {
                     // a response
                     o[name] = p(o);
@@ -148,6 +149,7 @@ namespace Mist {
 
                         var p = response[name];
 
+                        // mapped
                         if (p instanceof Function) {
                             // a response
                             o[name] = p(element, i, all);

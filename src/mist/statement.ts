@@ -79,6 +79,18 @@ namespace Mist {
         }
 
         /**
+        * @param {} responsor
+        * @returns {}
+        */
+        call(responsor: () => void): Statement {
+
+            responsor.bind(this)();
+
+            // passthru
+            return this;
+        }
+
+        /**
         * @returns {}
         */
         clear(): Statement {
