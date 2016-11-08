@@ -7,7 +7,7 @@
     <meta http-equiv="cache-control" content="no-cache" />
     <meta http-equiv="expires" content="0" />
     <meta http-equiv="expires" content="Tue, 01 Jan 1990 12:00:00 GMT" />
-    <meta name="desription" content="Mist is a motion design library that uses modular CSS">
+    <meta name="desription" content="Mist is a motion design library in modular CSS">
     <meta name="keywords" content="css,design,js,mist,modular,motion,style,typescript">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>MIST, Motion Design in Modular CSS</title>
@@ -30,10 +30,11 @@
             <figure></figure>
             <h1>MIST</h1>
             <h6><em>Motion Design in Modular CSS</em></h6>
-            <h4 id="types">Mist is a motion design library that uses modular CSS.</h4>
+            <h4 id="types">Mist is a motion design library in modular CSS.</h4>
             <nav>
                 <a id="repository" class="button" href="#">GITHUB</a>
                 <a id="latest" class="button button-outline" href="#">GET LATEST</a>
+                <a class="button" href="//codepen.io/collection/DNzaQb/">CODEPEN</a>
             </nav>
         </section>
     </header>
@@ -46,7 +47,7 @@
                 <div class="column">
                     <p>Press the button. The color has changed twice? This is implemented in the following code.</p>
                     <h5>Make modular CSS</h5>
-                    <p>First, to prepare the style in primitive objects. Style values can be passed a string, number, function. In the case of function like <mark>var vivid</mark>, it's evaluated just before, the return value is passed.</p>
+                    <p>First, to prepare the style in primitive objects. Style values can be passed a string, number, function. In the case of function like a <mark>var vivid</mark>, it's evaluated just before, the return value is passed.</p>
                     <h5>Design motion</h5>
                     <p>To build a motion by changing the style with timing control API. <mark>on()</mark> listen event emission, <mark>time()</mark> wait milliseconds for delay execution. It's easy to change the style. <mark>set()</mark> sets modular CSS,
                         <mark>clear()</mark> clear the set.</p>
@@ -58,7 +59,7 @@
             </div>
             <script>
                 (function(d) {
-                    fetch('doc/demos.vivid.js').then(
+                    fetch('doc/demos/vivid.js').then(
                         function(response) {
                             return response.text();
                         }
@@ -72,7 +73,7 @@
         </section>
         <section class="container">
             <div class="demos">
-                <div id="multi"></div>
+                <div id="twist"></div>
             </div>
             <div class="row">
                 <div class="column">
@@ -82,25 +83,25 @@
                     <p>In combination with the timing control API, you can build complex animations easily, and dynamically.</p>
                 </div>
                 <div class="column column-50">
-                    <pre><code class='multi'></code></pre>
+                    <pre><code class='twist'></code></pre>
                 </div>
             </div>
             <script>
                 (function(d) {
-                    fetch('doc/demos.multi.js').then(
+                    fetch('doc/demos/twist.js').then(
                         function(response) {
                             return response.text();
                         }
                     ).then(
                         function(response) {
-                            d.querySelector('code.multi').innerHTML = response;
+                            d.querySelector('code.twist').innerHTML = response;
                         }
                     );
                 })(document);
             </script>
         </section>
         <section class="container">
-            <div id="eases" class="demos">
+            <div id="fade" class="demos">
                 <div></div>
                 <div></div>
                 <div></div>
@@ -109,31 +110,62 @@
                 <div class="column">
                     <p>When you press the button, the color in the order will change. To do this, you need to apply different style in each element.</p>
                     <h5>Targeting each element</h5>
-                    <p>If you want to apply different style, you can use some of the style API. <mark>setAll()</mark> sets modular CSS each element, <mark>clearAll()</mark> clear the set. When you pass a function to the style value like <mark>var ease</mark>,
+                    <p>If you want to apply different style, you can use some of the style API. <mark>setAll()</mark> sets modular CSS each element, <mark>clearAll()</mark> clear the set. When you pass a function to the style value like a <mark>var ease</mark>,
                         element, index, array of all the elements are passed.</p>
+                    <p>This can be applied to particle effects. However, in order to scan all of the target elements, the performance you need to be careful.</p>
                 </div>
                 <div class="column column-50">
-                    <pre><code class='eases'></code></pre>
+                    <pre><code class='fade'></code></pre>
                 </div>
             </div>
             <script>
                 (function(d) {
-                    fetch('doc/demos.eases.js').then(
+                    fetch('doc/demos/fade.js').then(
                         function(response) {
                             return response.text();
                         }
                     ).then(
                         function(response) {
-                            d.querySelector('code.eases').innerHTML = response;
+                            d.querySelector('code.fade').innerHTML = response;
+                        }
+                    );
+                })(document);
+            </script>
+        </section>
+        <section class="container">
+            <div class="demos">
+                <div id="play"></div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <p>When you press the button, motion is played. Please press the button again while playing, motion will pause. Press again to resume. To do this, you need to control motion.</p>
+                    <h5>Control motion</h5>
+                    <p>If you want to control motion, you can use some of the timing control API. <mark>pause()</mark> pause CSS transition and time, <mark>resume()</mark> resume it. The following code is an example of switching <i>play</i>, <i>pause</i>,
+                        <i>resume</i> for each state when clicked.</p>
+                    <p>If you want to synchronize function execution during motion, use the utility. <mark>call()</mark> call passed function.</p>
+                </div>
+                <div class="column column-50">
+                    <pre><code class='play'></code></pre>
+                </div>
+            </div>
+            <script>
+                (function(d) {
+                    fetch('doc/demos/play.js').then(
+                        function(response) {
+                            return response.text();
+                        }
+                    ).then(
+                        function(response) {
+                            d.querySelector('code.play').innerHTML = response;
                         }
                     );
                 })(document);
             </script>
         </section>
     </main>
-    <footer>
+    <footer class="noise">
         <section class="container">
-            <small><i>Liberate all, in code</i></small>
+            <small>Liberate all, in code</small>
             <h6>MIT &copy; AI428</h6>
         </section>
     </footer>
@@ -161,9 +193,10 @@
     </script>
     <script src="doc/screens.js"></script>
     <script src="doc/types.js"></script>
-    <script src="doc/demos.vivid.js"></script>
-    <script src="doc/demos.multi.js"></script>
-    <script src="doc/demos.eases.js"></script>
+    <script src="doc/demos/vivid.js"></script>
+    <script src="doc/demos/fade.js"></script>
+    <script src="doc/demos/twist.js"></script>
+    <script src="doc/demos/play.js"></script>
 </body>
 
 </html>

@@ -1,5 +1,7 @@
 (function(d) {
 
+    var dur = 1000; // milliseconds
+
     var vivid = {
         background: () => `hsl(${Math.random() * 360}, 66%, 66%)`
     };
@@ -9,8 +11,8 @@
     statement.on('click').when(() => {
 
         statement
-            .set(vivid).time(1000)
-            .set(vivid).time(1000)
+            .set(vivid).time(dur)
+            .set(vivid).time(dur)
             .clear();
     });
 

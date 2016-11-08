@@ -16,9 +16,15 @@ namespace Mist {
         constructor(private statement: Statement) {
         }
 
+        /**
+        * @summary dummy
+        */
         pause() {
         }
 
+        /**
+        * @summary dummy
+        */
         resume() {
         }
 

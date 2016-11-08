@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var h = document.querySelector('header');
 
+    function style() {
+
+        return getComputedStyle(h);
+    }
+
     /**
      * @summary for mist.statement
      */
@@ -32,11 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 color: () => 'blue'
             });
 
-            expect(getComputedStyle(h).color).toBe('rgb(0, 0, 255)');
+            expect(style().color).toBe('rgb(0, 0, 255)');
 
             statement.clear();
 
-            expect(getComputedStyle(h).color).toBe('rgb(0, 0, 0)');
+            expect(style().color).toBe('rgb(0, 0, 0)');
 
             // [] response
 
@@ -56,11 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            expect(getComputedStyle(h).color).toBe('rgb(0, 0, 255)');
+            expect(style().color).toBe('rgb(0, 0, 255)');
 
             statement.clearAll();
 
-            expect(getComputedStyle(h).color).toBe('rgb(0, 0, 0)');
+            expect(style().color).toBe('rgb(0, 0, 0)');
         });
 
         it('timing control', (done) => {
@@ -74,13 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             statement.set(css).time(dur).clear();
 
-            setTimeout(() => {
-
-                expect(getComputedStyle(h).color).toBe('rgb(0, 0, 0)');
-
-                done();
-
-            }, dur);
+            setTimeout(() => (expect(style().color).toBe('rgb(0, 0, 0)'), done()), dur);
         });
     });
 });

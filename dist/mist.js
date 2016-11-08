@@ -571,6 +571,10 @@ var Mist;
                 }).join();
             }).join());
         };
+        Statement.prototype.call = function (responsor) {
+            responsor.bind(this)();
+            return this;
+        };
         Statement.prototype.clear = function () {
             this.style.clear();
             return this;
@@ -672,7 +676,7 @@ var Mist;
  * @description Motion Design in Modular CSS
  * @license http://opensource.org/licenses/MIT
  * @namespace Mist
- * @version 0.8.7
+ * @version 0.8.8
  */
 function mist(statement) {
     return Mist.Component.create(Mist.Statement, statement);

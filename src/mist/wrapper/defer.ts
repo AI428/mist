@@ -28,7 +28,11 @@ namespace Mist {
             */
             catch(err: (response: any) => any): Defer {
 
-                return new Defer(this.component$, this.commit$.catch(err));
+                return new Defer(
+
+                    this.component$,
+                    this.commit$.catch(err)
+                );
             }
 
             /**
