@@ -108,6 +108,7 @@ namespace Mist {
 
         /**
         * @param {} css
+        * @summary for a
         */
         set(...css: any[]) {
 
@@ -134,6 +135,7 @@ namespace Mist {
 
         /**
         * @param {} css
+        * @summary for each
         */
         setAll(...css: any[]) {
 

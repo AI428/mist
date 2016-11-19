@@ -4,6 +4,7 @@
     },
     "compilerOptions": {
         "declaration": true,
+        "module": "commonjs",
         "noImplicitAny": true,
         "outFile": "dist/mist.js",
         "removeComments": true,
