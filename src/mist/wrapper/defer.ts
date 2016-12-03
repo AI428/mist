@@ -17,7 +17,7 @@ namespace Mist {
             * @param {} component
             * @param {} commit
             */
-            constructor(component: any, public commit$: Promise) {
+            constructor(component: any, public _commit: Promise) {
 
                 super(component);
             }
@@ -28,44 +28,29 @@ namespace Mist {
             */
             catch(err: (response: any) => any): Defer {
 
-                return new Defer(
-
-                    this.component$,
-                    this.commit$.catch(err)
-                );
+                return new Defer(this._component, this._commit.catch(err));
             }
 
             /**
             * @param {} name
             * @param {} o
-            * @summary override
             */
-            protected composer$(name: string, ...o: any[]) {
+            protected _composer(name: string, ...o: any[]) {
 
                 var s = this;
 
                 // {} response
-                return new Defer(
+                return new Defer(s._component, s._commit.when(
 
-                    s.component$,
-                    s.commit$.when(
+                    function(response) {
 
-                        function(response) {
+                        // over response
+                        var c = response instanceof Voker ? response : s._component;
+                        var r = c[name].apply(c, o);
 
-                            var r: any;
-
-                            if (response instanceof Voker) {
-                                r = response[name].apply(response, o);
-                            } else {
-                                r = s.component$[name].apply(s.component$, o);
-                            }
-
-                            if (r instanceof Defer) {
-                                return r.commit$;
-                            }
-
-                            return r;
-                        }));
+                        // lazy response
+                        return r instanceof Defer ? r._commit : r;
+                    }));
             }
         }
     }

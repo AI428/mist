@@ -24,6 +24,9 @@ namespace Mist {
         constructor(private statement: Statement) {
         }
 
+        /**
+        * @summary for a
+        */
         clear() {
 
             this.main = {};
@@ -33,6 +36,9 @@ namespace Mist {
             this.modify();
         }
 
+        /**
+        * @summary for each
+        */
         clearAll() {
 
             this.statement.elements().map(
@@ -54,6 +60,9 @@ namespace Mist {
             ].join('');
         }
 
+        /**
+        * @summary for transition
+        */
         pause() {
 
             this.statement.elements().map(
@@ -92,6 +101,9 @@ namespace Mist {
                 });
         }
 
+        /**
+        * @summary for transition
+        */
         resume() {
 
             this.statement.elements().map(
@@ -108,6 +120,7 @@ namespace Mist {
 
         /**
         * @param {} css
+        * @summary for a
         */
         set(...css: any[]) {
 
@@ -134,6 +147,7 @@ namespace Mist {
 
         /**
         * @param {} css
+        * @summary for each
         */
         setAll(...css: any[]) {
 

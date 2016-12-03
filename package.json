@@ -19,11 +19,13 @@
         "typescript"
     ],
     "license": "MIT",
+    "main": "dist/mist.js",
     "name": "mist.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/AI428/mist"
     },
+    "types": "dist/mist.d.ts",
     "typings": "dist/mist",
-    "version": "0.8.8"
+    "version": "0.8.9"
 }

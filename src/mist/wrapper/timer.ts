@@ -20,7 +20,7 @@ namespace Mist {
             * @param {} statement
             * @param {} dur
             */
-            constructor(statement: Statement, private dur$: number) {
+            constructor(statement: Statement, private _dur: number) {
 
                 super(statement);
             }
@@ -30,37 +30,36 @@ namespace Mist {
             * @param {} o
             * @summary override
             */
-            protected composer$(name: string, ...o: any[]) {
+            protected _composer(name: string, ...o: any[]) {
 
                 var s = this;
 
                 // {} response
-                return new Defer(
+                return new Defer(s._component, new Promise(
 
-                    s.component$, new Promise(
+                    function(
 
-                        function(
+                        succeed,
+                        erred
+                    ) {
 
-                            succeed,
-                            erred
-                        ) {
+                        s._component.timer.set(
 
-                            function responsor() {
+                            function() {
 
                                 try {
                                     succeed(
-                                        s.component$[name].apply(
-                                            s.component$, o));
+                                        s._component[name].apply(
+                                            s._component, o));
 
                                 } catch (e) {
 
                                     // fail response
                                     erred(e);
                                 }
-                            }
 
-                            s.component$.timer.set(responsor, s.dur$);
-                        }));
+                            }, s._dur);
+                    }));
             }
         }
     }

@@ -54,6 +54,8 @@ namespace Mist {
 
             var s = Date.now();
 
+            // initialize
+
             this.pause = () => {
 
                 var e = Date.now();

@@ -10,11 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * @summary for mist.statement
+     * @summary for statement
      */
     describe('mist.statement', () => {
 
-        it('selector', () => {
+        it('Selector', () => {
 
             var statement = mist('body');
 
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             expect(statement.not(q).selector()).toEqual('body:not(>footer),body:not(>header)');
         });
 
-        it('using modular css', () => {
+        it('Using Modular CSS', () => {
 
             // a response
 
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             expect(style().color).toBe('rgb(0, 0, 0)');
         });
 
-        it('timing control', (done) => {
+        it('Timing Control', (done) => {
 
             var css = {
                 background: 'red'
