@@ -24,6 +24,9 @@ namespace Mist {
         constructor(private statement: Statement) {
         }
 
+        /**
+        * @summary for a
+        */
         clear() {
 
             this.main = {};
@@ -33,6 +36,9 @@ namespace Mist {
             this.modify();
         }
 
+        /**
+        * @summary for each
+        */
         clearAll() {
 
             this.statement.elements().map(
@@ -54,6 +60,9 @@ namespace Mist {
             ].join('');
         }
 
+        /**
+        * @summary for transition
+        */
         pause() {
 
             this.statement.elements().map(
@@ -92,6 +101,9 @@ namespace Mist {
                 });
         }
 
+        /**
+        * @summary for transition
+        */
         resume() {
 
             this.statement.elements().map(

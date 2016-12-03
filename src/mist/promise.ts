@@ -5,9 +5,24 @@ namespace Mist {
     */
     export class Promise {
 
+        /**
+        * @access private
+        */
         private err: (response: any) => any;
+
+        /**
+        * @access private
+        */
         private success: (response: any) => any;
+
+        /**
+        * @access private
+        */
         private txd: boolean;
+
+        /**
+        * @access private
+        */
         private txr: () => void;
 
         /**

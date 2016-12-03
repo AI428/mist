@@ -33,17 +33,15 @@ interface Element {
 
     var o = Element.prototype;
 
-    o.closest = o.closest
+    o.closest = o.closest || function(selector: string) {
 
-        || function(selector: string) {
+        var s = this;
 
-            var s = this;
+        while (s) {
+            if (s.matches(selector)) break;
+            s = s.parentElement;
+        }
 
-            while (s) {
-                if (s.matches(selector)) break;
-                s = s.parentElement;
-            }
-
-            return s;
-        };
+        return s;
+    };
 })();

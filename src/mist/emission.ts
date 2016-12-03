@@ -26,19 +26,17 @@ namespace Mist {
                     erred
                 ) {
 
-                    emitter.add(
+                    emitter.add(name, function(response) {
 
-                        name, function(response) {
+                        try {
+                            succeed(response);
 
-                            try {
-                                succeed(response);
+                        } catch (e) {
 
-                            } catch (e) {
-
-                                // fail response
-                                erred(e)
-                            }
-                        });
+                            // fail response
+                            erred(e)
+                        }
+                    });
                 });
         }
     }

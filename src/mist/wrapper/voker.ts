@@ -11,23 +11,23 @@ namespace Mist {
             * @constructor
             * @param {} component
             */
-            constructor(protected component$: any) {
+            constructor(protected _component: any) {
 
                 var s: any = this;
 
-                for (let name in component$) {
+                for (let name in _component) {
 
-                    if (component$[name] instanceof Function) {
+                    if (_component[name] instanceof Function) {
 
                         // composer
-                        s[name] = s.composer$.bind(
+                        s[name] = s._composer.bind(
                             s, name);
 
                     } else {
 
                         Object.defineProperty(
                             s, name, {
-                                get: s.accessor$.bind(
+                                get: s._accessor.bind(
                                     s, name)
                             });
                     }
@@ -38,9 +38,9 @@ namespace Mist {
             * @param {} name
             * @summary for override
             */
-            protected accessor$(name: string) {
+            protected _accessor(name: string) {
 
-                return this.component$[name];
+                return this._component[name];
             }
 
             /**
@@ -48,10 +48,9 @@ namespace Mist {
             * @param {} o
             * @summary for override
             */
-            protected composer$(name: string, ...o: any[]) {
+            protected _composer(name: string, ...o: any[]) {
 
-                return this.component$[name].apply(
-                    this.component$, o);
+                return this._component[name].apply(this._component, o);
             }
         }
     }
